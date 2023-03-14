@@ -1,11 +1,12 @@
-## Version 1.2.0
+## Version 1.2.1
 
 ### Bug fixes
 
-#### Client
+#### Legacy Client
 
-- Added legacy client authorization support
+- Fixed password and username encoding 
+- Fixed request params absence in HTTP Transport
 
 #### All
 
-- Add json tags for requests
+- Updated module to new repository

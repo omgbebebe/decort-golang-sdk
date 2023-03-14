@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker/kvmx86"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/kvmx86"
 )
 
 // Accessing the KVMX86 method group

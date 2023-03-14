@@ -3,7 +3,7 @@
 package sizes
 
 import (
-	"github.com/rudecs/decort-sdk/interfaces"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 )
 
 // Structure for creatig request to sizes

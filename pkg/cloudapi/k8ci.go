@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/k8ci"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/k8ci"
 )
 
 // Accessing the K8CI method group

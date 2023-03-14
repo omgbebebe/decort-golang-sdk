@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/rudecs/decort-sdk/pkg/cloudapi"
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker"
 
 	"github.com/google/go-querystring/query"
-	"github.com/rudecs/decort-sdk/config"
-	"github.com/rudecs/decort-sdk/internal/client"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/client"
 )
 
 // HTTP-client for platform

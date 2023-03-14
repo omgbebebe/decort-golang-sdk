@@ -1,6 +1,6 @@
 package cloudbroker
 
-import "github.com/rudecs/decort-sdk/pkg/cloudbroker/sep"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/sep"
 
 // Accessing the SEP method group
 func (cb *CloudBroker) SEP() *sep.SEP {

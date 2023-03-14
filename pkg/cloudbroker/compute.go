@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker/compute"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/compute"
 )
 
 // Accessing the Compute method group

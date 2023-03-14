@@ -8,10 +8,10 @@ import (
 	"strings"
 
 	"github.com/google/go-querystring/query"
-	"github.com/rudecs/decort-sdk/config"
-	"github.com/rudecs/decort-sdk/internal/client"
-	"github.com/rudecs/decort-sdk/pkg/cloudapi"
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/client"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker"
 )
 
 // Legacy HTTP-client for platform

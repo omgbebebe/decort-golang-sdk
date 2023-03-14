@@ -138,7 +138,7 @@ type ItemRG struct {
 	CreatedTime uint64 `json:"createdTime"`
 
 	// DefNet ID
-	DefNetID uint64 `json:"def_net_id"`
+	DefNetID int64 `json:"def_net_id"`
 
 	// DefNet type
 	DefNetType string `json:"def_net_type"`

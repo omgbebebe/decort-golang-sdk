@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker/k8ci"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/k8ci"
 )
 
 // Accessing the K8CI method group

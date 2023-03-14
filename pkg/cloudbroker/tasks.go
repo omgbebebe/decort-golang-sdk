@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker/tasks"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/tasks"
 )
 
 // Accessing the tasks method group

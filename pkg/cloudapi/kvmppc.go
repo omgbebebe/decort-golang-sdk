@@ -1,6 +1,6 @@
 package cloudapi
 
-import "github.com/rudecs/decort-sdk/pkg/cloudapi/kvmppc"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/kvmppc"
 
 // Accessing the KVMPPC method group
 func (ca *CloudAPI) KVMPPC() *kvmppc.KVMPPC {

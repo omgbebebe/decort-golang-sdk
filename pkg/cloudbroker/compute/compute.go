@@ -1,7 +1,7 @@
 // API Actor for managing Compute. This actor is a final API for admin to manage Compute
 package compute
 
-import "github.com/rudecs/decort-sdk/interfaces"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to compute
 type Compute struct {

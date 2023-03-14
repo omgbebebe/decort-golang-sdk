@@ -1,7 +1,7 @@
 // API Actor for configure and use external networks
 package extnet
 
-import "github.com/rudecs/decort-sdk/interfaces"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to extnet
 type ExtNet struct {

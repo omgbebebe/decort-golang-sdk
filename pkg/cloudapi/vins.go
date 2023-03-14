@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/vins"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/vins"
 )
 
 // Accessing the VINS method group

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/rudecs/decort-sdk/internal/validators"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create backend

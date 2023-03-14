@@ -2,7 +2,7 @@
 package account
 
 import (
-	"github.com/rudecs/decort-sdk/interfaces"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 )
 
 // Structure for creating request to account

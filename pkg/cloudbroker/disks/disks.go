@@ -1,7 +1,7 @@
 // API Actor for managing Disk. This actor is a final API for admin to manage Disk
 package disks
 
-import "github.com/rudecs/decort-sdk/interfaces"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to disks
 type Disks struct {

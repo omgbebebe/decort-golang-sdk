@@ -1,7 +1,7 @@
 // Lists all the images. A image is a template which can be used to deploy machines
 package image
 
-import "github.com/rudecs/decort-sdk/interfaces"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to image
 type Image struct {

@@ -1,7 +1,7 @@
 // API to manage KVM x86 compute instances (x86 VMs)
 package kvmx86
 
-import "github.com/rudecs/decort-sdk/interfaces"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to KVMX86
 type KVMX86 struct {

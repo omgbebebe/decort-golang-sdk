@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/image"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/image"
 )
 
 // Accessing the Image method group

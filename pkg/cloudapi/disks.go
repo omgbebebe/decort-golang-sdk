@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/disks"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/disks"
 )
 
 // Accessing the Disks method group

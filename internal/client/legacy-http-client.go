@@ -3,9 +3,10 @@ package client
 import (
 	"crypto/tls"
 	"net/http"
+	"net/url"
 	"time"
 
-	"github.com/rudecs/decort-sdk/config"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
 )
 
 // NewLegacyHttpClient creates legacy HTTP Client
@@ -20,8 +21,8 @@ func NewLegacyHttpClient(cfg config.LegacyConfig) *http.Client {
 	return &http.Client{
 		Transport: &transportLegacy{
 			base:      transCfg,
-			username:  cfg.Username,
-			password:  cfg.Password,
+			username:  url.QueryEscape(cfg.Username),
+			password:  url.QueryEscape(cfg.Password),
 			retries:   cfg.Retries,
 			token:     cfg.Token,
 			decortURL: cfg.DecortURL,

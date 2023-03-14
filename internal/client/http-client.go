@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rudecs/decort-sdk/config"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
 )
 
 func NewHttpClient(cfg config.Config) *http.Client {

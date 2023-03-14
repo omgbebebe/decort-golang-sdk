@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/tasks"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/tasks"
 )
 
 // Accessing the Tasks method group

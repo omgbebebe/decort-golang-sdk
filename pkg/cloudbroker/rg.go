@@ -1,6 +1,6 @@
 package cloudbroker
 
-import "github.com/rudecs/decort-sdk/pkg/cloudbroker/rg"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/rg"
 
 // Accessing the RG method group
 func (cb *CloudBroker) RG() *rg.RG {

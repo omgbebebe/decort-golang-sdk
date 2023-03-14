@@ -1,6 +1,6 @@
 package cloudbroker
 
-import "github.com/rudecs/decort-sdk/pkg/cloudbroker/kvmppc"
+import "repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/kvmppc"
 
 // Accessing the KVMPPC method group
 func (cb *CloudBroker) KVMPPC() *kvmppc.KVMPPC {

@@ -19,6 +19,9 @@ Decort SDK - это библиотека, написанная на языке G
   - [Создание клиента](#создание-клиента)
   - [Создание структуры запроса](#cоздание-структуры-запроса)
   - [Выполнение запроса](#выполнение-запроса)
+  - [Фильтрация](#фильтрация)
+  - [Сортировка](#сортировка)
+  - [Сериализация](#сериализация)
 - [Работа с legacy клиентом](#работа-с-legacy-клиентом)
   - [Настройка конфигурации legacy клиента](#настройка-конфигурации-legacy-клиента)
   - [Создание legacy клиента](#создание-legacy-клиента)
@@ -205,44 +208,44 @@ func main() {
 - Обязательный или нет - поле required в комментариях;
 - Доп. информация (допустимые значения, значения по умолчанию).
 
-#### Пример комментарие структуры
+#### Пример комментариев структуры
 
 ```go
 type CreateRequest struct {
 	// ID of the resource group, which will own this VM
 	// Required: true
-	RGID uint64 `url:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId"` 
 
 	// Name of this VM.
 	// Must be unique among all VMs (including those in DELETED state) in target resource group
 	// Required: true
-	Name string `url:"name"`
+	Name string `url:"name" json:"name"`
 
 	// Number CPUs to allocate to this VM
 	// Required: true
-	CPU uint64 `url:"cpu"`
+	CPU uint64 `url:"cpu" json:"cpu"`
 
 	// Volume of RAM in MB to allocate to this VM
 	// Required: true
-	RAM uint64 `url:"ram"`
+	RAM uint64 `url:"ram" json:"ram"`
 
 	// ID of the OS image to base this VM on;
 	// Could be boot disk image or CD-ROM image
 	// Required: true
-	ImageID uint64 `url:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId"`
 
 	// Size of the boot disk in GB
 	// Required: false
-	BootDisk uint64 `url:"bootDisk,omitempty"`
+	BootDisk uint64 `url:"bootDisk,omitempty" json:"bootDisk,omitempty"`
 
 	// ID of SEP to create boot disk on.
 	// Uses images SEP ID if not set
 	// Required: false
-	SEPID uint64 `url:"sepId,omitempty"`
+	SEPID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
 
 	// Pool to use if SEP ID is set, can be also empty if needed to be chosen by system
 	// Required: false
-	Pool string `url:"pool,omitempty"`
+	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
 	// Network type
 	// Should be one of:
@@ -250,46 +253,46 @@ type CreateRequest struct {
 	//	- EXTNET
 	//	- NONE
 	// Required: false
-	NetType string `url:"netType,omitempty"`
+	NetType string `url:"netType,omitempty" json:"netType,omitempty"`
 
 	// Network ID for connect to,
 	// for EXTNET - external network ID,
 	// for VINS - VINS ID,
 	// when network type is not "NONE"
 	// Required: false
-	NetID uint64 `url:"netId,omitempty"`
+	NetID uint64 `url:"netId,omitempty" json:"netId,omitempty"`
 
 	// IP address to assign to this VM when connecting to the specified network
 	// Required: false
-	IPAddr string `url:"ipAddr,omitempty"`
+	IPAddr string `url:"ipAddr,omitempty" json:"ipAddr,omitempty"`
 
 	// Input data for cloud-init facility
 	// Required: false
-	Userdata string `url:"userdata,omitempty"`
+	Userdata string `url:"userdata,omitempty" json:"userdata,omitempty"`
 
 	// Text description of this VM
 	// Required: false
-	Description string `url:"desc,omitempty"`
+	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 
 	// Start VM upon success
 	// Required: false
-	Start bool `url:"start,omitempty"`
+	Start bool `url:"start,omitempty" json:"start,omitempty"`
 
 	// Stack ID
 	// Required: false
-	StackID uint64 `url:"stackId,omitempty"`
+	StackID uint64 `url:"stackId,omitempty" json:"stackId,omitempty"`
 
 	// System name
 	// Required: false
-	IS string `url:"IS,omitempty"`
+	IS string `url:"IS,omitempty" json:"IS,omitempty"`
 
 	// Compute purpose
 	// Required: false
-	IPAType string `url:"ipaType,omitempty"`
+	IPAType string `url:"ipaType,omitempty" json:"ipaType,omitempty"`
 
 	// Reason for action
 	// Required: false
-	Reason string `url:"reason,omitempty"`
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 ```
 
@@ -437,6 +440,147 @@ func main() {
 }
 ```
 
+### Фильтрация
+
+Для каждого `ListRequest` в SDK есть группа функций для фильтрации ответа платформы. Для того чтобы произвести фильтрацию по заданным полям, достаточно описать анонимную функцию (предикат) в `.FilterFunc()`, например:
+
+```go
+// Создание запроса account/list
+req := account.ListRequest{}
+
+resp, err := client.CloudAPI().Account().List(context.Background(), req)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Тип filtered - ListAccount, тот же, что и у ответа платформы.
+filtered := resp.
+	FilterFunc(func(ia account.ItemAccount) bool {
+	// ItemAccount открывает доступ к полям модели ответа платформы.
+		for _, itemAcl := range ia.ACL {
+			if itemAcl.UgroupID == "<UserGroupID>" { // Фильтр по ACL/UgroupID
+				return true
+			}
+		}
+		return false
+	})
+```
+
+Для удобства пользователей, особенно важные фильтры вынесены в отдельные функции, что облегчает фильтрацию сразу по нескольким полям:
+
+```go
+// Создание запроса account/list
+req := account.ListRequest{}
+
+resp, err := client.CloudAPI().Account().List(context.Background(), req)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Несколько фильтров объединены в конвейер
+filtered := resp.
+	FilterByName("<NAME>").
+	FilterByStatus("<STATUS>")
+	// ....
+```
+
+### Сортировка
+
+Функции сортировки так же могут быть объединены в конвейер:
+
+```go
+// Создание запроса compute/list
+req := compute.ListRequest{}
+
+resp, err := client.CloudAPI().Compute().List(context.Background(), req)
+if err != nil {
+	log.Fatal(err)
+}
+
+// Функции сортировки имеют параметр inverse (bool):
+// При значении false -> сортировка по возрастанию
+// При true -> сортировка по убыванию
+sorted := resp.
+	SortByCPU(false).
+	SortByRAM(false).
+	SortByCreatedTime(true)
+	// ....
+```
+
+### Сериализация
+
+Результат преобразований легко сериализовать в JSON при помощи функции `.Serialize()`. Она принимает в себя 2 необязательных аргумента: префикс (prefix) и отступ (Indent).
+
+В случае если функция вызывается без аргументов, то маршализация пройдет успешно, но без отступов и префиксов.
+
+```go
+// Сериализация данных с префиксом "" и отступом "\t"
+serialized, err := filtered.Serialize("", "\t")
+if err != nil {
+	log.Fatal(err)
+}
+
+// Запись сериализованных данных в файл
+err = serialized.WriteToFile("<PATH>")
+if err != nil {
+	log.Fatal(err)
+}
+```
+
+#### Комплексный пример
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	decort "github.com/rudecs/decort-sdk"
+	"github.com/rudecs/decort-sdk/config"
+	"github.com/rudecs/decort-sdk/pkg/cloudbroker/compute"
+)
+
+func main() {
+	cfg := config.Config{
+		AppID:         "<APP_ID>",
+		AppSecret:     "<APP_SECRET>",
+		SSOURL:        "<SSO_URL>",
+		DecortURL:     "<DECORT_URL>",
+		Retries:       5,
+	}
+	
+	// Создание клиента
+	client := decort.New(cfg)
+
+	// Создание запроса compute/list
+	req := compute.ListRequest{}
+
+	resp, err := client.CloudBroker().Compute().List(context.Background(), req)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Цепь преобразований.
+	filtered, _ := resp.
+        FilterFunc(func(ic compute.ItemCompute) bool {
+            return ic.GUID == 123 // Фильтр по GUID
+        }).
+        FilterByName("<NAME>"). // Фильтр по имени
+        SortByCPU(false). // Сортировка по кол-ву ядер CPU по возрастанию
+        SortByCreatedTime(true). // Сортировка по времени создания по убыванию
+        Serialize("", "\t") // Сериализация с префиксом "" и отступом "\t"
+        // Serialize - терминальная функция, возвращает Serialized (обертку над []byte)
+
+	// Запись данных в файл
+    err = filtered.WriteToFile("<PATH>")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+```
+
 ## Работа с legacy клиентом
 
 Работа с legacy клиентом применяется для пользователей, которые не используют для авторизации decs3o.
@@ -475,7 +619,7 @@ func main(){
 
 Создание клиента происходит с помощью функции-строителя `NewLegacy` из основного пакета `decort-sdk`, для избежания проблем с именами, пакету можно присвоить алиас `decort`. Функция принимает конфигурацию, возвращает структуру `DecortClient`, с помощью которой можно взаимодействовать с платформой.
 
-### Пример
+#### Пример создания legacy клиента
 
 ```go
 package main
@@ -496,5 +640,49 @@ func main() {
 
     // Создание клиента
     legacyClient := decort.NewLegacy(cfg)
+}
+```
+
+#### Пример выполнения запроса
+
+```go
+package main
+
+import (
+	"fmt"
+
+    "github.com/rudecs/decort-sdk/config"
+    decort "github.com/rudecs/decort-sdk"
+)
+
+func main() {
+    // Настройка конфигурации
+    legacyCfg := config.LegacyConfig{
+        Username:  "<USERNAME>",
+        Password:  "<PASSWORD>",
+        DecortURL: "https://mr4.digitalenergy.online",
+        Retries:   5,
+    }
+
+    // Создание клиента
+    legacyClient := decort.NewLegacy(cfg)
+    
+    // Создание структуры запроса
+    // CreateRequest - реквест на создание виртуальной машины
+    req := kvmx86.CreateRequest{
+        RGID:    123,
+        Name:    "compute",
+        CPU:     4,
+        RAM:     4096,
+        ImageID: 321,
+    }
+
+    // Выполнение запроса
+    res, err := client.CloudAPI().KVMX86().Create(context.Background(), req)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(res)
 }
 ```

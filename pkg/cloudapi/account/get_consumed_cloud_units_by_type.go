@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/rudecs/decort-sdk/internal/validators"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for calculate the currently consumed cloud units of the specified type for all cloudspaces and resource groups in the account

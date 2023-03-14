@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/compute"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/compute"
 )
 
 // Accessing the Compute method group

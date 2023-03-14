@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/account"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/account"
 )
 
 // Accessing the Account method group

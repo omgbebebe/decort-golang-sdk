@@ -41,10 +41,12 @@ func (t *transportLegacy) RoundTrip(request *http.Request) (*http.Response, erro
 		t.token = token
 	}
 
-	tokenValue := fmt.Sprintf("authkey=%s", t.token)
+	tokenValue := fmt.Sprintf("&authkey=%s", t.token)
 	tokenReader := strings.NewReader(tokenValue)
 
-	req, _ := http.NewRequestWithContext(request.Context(), request.Method, request.URL.String(), tokenReader)
+	newBody := io.MultiReader(request.Body, tokenReader)
+
+	req, _ := http.NewRequestWithContext(request.Context(), request.Method, request.URL.String(), newBody)
 
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Accept", "application/json")

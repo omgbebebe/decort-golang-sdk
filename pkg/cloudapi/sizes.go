@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/sizes"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/sizes"
 )
 
 // Accessing the Sizes method group

@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/kvmx86"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/kvmx86"
 )
 
 // Accessing the KVMX86 method group

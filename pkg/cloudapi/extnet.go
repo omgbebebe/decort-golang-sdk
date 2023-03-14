@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/extnet"
+	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/extnet"
 )
 
 // Accessing the ExtNet method group
