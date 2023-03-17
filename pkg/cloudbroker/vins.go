@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/vins"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/vins"
 )
 
 // Accessing the VINS method group

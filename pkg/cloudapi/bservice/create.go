@@ -2,20 +2,21 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for BasicService
 type CreateRequest struct {
 	// Name of the service
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// ID of the Resource Group where this service will be placed
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Name of the user to deploy SSH key for. Pass empty string if no SSH key deployment is required
 	// Required: false
@@ -26,22 +27,13 @@ type CreateRequest struct {
 	SSHKey string `url:"sshKey,omitempty" json:"sshKey,omitempty"`
 }
 
-func (bsrq CreateRequest) validate() error {
-	if bsrq.Name == "" {
-		return errors.New("field Name can not be empty")
-	}
-	if bsrq.RGID == 0 {
-		return errors.New("field RGID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Create creates blank BasicService instance
 func (b BService) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/create"

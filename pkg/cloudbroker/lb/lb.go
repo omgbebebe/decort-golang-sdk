@@ -1,7 +1,7 @@
 // API to manage load balancer instance
 package lb
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to load balancer
 type LB struct {

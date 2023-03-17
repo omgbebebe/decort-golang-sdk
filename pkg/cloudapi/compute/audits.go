@@ -3,30 +3,25 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get audit records
 type AuditsRequest struct {
 	// ID of the compute
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
-}
-
-func (crq AuditsRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 }
 
 // Audits gets audit records for the specified compute object
 func (c Compute) Audits(ctx context.Context, req AuditsRequest) (ListAudits, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/audits"

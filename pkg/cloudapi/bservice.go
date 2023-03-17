@@ -1,6 +1,6 @@
 package cloudapi
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/bservice"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/bservice"
 
 // Accessing the BService method group
 func (ca *CloudAPI) BService() *bservice.BService {

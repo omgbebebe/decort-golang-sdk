@@ -3,30 +3,25 @@ package account
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for a get list compute instances
 type ListComputesRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (arq ListComputesRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // ListComputes gets list all compute instances under specified account, accessible by the user
 func (a Account) ListComputes(ctx context.Context, req ListComputesRequest) (ListComputes, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/listComputes"

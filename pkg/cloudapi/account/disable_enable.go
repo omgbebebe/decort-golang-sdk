@@ -2,31 +2,26 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for change status of account
-type DisabelEnableRequest struct {
+type DisableEnableRequest struct {
 	// ID of account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (arq DisabelEnableRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // Disable disables an account
-func (a Account) Disable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
-	err := req.validate()
+func (a Account) Disable(ctx context.Context, req DisableEnableRequest) (bool, error) {
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/disable"
@@ -45,10 +40,12 @@ func (a Account) Disable(ctx context.Context, req DisabelEnableRequest) (bool, e
 }
 
 // Enable enables an account
-func (a Account) Enable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
-	err := req.validate()
+func (a Account) Enable(ctx context.Context, req DisableEnableRequest) (bool, error) {
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/enable"

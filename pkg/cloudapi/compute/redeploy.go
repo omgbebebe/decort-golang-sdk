@@ -2,16 +2,17 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for redeploy
 type RedeployRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// ID of the new OS image, if image change is required
 	// Required: false
@@ -35,19 +36,13 @@ type RedeployRequest struct {
 	ForceStop bool `url:"forceStop,omitempty" json:"forceStop,omitempty"`
 }
 
-func (crq RedeployRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Redeploy redeploy compute
 func (c Compute) Redeploy(ctx context.Context, req RedeployRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/redeploy"

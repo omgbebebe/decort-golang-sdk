@@ -2,54 +2,37 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for adding permission to access to account for a user
 type AddUserRequest struct {
 	// ID of account to add to
 	// Required: true
-    AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Name of the user to be given rights
 	// Required: true
-	UserID string `url:"userId" json:"userId"`
+	UserID string `url:"userId" json:"userId" validate:"required"`
 
 	// Account permission types:
 	//	- 'R' for read only access
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-    AccessType string `url:"accesstype" json:"accesstype"`
-}
-
-func (arq AddUserRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-	if arq.UserID == "" {
-		return errors.New("validation-error: field UserID can not be empty")
-	}
-	if arq.AccessType == "" {
-		return errors.New("validation-error: field AccessType can not be empty")
-	}
-	isValid := validators.StringInSlice(arq.AccessType, []string{"R", "RCX", "ARCXDU"})
-	if !isValid {
-		return errors.New("validation-error: field AccessType can be only R, RCX or ARCXDU")
-	}
-
-	return nil
+	AccessType string `url:"accesstype" json:"accesstype" validate:"required,accountAccessType"`
 }
 
 // AddUser gives a user access rights.
 func (a Account) AddUser(ctx context.Context, req AddUserRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/addUser"

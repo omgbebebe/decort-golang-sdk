@@ -2,37 +2,21 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for calculate the currently consumed cloud units of the specified type for all cloudspaces and resource groups in the account
 type GetConsumedCloudUnitsByTypeRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Cloud unit resource type
 	// Required: true
-	CUType string `url:"cutype" json:"cutype"`
-}
-
-func (arq GetConsumedCloudUnitsByTypeRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-	if arq.CUType == "" {
-		return errors.New("validation-error: field CUType can not be empty")
-	}
-	isValid := validators.StringInSlice(arq.CUType, []string{"CU_M", "CU_C", "CU_D", "CU_S", "CU_A", "CU_NO", "CU_I", "CU_NP"})
-	if !isValid {
-		return errors.New("validation-error: field AccessType can be only CU_M, CU_C, CU_D, CU_S, CU_A, CU_NO, CU_I or CU_NP")
-	}
-
-	return nil
+	CUType string `url:"cutype" json:"cutype" validate:"required,accountCUType"`
 }
 
 // GetConsumedCloudUnitsByType calculates the currently consumed cloud units of the specified type for all cloudspaces
@@ -48,9 +32,11 @@ func (arq GetConsumedCloudUnitsByTypeRequest) validate() error {
 //   - CU_NP: returns sent/received network transfer peering in GB
 //   - CU_I: returns number of public IPs
 func (a Account) GetConsumedCloudUnitsByType(ctx context.Context, req GetConsumedCloudUnitsByTypeRequest) (float64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/getConsumedCloudUnitsByType"

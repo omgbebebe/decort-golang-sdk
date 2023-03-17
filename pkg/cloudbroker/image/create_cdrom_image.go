@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create CD-ROM image

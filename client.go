@@ -7,12 +7,12 @@ import (
 	"net/http"
 	"strings"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi"
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker"
 
 	"github.com/google/go-querystring/query"
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/client"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/client"
 )
 
 // HTTP-client for platform

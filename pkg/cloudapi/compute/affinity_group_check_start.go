@@ -2,37 +2,29 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for check all computes with current affinity label can start
 type AffinityGroupCheckStartRequest struct {
 	// ID of the resource group
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Affinity group label
 	// Required: true
-	AffinityLabel string `url:"affinityLabel" json:"affinityLabel"`
-}
-
-func (crq AffinityGroupCheckStartRequest) validate() error {
-	if crq.RGID == 0 {
-		return errors.New("validation-error: field RGID can not be empty or equal to 0")
-	}
-	if crq.AffinityLabel == "" {
-		return errors.New("validation-error: field AffinityLabel can not be empty")
-	}
-
-	return nil
+	AffinityLabel string `url:"affinityLabel" json:"affinityLabel" validate:"required"`
 }
 
 // AffinityGroupCheckStart check all computes with current affinity label can start
 func (c Compute) AffinityGroupCheckStart(ctx context.Context, req AffinityGroupCheckStartRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/affinityGroupCheckStart"

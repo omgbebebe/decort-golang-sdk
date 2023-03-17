@@ -2,33 +2,28 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for stop service
 type StopRequest struct {
 	// ID of the service to stop
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
-}
-
-func (bsrq StopRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-
-	return nil
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 }
 
 // Stop stops service.
 // Stopping a service technically means stopping computes from
 // all service groups
 func (b BService) Stop(ctx context.Context, req StopRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/stop"

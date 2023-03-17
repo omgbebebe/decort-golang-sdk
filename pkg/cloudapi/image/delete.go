@@ -2,35 +2,30 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete image
 type DeleteRequest struct {
 	// ID of the image to delete
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Whether to completely delete the image
 	// Required: false
 	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
-func (irq DeleteRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Delete deletes image by ID
 func (i Image) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/image/delete"

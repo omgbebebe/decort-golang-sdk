@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/k8ci"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/k8ci"
 )
 
 // Accessing the K8CI method group

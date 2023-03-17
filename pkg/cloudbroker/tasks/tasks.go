@@ -1,7 +1,7 @@
 // User API tasks interface
 package tasks
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to tasks
 type Tasks struct {

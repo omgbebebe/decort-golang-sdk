@@ -2,24 +2,25 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for creating account
 type CreateRequest struct {
 	// Display name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Name of the account
 	// Required: true
-	Username string `url:"username" json:"username"`
+	Username string `url:"username" json:"username" validate:"required"`
 
 	// Email
 	// Required: false
-	EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty"`
+	EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty" validate:"omitempty,email"`
 
 	// Max size of memory in MB
 	// Required: false
@@ -50,23 +51,14 @@ type CreateRequest struct {
 	GPUUnits int64 `url:"gpu_units,omitempty" json:"gpu_units,omitempty"`
 }
 
-func (arq CreateRequest) validate() error {
-	if arq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-	if arq.Username == "" {
-		return errors.New("validation-error: field Username can not be empty")
-	}
-
-	return nil
-}
-
 // Create creates account
 // Setting a cloud unit maximum to -1 or empty will not put any restrictions on the resource
 func (a Account) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/create"

@@ -2,16 +2,17 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for updaate account
 type UpdateRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Name of the account
 	// Required: false
@@ -46,19 +47,13 @@ type UpdateRequest struct {
 	GPUUnits uint64 `url:"gpu_units,omitempty" json:"gpu_units,omitempty"`
 }
 
-func (arq UpdateRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Update updates an account name and resource types and limits
 func (a Account) Update(ctx context.Context, req UpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/update"

@@ -1,7 +1,7 @@
 // List of method groups for the admin
 package cloudbroker
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to CloudBroker groups
 type CloudBroker struct {

@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net/http"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for attach network

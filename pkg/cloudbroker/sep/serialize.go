@@ -3,7 +3,7 @@ package sep
 import (
 	"encoding/json"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/serialization"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/serialization"
 )
 
 // Serialize returns JSON-serialized []byte. Used as a wrapper over json.Marshal and json.MarshalIndent functions.

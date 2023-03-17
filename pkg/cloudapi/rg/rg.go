@@ -2,7 +2,7 @@
 package rg
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 )
 
 // Structure for creating request to resource group

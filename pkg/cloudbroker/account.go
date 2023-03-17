@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/account"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/account"
 )
 
 // Accessing the Account method group

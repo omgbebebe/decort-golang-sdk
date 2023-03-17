@@ -1,7 +1,7 @@
 package cloudapi
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudapi/computeci"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/computeci"
 )
 
 // Accessing the ComputeCI method group

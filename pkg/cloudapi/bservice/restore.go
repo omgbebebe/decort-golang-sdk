@@ -2,31 +2,26 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for restores BasicService instance
 type RestoreRequest struct {
 	// ID of the BasicService to be restored
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
-}
-
-func (bsrq RestoreRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-
-	return nil
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 }
 
 // Restore restores BasicService instance
 func (b BService) Restore(ctx context.Context, req RestoreRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/restore"

@@ -3,30 +3,25 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list port forwards
 type PFWListRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
-}
-
-func (crq PFWListRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 }
 
 // PFWList gets compute port forwards list
 func (c Compute) PFWList(ctx context.Context, req PFWListRequest) (ListPFWs, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/pfwList"

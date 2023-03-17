@@ -2,33 +2,29 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete account
 type DeleteRequest struct {
 	// ID of account to delete
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Whether to completely delete the account
 	// Required: false
 	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
-func (arq DeleteRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	return nil
-}
-
 // Delete completes delete an account from the system Returns true if account is deleted or was already deleted or never existed
 func (a Account) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/delete"

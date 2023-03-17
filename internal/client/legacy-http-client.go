@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/config"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
 
 // NewLegacyHttpClient creates legacy HTTP Client

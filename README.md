@@ -33,7 +33,7 @@ Decort SDK - это библиотека, написанная на языке G
 Выполните команду в терминале:
 
 ```bash
-go get -u github.com/rudecs/decort-sdk
+go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 ```
 
 ## Список API

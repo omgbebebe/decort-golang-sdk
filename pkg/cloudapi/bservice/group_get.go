@@ -3,37 +3,29 @@ package bservice
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get detailed information about Compute Group
 type GroupGetRequest struct {
 	// ID of the Basic Service of Compute Group
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
+    ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 
 	// ID of the Compute Group
 	// Required: true
-	CompGroupID uint64 `url:"compgroupId" json:"compgroupId"`
-}
-
-func (bsrq GroupGetRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-	if bsrq.CompGroupID == 0 {
-		return errors.New("field CompGroupID can not be empty or equal to 0")
-	}
-
-	return nil
+	CompGroupID uint64 `url:"compgroupId" json:"compgroupId" validate:"required"`
 }
 
 // GroupGet gets detailed specifications for the Compute Group
 func (b BService) GroupGet(ctx context.Context, req GroupGetRequest) (*RecordGroup, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/groupGet"

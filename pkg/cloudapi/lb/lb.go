@@ -2,7 +2,7 @@
 package lb
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 )
 
 // Structure for creating request to load balancer

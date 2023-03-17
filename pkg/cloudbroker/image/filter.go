@@ -1,7 +1,7 @@
 package image
 
 // FilterById returns ListImages with specified ID.
-func (li ListImages) FilterById(id uint64) ListImages {
+func (li ListImages) FilterByID(id uint64) ListImages {
 	predicate := func(ri RecordImage) bool {
 		return ri.ID == id
 	}

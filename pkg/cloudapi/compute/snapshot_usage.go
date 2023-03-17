@@ -3,15 +3,16 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get compute snapshot real size on storage
 type SnapshotUsageRequest struct {
 	// ID of the compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Specify to show usage exact for this snapshot.
 	// Leave empty for get usage for all compute snapshots
@@ -19,21 +20,15 @@ type SnapshotUsageRequest struct {
 	Label string `url:"label,omitempty" json:"label,omitempty"`
 }
 
-func (crq SnapshotUsageRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // SnapshotUsage Get compute snapshot real size on storage.
 // Always returns list of json objects, and first json object contains summary about all related
 // snapshots.
 func (c Compute) SnapshotUsage(ctx context.Context, req SnapshotUsageRequest) (ListUsageSnapshots, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/snapshotUsage"

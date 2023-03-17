@@ -2,58 +2,41 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for resize the group
 type GroupResizeRequest struct {
 	// ID of the Basic Service of Compute Group
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 
 	// ID of the Compute Group to resize
 	// Required: true
-	CompGroupID uint64 `url:"compgroupId" json:"compgroupId"`
+	CompGroupID uint64 `url:"compgroupId" json:"compgroupId" validate:"required"`
 
 	// Either delta or absolute value of computes
 	// Required: true
-	Count int64 `url:"count" json:"count"`
+	Count int64 `url:"count" json:"count" validate:"required"`
 
 	// Either delta or absolute value of computes
 	// Should be one of:
 	//	- ABSOLUTE
 	//	- RELATIVE
 	// Required: true
-	Mode string `url:"mode" json:"mode"`
-}
-
-func (bsrq GroupResizeRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-	if bsrq.CompGroupID == 0 {
-		return errors.New("field CompGroupID can not be empty or equal to 0")
-	}
-	if bsrq.Mode == "RELATIVE" && bsrq.Count == 0 {
-		return errors.New("field Count can not be equal to 0 if Mode if 'RELATIVE'")
-	}
-	validate := validators.StringInSlice(bsrq.Mode, []string{"RELATIVE", "ABSOLUTE"})
-	if !validate {
-		return errors.New("field Mode can only be one of 'RELATIVE' or 'ABSOLUTE'")
-	}
-
-	return nil
+	Mode string `url:"mode" json:"mode" validate:"bserviceMode"`
 }
 
 // GroupResize resize the group by changing the number of computes
 func (b BService) GroupResize(ctx context.Context, req GroupResizeRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/groupResize"

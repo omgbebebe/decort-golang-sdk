@@ -3,23 +3,16 @@ package account
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for calculate the reserved units for all cloudspaces and resource groups in the account
 type GetReservedAccountUnitsRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (arq GetReservedAccountUnitsRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // GetReservedAccountUnits calculates the reserved units for all cloudspaces and resource groups in the account.
@@ -30,9 +23,11 @@ func (arq GetReservedAccountUnitsRequest) validate() error {
 //   - CU_D: reserved vdisk storage in GB
 //   - CU_I: number of public IPs
 func (a Account) GetReservedAccountUnits(ctx context.Context, req GetReservedAccountUnitsRequest) (*ResourceLimits, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/getReservedAccountUnits"

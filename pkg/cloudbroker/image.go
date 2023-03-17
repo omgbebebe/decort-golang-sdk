@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/image"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/image"
 )
 
 // Accessing the Image method group

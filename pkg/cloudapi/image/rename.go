@@ -2,38 +2,30 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for rename image
 type RenameRequest struct {
 	// ID of the virtual image to rename
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// New name
 	// Required: true
-	Name string `url:"name" json:"name"`
-}
-
-func (irq RenameRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID can not be empty or equal to 0")
-	}
-	if irq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-
-	return nil
+	Name string `url:"name" json:"name" validate:"required"`
 }
 
 // Rename renames image
 func (i Image) Rename(ctx context.Context, req RenameRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/image/rename"

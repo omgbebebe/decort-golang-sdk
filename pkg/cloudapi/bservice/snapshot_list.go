@@ -3,30 +3,25 @@ package bservice
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list existing snapshots
 type SnapshotListRequest struct {
 	// ID of the Basic Service
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
-}
-
-func (bsrq SnapshotListRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-
-	return nil
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 }
 
 // SnapshotList gets list existing snapshots of the Basic Service
 func (b BService) SnapshotList(ctx context.Context, req SnapshotListRequest) (ListSnapshots, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/snapshotList"

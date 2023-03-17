@@ -2,38 +2,30 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for insert new CD image
 type CDInsertRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// ID of CD-ROM image
 	// Required: true
-	CDROMID uint64 `url:"cdromId" json:"cdromId"`
-}
-
-func (crq CDInsertRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-	if crq.CDROMID == 0 {
-		return errors.New("validation-error: field CDROMID can not be empty or equal to 0")
-	}
-
-	return nil
+	CDROMID uint64 `url:"cdromId" json:"cdromId" validate:"required"`
 }
 
 // CDInsert insert new CD image to compute's CD-ROM
 func (c Compute) CDInsert(ctx context.Context, req CDInsertRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/cdInsert"

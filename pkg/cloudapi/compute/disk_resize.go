@@ -2,45 +2,34 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for change disk size
 type DiskResizeRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// ID of the disk to resize
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
 	// New disk size
 	// Required: true
-	Size uint64 `url:"size" json:"size"`
-}
-
-func (crq DiskResizeRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-	if crq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID can not be empty or equal to 0")
-	}
-	if crq.Size == 0 {
-		return errors.New("validation-error: field Size can not be empty or equal to 0")
-	}
-
-	return nil
+	Size uint64 `url:"size" json:"size" validate:"required"`
 }
 
 // DiskResize change disk size
 func (c Compute) DiskResize(ctx context.Context, req DiskResizeRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/diskResize"

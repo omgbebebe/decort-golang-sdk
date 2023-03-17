@@ -2,30 +2,29 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create image
 type CreateRequest struct {
 	// Name of the rescue disk
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// URL where to download media from
 	// Required: true
-	URL string `url:"url" json:"url"`
+	URL string `url:"url" json:"url" validate:"required,url"`
 
 	// Grid (platform) ID where this template should be create in
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Boot type of image bios or UEFI
 	// Required: true
-	BootType string `url:"boottype" json:"boottype"`
+	BootType string `url:"boottype" json:"boottype" validate:"required,bootType"`
 
 	// Image type
 	// Should be:
@@ -33,7 +32,7 @@ type CreateRequest struct {
 	//	- windows
 	//	- or other
 	// Required: true
-	ImageType string `url:"imagetype" json:"imagetype"`
+	ImageType string `url:"imagetype" json:"imagetype" validate:"required,imageType"`
 
 	// Does this machine supports hot resize
 	// Required: false
@@ -72,56 +71,21 @@ type CreateRequest struct {
 	//	- X86_64
 	//	- PPC64_LE
 	// Required: false
-	Architecture string `url:"architecture,omitempty" json:"architecture,omitempty"`
+	Architecture string `url:"architecture,omitempty" json:"architecture,omitempty" validate:"omitempty,imageArchitecture"`
 
 	// List of types of compute suitable for image
 	// Example: [ "KVM_X86" ]
 	// Required: true
-	Drivers []string `url:"drivers" json:"drivers"`
-}
-
-func (irq CreateRequest) validate() error {
-	if irq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-	if irq.URL == "" {
-		return errors.New("validation-error: field URL can not be empty")
-	}
-	if irq.GID == 0 {
-		return errors.New("validation-error: field GID can not be empty or equal to 0")
-	}
-	if irq.BootType == "" {
-		return errors.New("validation-error: field BootType can not be empty")
-	}
-	validate := validators.StringInSlice(irq.BootType, []string{"bios", "uefi"})
-	if !validate {
-		return errors.New("validation-error: field BootType can be bios or uefi")
-	}
-	if irq.ImageType == "" {
-		return errors.New("validation-error: field ImageType can not be empty")
-	}
-	validate = validators.StringInSlice(irq.ImageType, []string{"windows", "linux", "other"})
-	if !validate {
-		return errors.New("validation-error: field ImageType can be windows, linux or other")
-	}
-	if len(irq.Drivers) == 0 || len(irq.Drivers) > 1 {
-		return errors.New("validation-error: field Drivers can not be empty or have 2 or more elements")
-	}
-	for _, v := range irq.Drivers {
-		validate := validators.StringInSlice(v, []string{"KVM_X86"})
-		if !validate {
-			return errors.New("validation-error: field Drivers can be KVM_X86 only")
-		}
-	}
-
-	return nil
+	Drivers []string `url:"drivers" json:"drivers" validate:"min=1,max=2,imageDrivers"`
 }
 
 // Create creates image from a media identified by URL
 func (i Image) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/image/create"

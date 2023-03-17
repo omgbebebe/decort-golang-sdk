@@ -2,33 +2,28 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for start service
 type StartRequest struct {
 	// ID of the service to start
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
-}
-
-func (bsrq StartRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-
-	return nil
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 }
 
 // Start starts service.
 // Starting a service technically means starting computes from all
 // service groups according to group relations
 func (b BService) Start(ctx context.Context, req StartRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/start"

@@ -3,58 +3,41 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/internal/validators"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for attach network
 type NetAttachRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Network type
 	// 'EXTNET' for connect to external network directly
 	// and 'VINS' for connect to ViNS
 	// Required: true
-	NetType string `url:"netType" json:"netType"`
+	NetType string `url:"netType" json:"netType" validate:"computeNetType"`
 
 	// Network ID for connect to
 	// For EXTNET - external network ID
 	// For VINS - VINS ID
 	// Required: true
-	NetID uint64 `url:"netId" json:"netId"`
+	NetID uint64 `url:"netId" json:"netId" validate:"required"`
 
 	// Directly required IP address for new network interface
-	// Required: true
+	// Required: false
 	IPAddr string `url:"ipAddr,omitempty" json:"ipAddr,omitempty"`
-}
-
-func (crq NetAttachRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-	if crq.NetType == "" {
-		return errors.New("validation-error: field NetType can not be empty")
-	}
-	validator := validators.StringInSlice(crq.NetType, []string{"EXTNET", "VINS"})
-	if !validator {
-		return errors.New("validation-error: field NetType can be only EXTNET or VINS")
-	}
-	if crq.NetID == 0 {
-		return errors.New("validation-error: field NetID can not be empty or equal to 0")
-	}
-
-	return nil
 }
 
 // NetAttach attach network to compute and gets info about network
 func (c Compute) NetAttach(ctx context.Context, req NetAttachRequest) (*RecordNetAttach, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/netAttach"

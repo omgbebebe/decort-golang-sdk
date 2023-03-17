@@ -1,7 +1,7 @@
 package cloudbroker
 
 import (
-	"repos.digitalenergy.online/BASIS/decort-golang-sdk/pkg/cloudbroker/disks"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/disks"
 )
 
 // Accessing the Disks method group

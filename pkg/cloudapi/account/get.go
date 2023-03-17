@@ -3,30 +3,25 @@ package account
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get information about account
 type GetRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (arq GetRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
+    AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // Get gets account details
 func (a Account) Get(ctx context.Context, req GetRequest) (*RecordAccount, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/account/get"

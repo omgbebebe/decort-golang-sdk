@@ -2,9 +2,10 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for add parent Compute Group relation emove parent Compute Group
@@ -12,36 +13,24 @@ import (
 type GroupParentAddRequest struct {
 	// ID of the Basic Service of Compute Group
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
+    ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 
 	// ID of the Compute Group
 	// Required: true
-	CompGroupID uint64 `url:"compgroupId" json:"compgroupId"`
+	CompGroupID uint64 `url:"compgroupId" json:"compgroupId" validate:"required"`
 
 	// ID of the parent Compute Group to register with the current Compute Group
 	// Required: true
-	ParentID uint64 `url:"parentId" json:"parentId"`
-}
-
-func (bsrq GroupParentAddRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-	if bsrq.CompGroupID == 0 {
-		return errors.New("field CompGroupID can not be empty or equal to 0")
-	}
-	if bsrq.ParentID == 0 {
-		return errors.New("field ParentID can not be empty or equal to 0")
-	}
-
-	return nil
+	ParentID uint64 `url:"parentId" json:"parentId" validate:"required"`
 }
 
 // GroupParentAdd add parent Compute Group relation to the specified Compute Group
 func (b BService) GroupParentAdd(ctx context.Context, req GroupParentAddRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/groupParentAdd"

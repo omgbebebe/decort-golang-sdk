@@ -2,38 +2,30 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for atttach PCI device
 type AttachPCIDeviceRequest struct {
 	// Identifier compute
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// PCI device ID
 	// Required: true
-	DeviceID uint64 `url:"deviceId" json:"deviceId"`
-}
-
-func (crq AttachPCIDeviceRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-	if crq.DeviceID == 0 {
-		return errors.New("validation-error: field DeviceID can not be empty or equal to 0")
-	}
-
-	return nil
+	DeviceID uint64 `url:"deviceId" json:"deviceId" validate:"required"`
 }
 
 // AttachPCIDevice attach PCI device
 func (c Compute) AttachPCIDevice(ctx context.Context, req AttachPCIDeviceRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/attachPciDevice"

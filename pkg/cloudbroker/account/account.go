@@ -1,7 +1,7 @@
 // API Actor API for managing account
 package account
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to account
 type Account struct {

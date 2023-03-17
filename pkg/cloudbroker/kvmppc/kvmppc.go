@@ -1,7 +1,7 @@
 // API to manage KVM PowerPC compute instances (PPC VMs)
 package kvmppc
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to KVMPPC
 type KVMPPC struct {

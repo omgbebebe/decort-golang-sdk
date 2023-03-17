@@ -2,42 +2,34 @@ package bservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update External Network settings
 type GroupUpdateExtNetRequest struct {
 	// ID of the Basic Service of Compute Group
 	// Required: true
-	ServiceID uint64 `url:"serviceId" json:"serviceId"`
+	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 
 	// ID of the Compute Group
 	// Required: true
-	CompGroupID uint64 `url:"compgroupId" json:"compgroupId"`
+	CompGroupID uint64 `url:"compgroupId" json:"compgroupId" validate:"required"`
 
 	// List of Extnets to connect computes
 	// Required: false
 	ExtNets []uint64 `url:"extnets,omitempty" json:"extnets,omitempty"`
 }
 
-func (bsrq GroupUpdateExtNetRequest) validate() error {
-	if bsrq.ServiceID == 0 {
-		return errors.New("field ServiceID can not be empty or equal to 0")
-	}
-	if bsrq.CompGroupID == 0 {
-		return errors.New("field CompGroupID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // GroupUpdateExtNet updates External Network settings for the group according to the new list
 func (b BService) GroupUpdateExtNet(ctx context.Context, req GroupUpdateExtNetRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/bservice/groupUpdateExtnet"

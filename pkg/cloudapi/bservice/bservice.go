@@ -1,7 +1,7 @@
 // API Actor for managing Compute Group. This actor is a final API for endusers to manage Compute Group
 package bservice
 
-import "repos.digitalenergy.online/BASIS/decort-golang-sdk/interfaces"
+import "repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
 
 // Structure for creating request to bservice
 type BService struct {

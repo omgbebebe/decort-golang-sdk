@@ -2,30 +2,25 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for restore compute
 type RestoreRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
-}
-
-func (crq RestoreRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 }
 
 // Restore restore compute from recycle bin
 func (c Compute) Restore(ctx context.Context, req RestoreRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/compute/restore"
