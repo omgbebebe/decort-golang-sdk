@@ -2,24 +2,25 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create SEP object
 type CreateRequest struct {
 	// Grid ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// SEP name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Type of storage
 	// Required: true
-	SEPType string `url:"sep_type" json:"sep_type"`
+	SEPType string `url:"sep_type" json:"sep_type" validate:"required"`
 
 	// Description
 	// Required: false
@@ -42,25 +43,13 @@ type CreateRequest struct {
 	Enable bool `url:"enable,omitempty" json:"enable,omitempty"`
 }
 
-func (srq CreateRequest) validate() error {
-	if srq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if srq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if srq.SEPType == "" {
-		return errors.New("validation-error: field SEPType must be set")
-	}
-
-	return nil
-}
-
 // Create creates SEP object
 func (s SEP) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/create"

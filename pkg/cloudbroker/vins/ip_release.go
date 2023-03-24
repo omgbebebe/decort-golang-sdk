@@ -2,16 +2,17 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for IP relese
 type IPReleaseRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// IP address
 	// Required: false
@@ -22,20 +23,14 @@ type IPReleaseRequest struct {
 	MAC string `url:"mac,omitempty" json:"mac,omitempty"`
 }
 
-func (vrq IPReleaseRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID must be set")
-	}
-
-	return nil
-}
-
 // IPRelese delete IP reservation matched by specified IP & MAC address combination.
 // If both IP and MAC address are empty strings, all IP reservations will be deleted.
 func (v VINS) IPRelease(ctx context.Context, req IPReleaseRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/vins/ipRelease"

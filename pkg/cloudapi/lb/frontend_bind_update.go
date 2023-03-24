@@ -2,24 +2,25 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update binding
 type FrontendBindUpdateRequest struct {
 	// ID of the load balancer instance to FrontendBindUpdate
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Name of the frontend to update
 	// Required: true
-	FrontendName string `url:"frontendName" json:"frontendName"`
+	FrontendName string `url:"frontendName" json:"frontendName" validate:"required"`
 
 	// Name of the binding to update
 	// Required: true
-	BindingName string `url:"bindingName" json:"bindingName"`
+	BindingName string `url:"bindingName" json:"bindingName" validate:"required"`
 
 	// If specified must be within the IP range of either Ext Net or ViNS,
 	// where this load balancer is connected - new IP address to use for this binding.
@@ -33,25 +34,13 @@ type FrontendBindUpdateRequest struct {
 	BindingPort uint64 `url:"bindingPort,omitempty" json:"bindingPort,omitempty"`
 }
 
-func (lbrq FrontendBindUpdateRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID can not be empty or equal to 0")
-	}
-	if lbrq.FrontendName == "" {
-		return errors.New("validation-error: field FrontendName can not be empty")
-	}
-	if lbrq.BindingName == "" {
-		return errors.New("validation-error: field BindingName can not be empty")
-	}
-
-	return nil
-}
-
 // FrontendBindUpdate updates binding for the specified load balancer frontend
 func (l LB) FrontendBindUpdate(ctx context.Context, req FrontendBindUpdateRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/lb/frontendBindingUpdate"

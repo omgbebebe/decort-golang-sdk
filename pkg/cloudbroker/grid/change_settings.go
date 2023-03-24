@@ -2,38 +2,30 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for change grid settings
 type ChangeSettingsRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"id" json:"id"`
+	GID uint64 `url:"id" json:"id" validate:"required"`
 
 	// Json data of the new settings will override old data
 	// Required: true
-	Settings string `url:"settings" json:"settings"`
-}
-
-func (grq ChangeSettingsRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if grq.Settings == "" {
-		return errors.New("validation-error: field Settings must be set")
-	}
-
-	return nil
+	Settings string `url:"settings" json:"settings" validate:"required"`
 }
 
 // ChangeSettings changes grid settings
 func (g Grid) ChangeSettings(ctx context.Context, req ChangeSettingsRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/changeSettings"

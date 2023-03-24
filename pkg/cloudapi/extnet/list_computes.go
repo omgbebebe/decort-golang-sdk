@@ -3,30 +3,25 @@ package extnet
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list computes
 type ListComputesRequest struct {
 	// Filter by account ID
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (erq ListComputesRequest) validate() error {
-	if erq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-
-	return nil
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // ListComputes gets computes from account with extnets
 func (e ExtNet) ListComputes(ctx context.Context, req ListComputesRequest) (ListExtNetComputes, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/extnet/listComputes"

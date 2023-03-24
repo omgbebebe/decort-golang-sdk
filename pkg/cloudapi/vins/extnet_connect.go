@@ -2,16 +2,17 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for connect external network
 type ExtNetConnectRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// External network ID
 	// Required: false
@@ -22,19 +23,13 @@ type ExtNetConnectRequest struct {
 	IP string `url:"ip,omitempty" json:"ip,omitempty"`
 }
 
-func (vrq ExtNetConnectRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // ExtNetConnect connect VINS to external network
 func (v VINS) ExtNetConnect(ctx context.Context, req ExtNetConnectRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/extNetConnect"

@@ -2,7 +2,6 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,7 +12,7 @@ import (
 type UpdateResourceTypesRequest struct {
 	// ID of resource group
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Resource types available to create in this resource group
 	// Each element in a resource type slice must be one of:
@@ -24,29 +23,15 @@ type UpdateResourceTypesRequest struct {
 	//	- lb
 	//	- flipgroup
 	// Required: true
-	ResTypes []string `url:"resourceTypes" json:"resourceTypes"`
-}
-
-func (rgrq UpdateResourceTypesRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if len(rgrq.ResTypes) > 0 {
-		for _, value := range rgrq.ResTypes {
-			validate := validators.StringInSlice(value, []string{"compute", "vins", "k8s", "openshift", "lb", "flipgroup"})
-			if !validate {
-				return errors.New("validation-error: Every resource type specified should be one of [compute, vins, k8s, openshift, lb, flipgroup]")
-			}
-		}
-	}
-
-	return nil
+	ResTypes []string `url:"resourceTypes" json:"resourceTypes" validate:"min=1,resTypes"`
 }
 
 func (r RG) UpdateResourceTypes(ctx context.Context, req UpdateResourceTypesRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/updateResourceTypes"

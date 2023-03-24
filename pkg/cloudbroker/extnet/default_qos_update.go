@@ -2,16 +2,17 @@ package extnet
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update QOS
 type DefaultQOSUpdateRequest struct {
 	// ID of external network
 	// Required: true
-	NetID uint64 `url:"net_id" json:"net_id"`
+	NetID uint64 `url:"net_id" json:"net_id" validate:"required"`
 
 	// Internal traffic, kbit
 	// Required: false
@@ -26,19 +27,13 @@ type DefaultQOSUpdateRequest struct {
 	EgressRate uint64 `url:"egress_rate,omitempty" json:"egress_rate,omitempty"`
 }
 
-func (erq DefaultQOSUpdateRequest) validate() error {
-	if erq.NetID == 0 {
-		return errors.New("validation-error: field NetID must be set")
-	}
-
-	return nil
-}
-
 // DefaultQOSUpdate updates default qos values
 func (e ExtNet) DefaultQOSUpdate(ctx context.Context, req DefaultQOSUpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/extnet/defaultQosUpdate"

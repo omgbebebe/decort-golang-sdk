@@ -43,7 +43,7 @@ type GroupAddRequest struct {
 	//	- KVM_X86
 	//	- KVM_PPC
 	// Required: true
-    Driver string `url:"driver" json:"driver" validate:"bserviceDriver"`
+    Driver string `url:"driver" json:"driver" validate:"driver"`
 
 	// Storage endpoint provider ID
 	// Required: false

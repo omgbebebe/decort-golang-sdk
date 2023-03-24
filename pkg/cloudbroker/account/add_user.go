@@ -2,7 +2,6 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,43 +12,27 @@ import (
 type AddUserRequest struct {
 	// ID of account to add to
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Name of the user to be given rights
 	// Required: true
-	UserName string `url:"username" json:"username"`
+	Username string `url:"username" json:"username" validate:"required"`
 
 	// Account permission types:
 	//	- 'R' for read only access
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-	AccessType string `url:"accesstype" json:"accesstype"`
-}
-
-func (arq AddUserRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-	if arq.UserName == "" {
-		return errors.New("validation-error: field UserName can not be empty")
-	}
-	if arq.AccessType == "" {
-		return errors.New("validation-error: field AccessType can not be empty")
-	}
-	validate := validators.StringInSlice(arq.AccessType, []string{"R", "RCX", "ARCXDU"})
-	if !validate {
-		return errors.New("validation-error: field AccessType can be only R, RCX or ARCXDU")
-	}
-
-	return nil
+	AccessType string `url:"accesstype" json:"accesstype" validate:"accessType"`
 }
 
 // AddUser gives a user access rights.
 func (a Account) AddUser(ctx context.Context, req AddUserRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/addUser"

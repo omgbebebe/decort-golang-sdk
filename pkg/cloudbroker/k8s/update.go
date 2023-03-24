@@ -2,16 +2,17 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update kubernetes cluster
 type UpdateRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// New name to set.
 	// If empty string is passed, name is not updated
@@ -24,19 +25,13 @@ type UpdateRequest struct {
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-func (krq UpdateRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID must be set")
-	}
-
-	return nil
-}
-
 // Update updates name or description of kubernetes cluster
 func (k K8S) Update(ctx context.Context, req UpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/update"

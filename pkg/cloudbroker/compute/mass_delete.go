@@ -2,16 +2,17 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete several computes
 type MassDeleteRequest struct {
 	// IDs of compute instances to delete
 	// Required: true
-	ComputeIDs []uint64 `url:"computeIds" json:"computeIds"`
+	ComputeIDs []uint64 `url:"computeIds" json:"computeIds" validate:"min=1"`
 
 	// Delete computes permanently
 	// Required: false
@@ -22,19 +23,13 @@ type MassDeleteRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq MassDeleteRequest) validate() error {
-	if len(crq.ComputeIDs) == 0 {
-		return errors.New("validation-error: field ComputeIDs must be set")
-	}
-
-	return nil
-}
-
 // MassDelete starts jobs to delete several computes
 func (c Compute) MassDelete(ctx context.Context, req MassDeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/massDelete"

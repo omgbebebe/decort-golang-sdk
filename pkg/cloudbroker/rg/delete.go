@@ -2,16 +2,17 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete resource group
 type DeleteRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Set to True if you want force delete non-empty resource group
 	// Required: false
@@ -27,19 +28,13 @@ type DeleteRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq DeleteRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-
-	return nil
-}
-
 // Delete deletes resource group
 func (r RG) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/delete"

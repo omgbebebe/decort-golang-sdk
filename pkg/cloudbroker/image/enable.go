@@ -2,31 +2,26 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for enable image
 type EnableRequest struct {
 	// ID of image to be enabled
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
-}
-
-func (irq EnableRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must br set")
-	}
-
-	return nil
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 }
 
 // Enable enables image
 func (i Image) Enable(ctx context.Context, req EnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/enable"

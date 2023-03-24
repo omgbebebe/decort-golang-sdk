@@ -23,6 +23,8 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		body := fmt.Sprintf("grant_type=client_credentials&client_id=%s&client_secret=%s&response_type=id_token", t.clientID, t.clientSecret)
 		bodyReader := strings.NewReader(body)
 
+		t.ssoURL = strings.TrimSuffix(t.ssoURL, "/")
+
 		req, _ := http.NewRequestWithContext(req.Context(), "POST", t.ssoURL+"/v1/oauth/access_token", bodyReader)
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 

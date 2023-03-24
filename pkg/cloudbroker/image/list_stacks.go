@@ -3,15 +3,16 @@ package image
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list stack
 type ListStacksRequest struct {
 	// Image ID
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Page number
 	// Required: false
@@ -22,19 +23,13 @@ type ListStacksRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-func (irq ListStacksRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
-}
-
 // ListStacks gets list stack by image ID
 func (i Image) ListStacks(ctx context.Context, req ListStacksRequest) (ListStacks, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/listStacks"

@@ -2,39 +2,31 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create snapshot
 type SnapshotCreateRequest struct {
 	// ID of the compute instance to create snapshot for
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Text label for snapshot.
 	// Must be unique among this compute snapshots
 	// Required: true
-	Label string `url:"label" json:"label"`
-}
-
-func (crq SnapshotCreateRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.Label == "" {
-		return errors.New("validation-error: field Label must be set")
-	}
-
-	return nil
+	Label string `url:"label" json:"label" validate:"required"`
 }
 
 // SnapshotCreate create compute snapshot
 func (c Compute) SnapshotCreate(ctx context.Context, req SnapshotCreateRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/snapshotCreate"

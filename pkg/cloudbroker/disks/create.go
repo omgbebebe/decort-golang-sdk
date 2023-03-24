@@ -2,7 +2,6 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,15 +12,15 @@ import (
 type CreateRequest struct {
 	// ID of the account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// ID of the grid (platform)
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Name of disk
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Description of disk
 	// Required: false
@@ -36,7 +35,7 @@ type CreateRequest struct {
 	//	- D=Data
 	//	- T=Temp
 	// Required: true
-	Type string `url:"type" json:"type"`
+	Type string `url:"type" json:"type" validate:"diskType"`
 
 	// Size in GB default is 0
 	// Required: false
@@ -55,29 +54,13 @@ type CreateRequest struct {
 	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 }
 
-func (drq CreateRequest) validate() error {
-	if drq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	if drq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if drq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	validate := validators.StringInSlice(drq.Type, []string{"B", "D", "T"})
-	if !validate {
-		return errors.New("validation-error: field must be B, D or T")
-	}
-
-	return nil
-}
-
 // Create creates a disk
 func (d Disks) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/disks/create"

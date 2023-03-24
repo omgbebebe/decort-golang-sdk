@@ -3,30 +3,25 @@ package vins
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get audits
 type AuditsRequest struct {
 	// ID of the VINS
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
-}
-
-func (vrq AuditsRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID can not be empty or equal to 0")
-	}
-
-	return nil
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 }
 
 // Audits gets audit records for the specified VINS object
 func (v VINS) Audits(ctx context.Context, req AuditsRequest) (ListAudits, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/audits"

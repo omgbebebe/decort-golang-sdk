@@ -2,28 +2,29 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update account
 type UpdateRequest struct {
 	// ID of account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Display name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Name of the account
 	// Required: true
-	Username string `url:"username" json:"username"`
+	Username string `url:"username,omitempty" json:"username,omitempty"`
 
 	// Email
 	// Required: false
-	EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty"`
+    EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty" validate:"omitempty,email"`
 
 	// Max size of memory in MB
 	// Required: false
@@ -59,22 +60,13 @@ type UpdateRequest struct {
 	UniqPools []string `url:"uniqPools,omitempty" json:"uniqPools,omitempty"`
 }
 
-func (arq UpdateRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	if arq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-
-	return nil
-}
-
 // Update updates an account name and resource types and limits
 func (a Account) Update(ctx context.Context, req UpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/update"

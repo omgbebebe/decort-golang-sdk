@@ -2,38 +2,30 @@ package flipgroup
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for add compute instance
 type ComputeAddRequest struct {
 	// ID of the Floating IP group to add compute instance to
 	// Required: true
-	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId"`
+	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId" validate:"required"`
 
 	// ID of the compute instance to add to this group
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
-}
-
-func (frq ComputeAddRequest) validate() error {
-	if frq.FLIPGroupID == 0 {
-		return errors.New("field FLIPGroupID can not be empty or equal to 0")
-	}
-	if frq.ComputeID == 0 {
-		return errors.New("field ComputeID can not be empty or equal to 0")
-	}
-
-	return nil
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 }
 
 // ComputeAdd add compute instance to the Floating IP group
 func (f FLIPGroup) ComputeAdd(ctx context.Context, req ComputeAddRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/flipgroup/computeAdd"

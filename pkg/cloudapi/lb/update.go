@@ -2,39 +2,31 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update load balancer
 type UpdateRequest struct {
 	// ID of the load balancer to update
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// New description of this load balancer.
 	// If omitted, current description is retained
 	// Required: true
-	Description string `url:"desc" json:"desc"`
-}
-
-func (lbrq UpdateRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID can not be empty or equal to 0")
-	}
-	if lbrq.Description == "" {
-		return errors.New("validation-error: field Description can not be empty")
-	}
-
-	return nil
+	Description string `url:"desc" json:"desc" validate:"required"`
 }
 
 // Update updates some of load balancer attributes
 func (l LB) Update(ctx context.Context, req UpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/lb/update"

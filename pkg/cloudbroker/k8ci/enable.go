@@ -2,31 +2,26 @@ package k8ci
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for enable K8CI
 type EnableRequest struct {
 	// K8CI ID
 	// Required: true
-	K8CIID uint64 `url:"k8ciId" json:"k8ciId"`
-}
-
-func (krq EnableRequest) validate() error {
-	if krq.K8CIID == 0 {
-		return errors.New("validation-error: field K8CIID must be set")
-	}
-
-	return nil
+	K8CIID uint64 `url:"k8ciId" json:"k8ciId" validate:"required"`
 }
 
 // Enable enables K8CI
 func (k K8CI) Enable(ctx context.Context, req EnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8ci/enable"

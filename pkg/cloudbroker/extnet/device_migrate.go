@@ -2,37 +2,29 @@ package extnet
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for migrate VNF
 type DeviceMigrateRequest struct {
 	// ID of external network
 	// Required: true
-	NetID uint64 `url:"net_id" json:"net_id"`
+	NetID uint64 `url:"net_id" json:"net_id" validate:"required"`
 
 	// Target stack ID to migrate to
-	StackID uint64 `url:"stackId" json:"stackId"`
-}
-
-func (erq DeviceMigrateRequest) validate() error {
-	if erq.NetID == 0 {
-		return errors.New("validation-error: field NetID must be set")
-	}
-	if erq.StackID == 0 {
-		return errors.New("validation-error: field StackID must be set")
-	}
-
-	return nil
+	StackID uint64 `url:"stackId" json:"stackId" validate:"required"`
 }
 
 // DeviceMigrate migrate external network VNF device
 func (e ExtNet) DeviceMigrate(ctx context.Context, req DeviceMigrateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/extnet/deviceMigrate"

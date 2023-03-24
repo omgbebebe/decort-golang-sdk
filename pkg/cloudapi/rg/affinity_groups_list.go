@@ -3,30 +3,25 @@ package rg
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list of affinity groups from resource group
 type AffinityGroupsListRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
-}
-
-func (rgrq AffinityGroupsListRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("field RGID can not be empty or equal to 0")
-	}
-
-	return nil
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 }
 
 // AffinityGroupsList gets all currently defined affinity groups in this resource group with compute IDs
 func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListRequest) (map[string][]uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/rg/affinityGroupsList"

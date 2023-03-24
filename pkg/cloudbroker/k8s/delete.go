@@ -2,36 +2,31 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete kubernetes cluster
 type DeleteRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// True if cluster is destroyed permanently.
 	// Otherwise it can be restored from recycle bin
-	// Required: true
-	Permanently bool `url:"permanently" json:"permanently"`
-}
-
-func (krq DeleteRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID must be set")
-	}
-
-	return nil
+	// Required: false
+	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
 // Delete deletes kubernetes cluster
 func (k K8S) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/delete"

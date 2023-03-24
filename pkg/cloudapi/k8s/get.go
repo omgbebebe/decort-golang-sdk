@@ -3,30 +3,25 @@ package k8s
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get detailed information about kubernetes cluster
 type GetRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
-}
-
-func (krq GetRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID can not be empty or equal to 0")
-	}
-
-	return nil
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 }
 
 // Get gets information about Kubernetes cluster
 func (k8s K8S) Get(ctx context.Context, req GetRequest) (*RecordK8S, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/get"

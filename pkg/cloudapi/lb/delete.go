@@ -2,35 +2,30 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete load balancer
 type DeleteRequest struct {
 	// ID of the load balancer instance to delete
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Set to true to delete load balancer immediately bypassing recycle bin
 	// Required: false
 	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
-func (lbrq DeleteRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Delete deletes specified load balancer
 func (l LB) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/lb/delete"

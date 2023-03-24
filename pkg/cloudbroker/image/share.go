@@ -2,38 +2,30 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for share image
 type ShareRequest struct {
 	// ID of the image to share
 	// Required: true
-	ImageId uint64 `url:"imageId" json:"imageId"`
+	ImageId uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// List of account IDs
 	// Required: true
-	AccountIDs []uint64 `url:"accounts" json:"accounts"`
-}
-
-func (irq ShareRequest) validate() error {
-	if irq.ImageId == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-	if len(irq.AccountIDs) == 0 || irq.AccountIDs == nil {
-		return errors.New("validation-error: field must be set")
-	}
-
-	return nil
+	AccountIDs []uint64 `url:"accounts" json:"accounts" validate:"min=1"`
 }
 
 // Share shares image with accounts
 func (i Image) Share(ctx context.Context, req ShareRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/share"

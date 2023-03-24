@@ -3,49 +3,50 @@ package kvmppc
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for mass create KVM PowerPC
 type MassCreateRequest struct {
 	// ID of the resource group, which will own this VM
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Name of this VM.
 	// Must be unique among all VMs (including those in DELETED state) in target resource group
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Number of VMs
 	// Required: true
-	Count uint64 `url:"count" json:"count"`
+	Count uint64 `url:"count" json:"count" validate:"required"`
 
 	// Number CPUs to allocate to this VM
 	// Required: true
-	CPU uint64 `url:"cpu" json:"cpu"`
+	CPU uint64 `url:"cpu" json:"cpu" validate:"required"`
 
 	// Volume of RAM in MB to allocate to this VM
 	// Required: true
-	RAM uint64 `url:"ram" json:"ram"`
+	RAM uint64 `url:"ram" json:"ram" validate:"required"`
 
 	// Image ID
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Size of the boot disk in GB
-	// Required: true
-	BootDisk uint64 `url:"bootDisk" json:"bootDisk"`
+	// Required: false
+	BootDisk uint64 `url:"bootDisk,omitempty" json:"bootDisk,omitempty"`
 
 	// ID of SEP to create boot disk on.
 	// Uses images SEP ID if not set
-	// Required: true
-	SEPID uint64 `url:"sepId" json:"sepId"`
+	// Required: false
+	SEPID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
 
 	// Pool to use if SEP ID is set, can be also empty if needed to be chosen by system
-	// Required: true
-	Pool string `url:"pool" json:"pool"`
+	// Required: false
+	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
 	// Network type
 	// Should be one of:
@@ -53,7 +54,7 @@ type MassCreateRequest struct {
 	//	- EXTNET
 	//	- NONE
 	// Required: false
-	NetType string `url:"netType,omitempty" json:"netType,omitempty"`
+	NetType string `url:"netType,omitempty" json:"netType,omitempty" validate:"omitempty,kvmNetType"`
 
 	// Network ID for connect to,
 	// for EXTNET - external network ID,
@@ -79,34 +80,13 @@ type MassCreateRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (krq MassCreateRequest) validate() error {
-	if krq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if krq.Count == 0 {
-		return errors.New("validation-error: field Count must be set")
-	}
-	if krq.CPU == 0 {
-		return errors.New("validation-error: field CPU must be set")
-	}
-	if krq.RAM == 0 {
-		return errors.New("validation-error: field RAM must be set")
-	}
-	if krq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
-}
-
 // MassCreate creates KVM PPC computes based on specified OS image
 func (k KVMPPC) MassCreate(ctx context.Context, req MassCreateRequest) ([]uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/kvmppc/massCreate"

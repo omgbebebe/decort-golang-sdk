@@ -2,42 +2,43 @@ package kvmppc
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create KVM PowerPC VM from scratch
 type CreateBlankRequest struct {
 	// ID of the resource group, which will own this VM
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Name of this VM.
 	// Must be unique among all VMs (including those in DELETED state) in target resource group
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Number CPUs to allocate to this VM
 	// Required: true
-	CPU uint64 `url:"cpu" json:"cpu"`
+	CPU uint64 `url:"cpu" json:"cpu" validate:"required"`
 
 	// Volume of RAM in MB to allocate to this VM
 	// Required: true
-	RAM uint64 `url:"ram" json:"ram"`
+	RAM uint64 `url:"ram" json:"ram" validate:"required"`
 
 	// Size of the boot disk in GB
 	// Required: true
-	BootDisk uint64 `url:"bootDisk" json:"bootDisk"`
+	BootDisk uint64 `url:"bootDisk" json:"bootDisk" validate:"required"`
 
 	// ID of SEP to create boot disk on.
 	// Uses images SEP ID if not set
 	// Required: true
-	SEPID uint64 `url:"sepId" json:"sepId"`
+	SEPID uint64 `url:"sepId" json:"sepId" validate:"required"`
 
 	// Pool to use if SEP ID is set, can be also empty if needed to be chosen by system
 	// Required: true
-	Pool string `url:"pool" json:"pool"`
+	Pool string `url:"pool" json:"pool" validate:"required"`
 
 	// Network type
 	// Should be one of:
@@ -45,7 +46,7 @@ type CreateBlankRequest struct {
 	//	- EXTNET
 	//	- NONE
 	// Required: false
-	NetType string `url:"netType,omitempty" json:"netType,omitempty"`
+	NetType string `url:"netType,omitempty" json:"netType,omitempty" validate:"omitempty,kvmNetType"`
 
 	// Network ID for connect to,
 	// for EXTNET - external network ID,
@@ -63,37 +64,13 @@ type CreateBlankRequest struct {
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-func (krq CreateBlankRequest) validate() error {
-	if krq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if krq.CPU == 0 {
-		return errors.New("validation-error: field CPU must be set")
-	}
-	if krq.RAM == 0 {
-		return errors.New("validation-error: field RAM must be set")
-	}
-	if krq.BootDisk == 0 {
-		return errors.New("validation-error: field BootDisk must be set")
-	}
-	if krq.SEPID == 0 {
-		return errors.New("validation-error: field SepID must be set")
-	}
-	if krq.Pool == "" {
-		return errors.New("validation-error: field Pool must be set")
-	}
-
-	return nil
-}
-
 // CreateBlank creates KVM PowerPC VM from scratch
 func (k KVMPPC) CreateBlank(ctx context.Context, req CreateBlankRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/kvmppc/createBlank"

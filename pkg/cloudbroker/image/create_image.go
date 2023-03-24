@@ -2,7 +2,6 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,22 +12,22 @@ import (
 type CreateRequest struct {
 	// Name of the rescue disk
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// URL where to download media from
 	// Required: true
-	URL string `url:"url" json:"url"`
+	URL string `url:"url" json:"url" validate:"required,url"`
 
 	// Grid (platform) ID where this template should be create in
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Boot type of image
 	// Should be one of:
 	//	- bios
 	//	- UEFI
 	// Required: true
-	BootType string `url:"boottype" json:"boottype"`
+	BootType string `url:"boottype" json:"boottype" validate:"imageBootType"`
 
 	// Image type
 	// Should be one of:
@@ -36,7 +35,7 @@ type CreateRequest struct {
 	//	- windows
 	//	- or other
 	// Required: true
-	ImageType string `url:"imagetype" json:"imagetype"`
+	ImageType string `url:"imagetype" json:"imagetype" validate:"imageType"`
 
 	// Does this machine supports hot resize
 	// Required: false
@@ -80,46 +79,20 @@ type CreateRequest struct {
 	// List of types of compute suitable for image
 	// Example: [ "KVM_X86" ]
 	// Required: true
-	Drivers []string `url:"drivers" json:"drivers"`
+	Drivers []string `url:"drivers" json:"drivers" validate:"min=1,max=2,imageDrivers"`
 
 	// Bootable image or not
 	// Required: false
 	Bootable bool `url:"bootable,omitempty" json:"bootable,omitempty"`
 }
 
-func (irq CreateRequest) validate() error {
-	if irq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if irq.URL == "" {
-		return errors.New("validation-error: field URL must be set")
-	}
-	if irq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if irq.BootType == "" {
-		return errors.New("validation-error: field BootType must be set")
-	}
-	if irq.ImageType == "" {
-		return errors.New("validation-error: field ImageType must be set")
-	}
-	validate := validators.StringInSlice(irq.BootType, []string{"bios", "uefi"})
-	if !validate {
-		return errors.New("validation-error: field BootType can be bios or uefi")
-	}
-	validate = validators.StringInSlice(irq.ImageType, []string{"windows", "linux", "other"})
-	if !validate {
-		return errors.New("validation-error: field ImageType can be windows, linux or other")
-	}
-
-	return nil
-}
-
 // CreateImage creates image from a media identified by URL
 func (i Image) CreateImage(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/createImage"

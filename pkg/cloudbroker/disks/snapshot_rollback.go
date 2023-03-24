@@ -2,45 +2,34 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for rollback snapshot
 type SnapshotRollbackRequest struct {
 	// ID of the disk
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
 	// Label of the snapshot to rollback
-	// Required: true
-	Label string `url:"label" json:"label"`
+	// Required: false
+	Label string `url:"label,omitempty" json:"label,omitempty"`
 
 	// Timestamp of the snapshot to rollback
-	// Required: true
-	TimeStamp uint64 `url:"timestamp" json:"timestamp"`
-}
-
-func (drq SnapshotRollbackRequest) validate() error {
-	if drq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID must be set")
-	}
-	if drq.Label == "" {
-		return errors.New("validation-error: field Label must be set")
-	}
-	if drq.TimeStamp == 0 {
-		return errors.New("validation-error: field TimeStamp must be set")
-	}
-
-	return nil
+	// Required: false
+	TimeStamp uint64 `url:"timestamp,omitempty" json:"timestamp,omitempty"`
 }
 
 // SnapshotRollback rollback an individual disk snapshot
 func (d Disks) SnapshotRollback(ctx context.Context, req SnapshotRollbackRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/disks/snapshotRollback"

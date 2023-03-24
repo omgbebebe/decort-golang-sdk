@@ -3,37 +3,29 @@ package sep
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get SEP pool config by name
 type GetPoolRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// Pool name
 	// Required: true
-	PoolName string `url:"pool_name" json:"pool_name"`
-}
-
-func (srq GetPoolRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-	if srq.PoolName == "" {
-		return errors.New("validation-error: PoolName must be set")
-	}
-
-	return nil
+	PoolName string `url:"pool_name" json:"pool_name" validate:"required"`
 }
 
 // GetPool gets SEP pool config by name
 func (s SEP) GetPool(ctx context.Context, req GetPoolRequest) (*RecordPool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/getPool"

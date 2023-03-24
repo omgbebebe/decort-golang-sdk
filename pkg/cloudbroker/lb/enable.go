@@ -2,31 +2,26 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for enable load balancer
 type EnableRequest struct {
 	// ID of the load balancer instance to enable
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
-}
-
-func (lbrq EnableRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID must be set")
-	}
-
-	return nil
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 }
 
 // Enable enables specified load balancer instance
 func (lb LB) Enable(ctx context.Context, req EnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/lb/enable"

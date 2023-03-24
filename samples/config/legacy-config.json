@@ -1,0 +1,7 @@
+{
+    "username": "<USERNAME>",
+    "password": "<PASSWORD>",
+    "decortUrl": "https://mr4.digitalenergy.online",
+    "retries": 5,
+    "sslSkipVerify": true
+}

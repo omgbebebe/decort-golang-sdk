@@ -2,7 +2,6 @@ package k8ci
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,11 +12,11 @@ import (
 type CreateRequest struct {
 	// Name of catalog item
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Version tag
 	// Required: true
-	Version string `url:"version" json:"version"`
+	Version string `url:"version" json:"version" validate:"required"`
 
 	// Optional description
 	// Required: false
@@ -25,7 +24,7 @@ type CreateRequest struct {
 
 	// Image ID for master K8S node
 	// Required: true
-	MasterImageID uint64 `url:"masterImageId" json:"masterImageId"`
+	MasterImageID uint64 `url:"masterImageId" json:"masterImageId" validate:"required"`
 
 	// Compute driver
 	// Should be one of:
@@ -33,11 +32,11 @@ type CreateRequest struct {
 	//	- KVM_PPC
 	//	- etc
 	// Required: true
-	MasterDriver string `url:"masterDriver" json:"masterDriver"`
+	MasterDriver string `url:"masterDriver" json:"masterDriver" validate:"driver"`
 
 	// Image ID for worker K8S node
 	// Required: true
-	WorkerImageID uint64 `url:"workerImageId" json:"workerImageId"`
+	WorkerImageID uint64 `url:"workerImageId" json:"workerImageId" validate:"required"`
 
 	// Compute driver
 	// Should be one of
@@ -45,11 +44,11 @@ type CreateRequest struct {
 	//	- KVM_PPC
 	//	- etc
 	// Required: true
-	WorkerDriver string `url:"workerDriver" json:"workerDriver"`
+	WorkerDriver string `url:"workerDriver" json:"workerDriver" validate:"driver"`
 
 	// Image ID for load balancer node
 	// Required: true
-	LBImageID uint64 `url:"lbImageId" json:"lbImageId"`
+	LBImageID uint64 `url:"lbImageId" json:"lbImageId" validate:"required"`
 
 	// List of account IDs, which have access to this item.
 	// If empty, any account has access
@@ -65,51 +64,13 @@ type CreateRequest struct {
 	MaxWorkerCount uint64 `url:"maxWorkerCount" json:"maxWorkerCount"`
 }
 
-func (krq CreateRequest) validate() error {
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if krq.Version == "" {
-		return errors.New("validation-error: field Version must be set")
-	}
-	if krq.MasterImageID == 0 {
-		return errors.New("validation-error: field MasterImageID must be set")
-	}
-	if krq.MasterDriver == "" {
-		return errors.New("validation-error: field MasterDriver must be set")
-	}
-	if krq.WorkerImageID == 0 {
-		return errors.New("validation-error: field WorkerImageID must be set")
-	}
-	if krq.WorkerDriver == "" {
-		return errors.New("validation-error: field WorkerDriver must be set")
-	}
-	if krq.LBImageID == 0 {
-		return errors.New("validation-error: field LBImageID must be set")
-	}
-	if krq.MaxMasterCount == 0 {
-		return errors.New("validation-error: field MaxMasterCount must be set")
-	}
-	if krq.MaxWorkerCount == 0 {
-		return errors.New("validation-error: field MaxWorkerCount must be set")
-	}
-	validate := validators.StringInSlice(krq.MasterDriver, []string{"KVM_X86", "KVM_PPC"})
-	if !validate {
-		return errors.New("validation-error: field MasterDriver must be one of KVM_X86, KVM_PPC")
-	}
-	validate = validators.StringInSlice(krq.WorkerDriver, []string{"KVM_X86", "KVM_PPC"})
-	if !validate {
-		return errors.New("validation-error: field WorkerDriver must be one of KVM_X86, KVM_PPC")
-	}
-
-	return nil
-}
-
 // Create creates a new K8CI instance
 func (k K8CI) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8ci/create"

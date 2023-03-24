@@ -2,16 +2,17 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for several stop computes
 type MassStopRequest struct {
 	// IDs of compute instances to stop
 	// Required: true
-	ComputeIDs []uint64 `url:"computeIds" json:"computeIds"`
+	ComputeIDs []uint64 `url:"computeIds" json:"computeIds" validate:"min=1"`
 
 	// Force stop compute
 	// Required: false
@@ -22,19 +23,13 @@ type MassStopRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq MassStopRequest) validate() error {
-	if len(crq.ComputeIDs) == 0 {
-		return errors.New("validation-error: field ComputeIDs must be set")
-	}
-
-	return nil
-}
-
 // MassStop starts jobs to stop several computes
 func (c Compute) MassStop(ctx context.Context, req MassStopRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/massStop"

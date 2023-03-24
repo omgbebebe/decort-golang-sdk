@@ -3,29 +3,25 @@ package account
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for give list account audits
 type AuditsRequest struct {
 	// ID of the account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
-}
-
-func (arq AuditsRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID can not be empty or equal to 0")
-	}
-	return nil
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
 // Audits gets audit records for the specified account object
 func (a Account) Audits(ctx context.Context, req AuditsRequest) (ListAudits, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/audits"

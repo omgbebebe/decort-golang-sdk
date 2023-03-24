@@ -2,28 +2,29 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create kubernetes cluster
 type CreateRequest struct {
 	// Name of Kubernetes cluster
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Resource Group ID for cluster placement
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// ID of Kubernetes catalog item (k8sci) for cluster
 	// Required: true
-	K8SCIID uint64 `url:"k8ciId" json:"k8ciId"`
+	K8SCIID uint64 `url:"k8ciId" json:"k8ciId" validate:"required"`
 
 	// Name for first worker group created with cluster
 	// Required: true
-	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName"`
+	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required"`
 
 	// ID of SEP to create boot disks for master nodes. Uses images SEP ID if not set
 	// Required: false
@@ -102,28 +103,13 @@ type CreateRequest struct {
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-func (krq CreateRequest) validate() error {
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-	if krq.RGID == 0 {
-		return errors.New("validation-error: field RGID can not be empty or equal to 0")
-	}
-	if krq.K8SCIID == 0 {
-		return errors.New("validation-error: field K8SCIID can not be empty or equal to 0")
-	}
-	if krq.WorkerGroupName == "" {
-		return errors.New("validation-error: field WorkerGroupName can not be empty")
-	}
-
-	return nil
-}
-
 // Create creates a new Kubernetes cluster in the specified Resource Group
 func (k8s K8S) Create(ctx context.Context, req CreateRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/create"

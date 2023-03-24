@@ -7,6 +7,7 @@ Decort SDK - это библиотека, написанная на языке G
     - Версия 1.0.x Decort-SDK соответствует 3.8.4 версии платформы
     - Версия 1.1.x Decort-SDK соответствует 3.8.5 версии платформы
     - Версия 1.2.x Decort-SDK соответствует 3.8.5 версии платформы
+    - Версия 1.3.x Decort-SDK соответствует 3.8.5 версии платформы
 
 ## Оглавление
 
@@ -16,6 +17,10 @@ Decort SDK - это библиотека, написанная на языке G
   - [Cloudbroker](#cloudbroker)
 - [Работа с библиотекой](#работа-с-библиотекой)
   - [Настройка конфигурации клиента](#настройка-конфигурации-клиента)
+    - [Пример конфигурации клиента](#пример-конфигурации-клиента)
+    - [Парсинг конфигурации из файла](#парсинг-конфигурации-из-файла)
+    - [Пример JSON конфигурации](#пример-json-конфигурации)
+    - [Пример YAML конфигурации](#пример-yaml-конфигурации)
   - [Создание клиента](#создание-клиента)
   - [Создание структуры запроса](#cоздание-структуры-запроса)
   - [Выполнение запроса](#выполнение-запроса)
@@ -24,6 +29,10 @@ Decort SDK - это библиотека, написанная на языке G
   - [Сериализация](#сериализация)
 - [Работа с legacy клиентом](#работа-с-legacy-клиентом)
   - [Настройка конфигурации legacy клиента](#настройка-конфигурации-legacy-клиента)
+    - [Пример конфигурации legacy клиента](#пример-конфигурации-legacy-клиента)
+    - [Парсинг legacy конфигурации из файла](#парсинг-legacy-конфигурации-из-файла)
+    - [Пример legacy JSON конфигурации](#пример-legacy-json-конфигурации)
+    - [Пример legacy YAML конфигурации](#пример-legacy-yaml-конфигурации)
   - [Создание legacy клиента](#создание-legacy-клиента)
   - [Создание структуры запроса](#cоздание-структуры-запроса)
   - [Выполнение запроса](#выполнение-запроса)
@@ -93,9 +102,10 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 Алгоритм работы с библиотекой выглядит следующим образом:
 
 1. Настройка конфигурации клиента.
-2. Создание клиента.
-3. Создание структуры запроса.
-4. Выполнение запроса.
+2. Парсинг конфигурации из файла.
+3. Создание клиента.
+4. Создание структуры запроса.
+5. Выполнение запроса.
 
 ### Настройка конфигурации клиента
 
@@ -110,11 +120,11 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 | SSLSkipVerify | bool | Нет | Пропуск проверки подлинности сертификата, по умолчанию - true |
 | Token | string | Нет | JWT токен |
 
-Пример кода:
+#### Пример конфигурации клиента
 
 ```go
 import (
-    "github.com/rudecs/decort-sdk/config"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
 func main(){
     // Настройка конфигурации
@@ -128,6 +138,47 @@ func main(){
 }
 ```
 
+#### Парсинг конфигурации из файла
+
+Также возможно создать переменную конфигурации из JSON или YAML файла, используя функцию `ParseConfigJSON` (или `ParseConfigYAML`) из пакета config. 
+<br>
+*См. пример файлов конфигурации ниже и в директории `samples/`.*
+
+```go
+import (
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
+)
+
+func main() {
+	// Парсинг конфигурации из JSON-файла
+	cfg := config.ParseConfigJSON("<PATH>")
+}
+```
+
+#### Пример JSON конфигурации
+
+```json
+{
+    "appId": "<APP_ID>",
+    "appSecret": "<APP_SECRET>",
+    "ssoUrl": "https://sso.digitalenergy.online",
+    "decortUrl": "https://mr4.digitalenergy.online",
+    "retries": 5,
+    "sslSkipVerify": false
+}
+```
+
+#### Пример YAML конфигурации
+
+```yaml
+appId: <APP_ID>
+appSecret: <APP_SECRET>
+ssoUrl: https://sso.digitalenergy.online
+decortUrl: https://mr4.digitalenergy.online
+retries: 5
+sslSkipVerify: false
+```
+
 ### Создание клиента
 
 Создание клиента происходит с помощью функции-строителя `New` из основного пакета `decort-sdk`, для избежания проблем с именами, пакету можно присвоить алиас `decort`. Функция принимает конфигурацию, возвращает структуру `DecortClient`, с помощью которой можно взаимодействовать с платформой.
@@ -138,8 +189,8 @@ func main(){
 package main
 
 import (
-    "github.com/rudecs/decort-sdk/config"
-    decort "github.com/rudecs/decort-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
 )
 
 func main() {
@@ -302,9 +353,9 @@ type CreateRequest struct {
 package main
 
 import (
-    "github.com/rudecs/decort-sdk/config"
-    decort "github.com/rudecs/decort-sdk"
-    "github.com/rudecs/decort-sdk/pkg/cloudapi/kvmx86"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/kvmx86"
 )
 
 func main() {
@@ -402,9 +453,9 @@ import (
     "log"
     "fmt"
 
-    "github.com/rudecs/decort-sdk/config"
-    decort "github.com/rudecs/decort-sdk"
-    "github.com/rudecs/decort-sdk/pkg/cloudapi/kvmx86"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/kvmx86"
 )
 
 func main() {
@@ -484,6 +535,52 @@ filtered := resp.
 	// ....
 ```
 
+Также у `compute`, `disks`, и `lb` присутствуют специфические функции фильтрации, отправляющие дополнительные запросы. В качестве параметров принимают:
+- context.Context - контекст для доп. запроса
+- id (или другое поле, по которому производится фильтрация)
+- interfaces.Caller - DECORT-клиент для запроса
+
+Так как эти функции возвращают не только результирующий слайс, но и возможную ошибку - конвейер придется прервать для обработки ошибки.
+
+
+#### Использование на примере `compute.FilterByK8SID`:
+
+```go
+func main() {
+    // Чтение конфигурации из файла
+    cfg := config.ParseConfigJSON("<PATH>")
+
+    // Создание клиента
+    client := decort.New(cfg)
+
+    // Создание структуры запроса compute/list
+    req := compute.ListRequest{}
+
+    // Запрос
+    resp, err := client.CloudAPI().Compute().List(context.Background(), req)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Фильтрация по id кластера.
+    // Первый аргумент - контекст
+    // Второй - ID кластера
+    // Третий - DECORT-клиент
+    filtered, err := resp.FilterByK8SID(context.Background(), <k8sID>, client)
+    if err != nil {
+        log.Fatal(err) // Возможная ошибка запроса
+    }
+
+    // Доп. фильтрация и сортировка результата - worker ноды кластера
+    workers := filtered.FilterByK8SWorkers().SortByCreatedTime(false)
+
+    // Доп. фильтрация и сортировка результата - master ноды кластера
+    masters := filtered.FilterByK8SMasters().SortByCreatedTime(true)
+
+    // ....
+}
+```
+
 ### Сортировка
 
 Функции сортировки так же могут быть объединены в конвейер:
@@ -536,9 +633,9 @@ import (
 	"context"
 	"log"
 
-	decort "github.com/rudecs/decort-sdk"
-	"github.com/rudecs/decort-sdk/config"
-	"github.com/rudecs/decort-sdk/pkg/cloudbroker/compute"
+	decort "repository.basistech.ru/BASIS/decort-golang-sdk"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/compute"
 )
 
 func main() {
@@ -598,23 +695,61 @@ func main() {
 | SSLSkipVerify | bool   | Нет          | Пропуск проверки подлинности сертификата, по умолчанию - true      |
 | Token         | string | Нет          | JWT токен                                                          |
 
-Пример кода:
+#### Пример конфигурации legacy клиента
 
 ```go
 import (
-    "github.com/rudecs/decort-sdk/config"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
+
 func main(){
     // Настройка конфигурации
     legacyCfg := config.LegacyConfig{
-        Username:     "<USERNAME>",
-        Password: "<PASSWORD>",
+        Username:  "<USERNAME>",
+        Password:  "<PASSWORD>",
         DecortURL: "https://mr4.digitalenergy.online",
         Retries:   5,
     }
 }
 ```
 
+#### Парсинг legacy конфигурации из файла
+
+Также возможно создать переменную конфигурации из JSON или YAML файла, используя функцию `ParseLegacyConfigJSON` (или `ParseLegacyConfigYAML`) из пакета config.
+<br>
+*См. пример файлов конфигурации ниже и в директории `samples/`.*
+
+```go
+import (
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
+)
+
+func main() {
+	// Парсинг конфигурации из YAML-файла
+	legacyCfg := config.ParseLegacyConfigYAML("<PATH>")
+}
+```
+
+#### Пример legacy JSON конфигурации
+
+```json
+{
+    "username": "<USERNAME>",
+    "password": "<PASSWORD>",
+    "decortUrl": "https://mr4.digitalenergy.online",
+    "retries": 5,
+    "sslSkipVerify": true
+}
+```
+
+#### Пример legacy YAML конфигурации
+```yaml
+username: <USERNAME>
+password: <PASSWORD>
+decortUrl: https://mr4.digitalenergy.online
+retries: 5
+sslSkipVerify: true
+```
 ### Создание legacy клиента
 
 Создание клиента происходит с помощью функции-строителя `NewLegacy` из основного пакета `decort-sdk`, для избежания проблем с именами, пакету можно присвоить алиас `decort`. Функция принимает конфигурацию, возвращает структуру `DecortClient`, с помощью которой можно взаимодействовать с платформой.
@@ -625,8 +760,8 @@ func main(){
 package main
 
 import (
-    "github.com/rudecs/decort-sdk/config"
-    decort "github.com/rudecs/decort-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
 )
 
 func main() {
@@ -651,8 +786,8 @@ package main
 import (
 	"fmt"
 
-    "github.com/rudecs/decort-sdk/config"
-    decort "github.com/rudecs/decort-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
 )
 
 func main() {
@@ -685,4 +820,3 @@ func main() {
 
     fmt.Println(res)
 }
-```

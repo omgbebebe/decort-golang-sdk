@@ -3,7 +3,6 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
@@ -13,7 +12,7 @@ import (
 type BootOrderSetRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// List of boot devices
 	// Should be one of:
@@ -21,30 +20,16 @@ type BootOrderSetRequest struct {
 	//	- network
 	//	- hd
 	// Required: true
-	Order []string `url:"order" json:"order"`
-}
-
-func (crq BootOrderSetRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if len(crq.Order) == 0 {
-		return errors.New("validation-error: field Order must be set")
-	}
-	for _, value := range crq.Order {
-		if validate := validators.StringInSlice(value, []string{"cdrom", "network", "hd"}); !validate {
-			return errors.New("validation-error: field ImageType can be cdrom, network, hd")
-		}
-	}
-
-	return nil
+	Order []string `url:"order" json:"order" validate:"min=1,computeOrder"`
 }
 
 // BootOrderSet sets compute boot order
 func (c Compute) BootOrderSet(ctx context.Context, req BootOrderSetRequest) ([]string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/bootOrderSet"

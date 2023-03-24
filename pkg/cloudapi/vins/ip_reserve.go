@@ -2,7 +2,6 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
@@ -12,7 +11,7 @@ import (
 type IPReserveRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// Type of the reservation
 	// Should be one of:
@@ -20,7 +19,7 @@ type IPReserveRequest struct {
 	//	- VIP
 	//	- EXCLUDE
 	// Required: true
-	Type string `url:"type" json:"type"`
+	Type string `url:"type" json:"type" validate:"vinsType"`
 
 	// IP address to use. Non-empty string is required for type "EXCLUDE".
 	// Ignored for types "DHCP" and "VIP".
@@ -39,26 +38,13 @@ type IPReserveRequest struct {
 	ComputeID uint64 `url:"computeId,omitempty" json:"computeId,omitempty"`
 }
 
-func (vrq IPReserveRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID can not be empty or equal to 0")
-	}
-	if vrq.Type == "" {
-		return errors.New("validation-error: field Type can not be empty")
-	}
-	validate := validators.StringInSlice(vrq.Type, []string{"DHCP", "VIP", "EXCLUDED"})
-	if !validate {
-		return errors.New("'type' should be 'DHCP', 'VIP' or 'EXCLUDED'")
-	}
-
-	return nil
-}
-
 // IPReserve creates reservation on ViNS DHCP
 func (v VINS) IPReserve(ctx context.Context, req IPReserveRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/ipReserve"

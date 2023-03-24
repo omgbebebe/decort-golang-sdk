@@ -2,38 +2,30 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for restart services
 type ServicesRestartRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+    GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Node ID
 	// Required: true
-	NID uint64 `url:"nid" json:"nid"`
-}
-
-func (grq ServicesRestartRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if grq.NID == 0 {
-		return errors.New("validation-error: field NID must be set")
-	}
-
-	return nil
+    NID uint64 `url:"nid" json:"nid" validate:"required"`
 }
 
 // ServicesRestart restarts decort services on the node
 func (g Grid) ServicesRestart(ctx context.Context, req ServicesRestartRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/servicesRestart"

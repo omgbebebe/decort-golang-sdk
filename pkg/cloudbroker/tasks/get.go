@@ -3,30 +3,25 @@ package tasks
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get background API task status and result
 type GetRequest struct {
 	// ID of audit GUID
 	// Required: true
-	AuditID string `url:"auditId" json:"auditId"`
-}
-
-func (trq GetRequest) validate() error {
-	if trq.AuditID == "" {
-		return errors.New("validation-error: field AuditID must be set")
-	}
-
-	return nil
+	AuditID string `url:"auditId" json:"auditId" validate:"required"`
 }
 
 // Get gets background API task status and result
 func (t Tasks) Get(ctx context.Context, req GetRequest) (*RecordTask, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/tasks/get"

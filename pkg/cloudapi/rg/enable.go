@@ -2,35 +2,30 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for enable resource group
 type EnableRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq EnableRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("field RGID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Enable enables resource group
 func (r RG) Enable(ctx context.Context, req EnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/rg/enable"

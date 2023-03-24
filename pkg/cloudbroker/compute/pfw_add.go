@@ -2,7 +2,6 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,11 +12,11 @@ import (
 type PFWAddRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// External start port number for the rule
 	// Required: true
-	PublicPortStart uint64 `url:"publicPortStart" json:"publicPortStart"`
+	PublicPortStart uint64 `url:"publicPortStart" json:"publicPortStart" validate:"required"`
 
 	// End port number (inclusive) for the ranged rule
 	// Required: false
@@ -25,46 +24,27 @@ type PFWAddRequest struct {
 
 	// Internal base port number
 	// Required: true
-	LocalBasePort uint64 `url:"localBasePort" json:"localBasePort"`
+	LocalBasePort uint64 `url:"localBasePort" json:"localBasePort" validate:"required"`
 
 	// Network protocol
 	// Should be one of:
 	//	- tcp
 	//	- udp
 	// Required: true
-	Proto string `url:"proto" json:"proto"`
+	Proto string `url:"proto" json:"proto" validate:"proto"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq PFWAddRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.PublicPortStart == 0 {
-		return errors.New("validation-error: field PublicPortStart must be set")
-	}
-	if crq.LocalBasePort == 0 {
-		return errors.New("validation-error: field LocalBasePort must be set")
-	}
-	if crq.Proto == "" {
-		return errors.New("validation-error: field Proto must be set")
-	}
-	validate := validators.StringInSlice(crq.Proto, []string{"tcp", "udp"})
-	if !validate {
-		return errors.New("validation-error: field Proto must be tcp or udp")
-	}
-
-	return nil
-}
-
 // PFWAdd add port forward rule
 func (c Compute) PFWAdd(ctx context.Context, req PFWAddRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/pfwAdd"

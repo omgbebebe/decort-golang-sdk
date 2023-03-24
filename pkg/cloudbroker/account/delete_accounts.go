@@ -2,41 +2,33 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete group accounts
 type DeleteAccountsRequest struct {
 	// IDs of accounts
 	// Required: true
-	AccountsIDs []uint64 `url:"accountIds" json:"accountIds"`
+	AccountsIDs []uint64 `url:"accountIds" json:"accountIds" validate:"min=1"`
 
 	// Reason for deletion
 	// Required: true
-	Reason string `url:"reason" json:"reason"`
+	Reason string `url:"reason" json:"reason" validate:"required"`
 
 	// Whether to completely destroy accounts or not
 	// Required: false
 	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
-func (arq DeleteAccountsRequest) validate() error {
-	if len(arq.AccountsIDs) == 0 {
-		return errors.New("validation-error: field AccountIDs must be set")
-	}
-	if arq.Reason == "" {
-		return errors.New("validation-error: field Reason must be set")
-	}
-
-	return nil
-}
-
 // DeleteAccounts destroy a group of accounts
 func (a Account) DeleteAccounts(ctx context.Context, req DeleteAccountsRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/deleteAccounts"

@@ -32,6 +32,12 @@ func (r *TaskResult) UnmarshalJSON(b []byte) error {
 		} else {
 			return fmt.Errorf("could not unmarshal %v into int", res[0])
 		}
+	} else {
+		n, err := strconv.Atoi(string(b))
+		if err != nil {
+			return err
+		}
+		*r = TaskResult(n)
 	}
 
 	return nil

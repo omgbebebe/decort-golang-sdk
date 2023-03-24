@@ -3,30 +3,25 @@ package extnet
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get detailed information about external network
 type GetRequest struct {
 	// ID of external network
 	// Required: true
-	NetID uint64 `url:"net_id" json:"net_id"`
-}
-
-func (erq GetRequest) validate() error {
-	if erq.NetID == 0 {
-		return errors.New("validation-error: field NetID can not be empty or equal to 0")
-	}
-
-	return nil
+	NetID uint64 `url:"net_id" json:"net_id" validate:"required"`
 }
 
 // Get gets detailed information about external network
 func (e ExtNet) Get(ctx context.Context, req GetRequest) (*RecordExtNet, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/extnet/get"

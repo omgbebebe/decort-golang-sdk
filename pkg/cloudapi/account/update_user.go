@@ -23,7 +23,7 @@ type UpdateUserRequest struct {
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-	AccessType string `url:"accesstype" json:"accesstype" validate:"required,accountAccessType"`
+	AccessType string `url:"accesstype" json:"accesstype" validate:"required,accessType"`
 }
 
 // UpdateUser updates user access rights

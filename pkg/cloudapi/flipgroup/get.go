@@ -3,30 +3,25 @@ package flipgroup
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get information about FLIPGroup
 type GetRequest struct {
 	// FLIPGroup ID
 	// Required: true
-	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId"`
-}
-
-func (frq GetRequest) validate() error {
-	if frq.FLIPGroupID == 0 {
-		return errors.New("field FLIPGroupID can not be empty or equal to 0")
-	}
-
-	return nil
+	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId" validate:"required"`
 }
 
 // Get gets details of the specified Floating IP group
 func (f FLIPGroup) Get(ctx context.Context, req GetRequest) (*ItemFLIPGroup, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/flipgroup/get"

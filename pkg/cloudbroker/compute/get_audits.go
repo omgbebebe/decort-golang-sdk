@@ -3,34 +3,29 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get compute audits
 type GetAuditsRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Reason to action
 	// Required: true
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq GetAuditsRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-
-	return nil
-}
-
 // GetAudits gets compute audits
 func (c Compute) GetAudits(ctx context.Context, req GetAuditsRequest) (ListAudits, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/getAudits"

@@ -2,7 +2,6 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,15 +12,15 @@ import (
 type CreateCDROMImageRequest struct {
 	// Name of the rescue disk
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// URL where to download ISO from
 	// Required: true
-	URL string `url:"url" json:"url"`
+	URL string `url:"url" json:"url" validate:"required,url"`
 
 	// Grid (platform) ID where this CD-ROM image should be create in
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Account ID to make the image exclusive
 	// Required: false
@@ -53,37 +52,16 @@ type CreateCDROMImageRequest struct {
 	// List of types of compute suitable for image.
 	// Example: [ "KVM_X86" ]
 	// Required: true
-	Drivers []string `url:"drivers" json:"drivers"`
-}
-
-func (irq CreateCDROMImageRequest) validate() error {
-	if irq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if irq.URL == "" {
-		return errors.New("validation-error: field URL must be set")
-	}
-	if irq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if len(irq.Drivers) == 0 || len(irq.Drivers) > 1 {
-		return errors.New("validation-error: field Drivers can not be empty or have 2 or more elements")
-	}
-	for _, v := range irq.Drivers {
-		validate := validators.StringInSlice(v, []string{"KVM_X86"})
-		if !validate {
-			return errors.New("validation-error: field Drivers can be KVM_X86 only")
-		}
-	}
-
-	return nil
+	Drivers []string `url:"drivers" json:"drivers" validate:"min=1,max=2,imageDrivers"`
 }
 
 // CreateCDROMImage creates CD-ROM image from an ISO identified by URL
 func (i Image) CreateCDROMImage(ctx context.Context, req CreateCDROMImageRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/createCDROMImage"

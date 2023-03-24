@@ -3,30 +3,25 @@ package rg
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list port forward rules
 type ListPFWRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
-}
-
-func (rgrq ListPFWRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-
-	return nil
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 }
 
 // ListPFW gets list port forward rules for the specified resource group
 func (r RG) ListPFW(ctx context.Context, req ListPFWRequest) (ListPFW, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/listPFW"

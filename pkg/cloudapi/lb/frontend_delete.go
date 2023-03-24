@@ -2,39 +2,31 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete frontend
 type FrontendDeleteRequest struct {
 	// ID of the load balancer instance to FrontendDelete
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Name of the frontend to delete
 	// Required: true
-	FrontendName string `url:"frontendName" json:"frontendName"`
-}
-
-func (lbrq FrontendDeleteRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID can not be empty or equal to 0")
-	}
-	if lbrq.FrontendName == "" {
-		return errors.New("validation-error: field FrontendName can not be empty")
-	}
-
-	return nil
+	FrontendName string `url:"frontendName" json:"frontendName" validate:"required"`
 }
 
 // FrontendDelete deletes frontend from the specified load balancer.
 // Warning: you cannot undo this action!
 func (l LB) FrontendDelete(ctx context.Context, req FrontendDeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/lb/frontendDelete"

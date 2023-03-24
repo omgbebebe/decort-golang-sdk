@@ -2,39 +2,31 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete NAT rule
 type NATRuleDelRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// ID of the rule to delete.
 	// Pass -1 to clear all rules at once
 	// Required: true
-	RuleID uint64 `url:"ruleId" json:"ruleId"`
-}
-
-func (vrq NATRuleDelRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID can not be empty or equal to 0")
-	}
-	if vrq.RuleID == 0 {
-		return errors.New("validation-error: field RuleID can not be empty or equal to 0")
-	}
-
-	return nil
+	RuleID uint64 `url:"ruleId" json:"ruleId" validate:"required"`
 }
 
 // NATRuleDel delete NAT (port forwarding) rule on VINS
 func (v VINS) NATRuleDel(ctx context.Context, req NATRuleDelRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/natRuleDel"

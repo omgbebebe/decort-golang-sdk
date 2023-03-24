@@ -2,7 +2,6 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,11 +12,11 @@ import (
 type UserGrantRequest struct {
 	// ID of the compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Name of the user to add
 	// Required: true
-	Username string `url:"userName" json:"userName"`
+	Username string `url:"userName" json:"userName" validate:"required"`
 
 	// Access type
 	// Should be one of:
@@ -25,32 +24,16 @@ type UserGrantRequest struct {
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-	AccessType string `url:"accesstype" json:"accesstype"`
-}
-
-func (crq UserGrantRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.Username == "" {
-		return errors.New("validation-error: field Username must be set")
-	}
-	if crq.AccessType == "" {
-		return errors.New("validation-error: field AccessType must be set")
-	}
-	validator := validators.StringInSlice(crq.AccessType, []string{"R", "RCX", "ARCXDU"})
-	if !validator {
-		return errors.New("validation-error: field AccessType can be only R, RCX or ARCXDU")
-	}
-
-	return nil
+	AccessType string `url:"accesstype" json:"accesstype" validate:"accessType"`
 }
 
 // UserGrant grant user access to the compute
 func (c Compute) UserGrant(ctx context.Context, req UserGrantRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/userGrant"

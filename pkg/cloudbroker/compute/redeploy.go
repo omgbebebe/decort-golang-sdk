@@ -2,16 +2,17 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for redeploy
 type RedeployRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// ID of the new OS image, if image change is required
 	// Required: false
@@ -27,7 +28,7 @@ type RedeployRequest struct {
 	//	- DETACH
 	//	- DESTROY
 	// Required: false
-	DataDisks string `url:"dataDisks,omitempty" json:"dataDisks,omitempty"`
+	DataDisks string `url:"dataDisks,omitempty" json:"dataDisks,omitempty" validate:"omitempty,computeDataDisks"`
 
 	// Should the compute be restarted upon successful redeploy
 	// Required: false
@@ -42,19 +43,13 @@ type RedeployRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq RedeployRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-
-	return nil
-}
-
 // Redeploy redeploy compute
 func (c Compute) Redeploy(ctx context.Context, req RedeployRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/redeploy"

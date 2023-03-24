@@ -2,38 +2,30 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for set compute CI
 type ComputeCISetRequest struct {
 	// ID of the image
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// ID of the compute CI
 	// Required: true
-	ComputeCIID uint64 `url:"computeciId" json:"computeciId"`
-}
-
-func (irq ComputeCISetRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-	if irq.ComputeCIID == 0 {
-		return errors.New("validation-error: field ComputeCIID must be set")
-	}
-
-	return nil
+	ComputeCIID uint64 `url:"computeciId" json:"computeciId" validate:"required"`
 }
 
 // ComputeCISet set compute CI ID for image
 func (i Image) ComputeCISet(ctx context.Context, req ComputeCISetRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/computeciSet"

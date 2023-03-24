@@ -2,35 +2,30 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete CD-ROM image
 type DeleteCDROMImageRequest struct {
 	// ID of the CD-ROM image to delete
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Whether to completely delete the CD-ROM image, needs to be unused
-	// Required: true
-	Permanently bool `url:"permanently" json:"permanently"`
-}
-
-func (irq DeleteCDROMImageRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
+	// Required: false
+	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
 // DeleteCDROMImage delete a CD-ROM image
 func (i Image) DeleteCDROMImage(ctx context.Context, req DeleteCDROMImageRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/deleteCDROMImage"

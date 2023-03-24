@@ -2,7 +2,6 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,41 +12,31 @@ import (
 type SetDefNetRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Network type
 	// Should be one of:
 	//	- "PUBLIC"
 	//	- "PRIVATE"
 	// Required: true
-	NetType string `url:"netType" json:"netType"`
+	NetType string `url:"netType" json:"netType" validate:"rgNetType"`
 
 	// Network ID
 	// Required: false
-	NetID uint64 `url:"netId" json:"netId"`
+	NetID uint64 `url:"netId,omitempty" json:"netId,omitempty"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq SetDefNetRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	validate := validators.StringInSlice(rgrq.NetType, []string{"PUBLIC", "PRIVATE"})
-	if !validate {
-		return errors.New("validation-error: field NetType must be one of PRIVATE or PUBLIC")
-	}
-
-	return nil
-}
-
 // SetDefNet sets default network for attach associated virtual machines
 func (r RG) SetDefNet(ctx context.Context, req SetDefNetRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/setDefNet"

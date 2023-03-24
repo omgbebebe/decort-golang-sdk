@@ -2,31 +2,26 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for disable image
 type DisableRequest struct {
 	// ID of image to be disabled
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
-}
-
-func (irq DisableRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 }
 
 // Disable disables image
 func (i Image) Disable(ctx context.Context, req DisableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/disable"

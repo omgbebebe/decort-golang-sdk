@@ -2,16 +2,17 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update all VINS interfaces QOS
 type NetQOSRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// Internal traffic, kbit
 	// Required: false
@@ -26,19 +27,13 @@ type NetQOSRequest struct {
 	EgressRate uint64 `url:"egress_rate,omitempty" json:"egress_rate,omitempty"`
 }
 
-func (vrq NetQOSRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID must be set")
-	}
-
-	return nil
-}
-
 // NetQOS update all VINS interfaces QOS
 func (v VINS) NetQOS(ctx context.Context, req NetQOSRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/vins/netQos"

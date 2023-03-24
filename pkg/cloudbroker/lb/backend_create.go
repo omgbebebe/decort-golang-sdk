@@ -2,7 +2,6 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,11 +12,11 @@ import (
 type BackendCreateRequest struct {
 	// ID of the load balancer instance to backendCreate
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Must be unique among all backends of this load balancer - name of the new backend to create
 	// Required: true
-	BackendName string `url:"backendName" json:"backendName"`
+	BackendName string `url:"backendName" json:"backendName" validate:"required"`
 
 	// Algorithm
 	// Should be one of:
@@ -25,7 +24,7 @@ type BackendCreateRequest struct {
 	//	- static-rr
 	//	- leastconn
 	// Required: false
-	Algorithm string `url:"algorithm,omitempty" json:"algorithm,omitempty"`
+	Algorithm string `url:"algorithm,omitempty" json:"algorithm,omitempty" validate:"omitempty,lbAlgorithm"`
 
 	// Interval in milliseconds between two consecutive availability
 	// checks of the server that is considered available
@@ -68,26 +67,13 @@ type BackendCreateRequest struct {
 	Weight uint64 `url:"weight,omitempty" json:"weight,omitempty"`
 }
 
-func (lbrq BackendCreateRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID must be set")
-	}
-	if lbrq.BackendName == "" {
-		return errors.New("validation-error: field BackendName must be set")
-	}
-	validate := validators.StringInSlice(lbrq.Algorithm, []string{"roundrobin", "static-rr", "leastconn"})
-	if !validate {
-		return errors.New("validation-error: field Algorithm must be one of roundrobin, static-rr, leastconn")
-	}
-
-	return nil
-}
-
 // BackendCreate creates new backend on the specified load balancer
 func (lb LB) BackendCreate(ctx context.Context, req BackendCreateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/lb/backendCreate"

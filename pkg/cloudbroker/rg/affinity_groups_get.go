@@ -3,37 +3,29 @@ package rg
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list computes from affinity group
 type AffinityGroupsGetRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Label affinity group
 	// Required: true
-	AffinityGroup string `url:"affinityGroup" json:"affinityGroup"`
-}
-
-func (rgrq AffinityGroupsGetRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if rgrq.AffinityGroup == "" {
-		return errors.New("validation-error: field AffinityGroup must be set")
-	}
-
-	return nil
+	AffinityGroup string `url:"affinityGroup" json:"affinityGroup" validate:"required"`
 }
 
 // AffinityGroupsGet gets list computes in the specified affinity group
 func (r RG) AffinityGroupsGet(ctx context.Context, req AffinityGroupsGetRequest) ([]uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/affinityGroupsGet"

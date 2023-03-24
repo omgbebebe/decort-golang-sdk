@@ -2,38 +2,30 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for rename grid
 type RenameRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// New name
 	// Required: true
-	Name string `url:"Name" json:"Name"`
-}
-
-func (grq RenameRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if grq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-
-	return nil
+	Name string `url:"Name" json:"Name" validate:"required"`
 }
 
 // Rename renames a grid
 func (g Grid) Rename(ctx context.Context, req RenameRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/rename"

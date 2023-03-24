@@ -2,38 +2,30 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for enable account
 type EnableRequest struct {
 	// ID of account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Reason to enable
 	// Required: true
-	Reason string `url:"reason" json:"reason"`
-}
-
-func (arq EnableRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	if arq.Reason == "" {
-		return errors.New("field Reason must be set")
-	}
-
-	return nil
+	Reason string `url:"reason" json:"reason" validate:"required"`
 }
 
 // Enable enables an account
 func (a Account) Enable(ctx context.Context, req EnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/enable"

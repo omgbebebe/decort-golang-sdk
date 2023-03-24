@@ -2,31 +2,26 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update capacity limits
 type UpdateCapacityLimitRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
-}
-
-func (srq UpdateCapacityLimitRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-
-	return nil
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 }
 
 // UpdateCapacityLimit updates SEP capacity limit
 func (s SEP) UpdateCapacityLimit(ctx context.Context, req UpdateCapacityLimitRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/updateCapacityLimit"

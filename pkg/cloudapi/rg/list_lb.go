@@ -3,30 +3,25 @@ package rg
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list load balancers
 type ListLBRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
-}
-
-func (rgrq ListLBRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("field RGID can not be empty or equal to 0")
-	}
-
-	return nil
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 }
 
 // ListLB gets list all load balancers in the specified resource group, accessible by the user
 func (r RG) ListLB(ctx context.Context, req ListLBRequest) (ListLB, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/rg/listLb"

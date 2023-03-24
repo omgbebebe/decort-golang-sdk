@@ -2,32 +2,33 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update server
 type BackendServerUpdateRequest struct {
 	// ID of the load balancer instance to BackendServerAdd
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Must match one of the existing backens - name of the backend to add servers to
 	// Required: true
-	BackendName string `url:"backendName" json:"backendName"`
+	BackendName string `url:"backendName" json:"backendName" validate:"required"`
 
 	// Must be unique among all servers defined for this backend - name of the server definition to add
 	// Required: true
-	ServerName string `url:"serverName" json:"serverName"`
+	ServerName string `url:"serverName" json:"serverName" validate:"required"`
 
 	// IP address of the server
 	// Required: true
-	Address string `url:"address" json:"address"`
+	Address string `url:"address" json:"address" validate:"required"`
 
 	// Port number on the server
 	// Required: true
-	Port uint64 `url:"port" json:"port"`
+	Port uint64 `url:"port" json:"port" validate:"required"`
 
 	// Set to disabled if this server should be used regardless of its state
 	// Required: false
@@ -71,31 +72,13 @@ type BackendServerUpdateRequest struct {
 	Weight uint64 `url:"weight,omitempty" json:"weight,omitempty"`
 }
 
-func (lbrq BackendServerUpdateRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID must be set")
-	}
-	if lbrq.BackendName == "" {
-		return errors.New("validation-error: field BackendName must be set")
-	}
-	if lbrq.ServerName == "" {
-		return errors.New("validation-error: field ServerName must be set")
-	}
-	if lbrq.Address == "" {
-		return errors.New("validation-error: field Address must be set")
-	}
-	if lbrq.Port == 0 {
-		return errors.New("validation-error: field Port must be set")
-	}
-
-	return nil
-}
-
 // BackendServerUpdate updates server definition on the backend of load balancer
 func (lb LB) BackendServerUpdate(ctx context.Context, req BackendServerUpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/lb/backendServerUpdate"

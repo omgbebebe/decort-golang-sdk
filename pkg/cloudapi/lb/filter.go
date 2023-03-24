@@ -1,5 +1,12 @@
 package lb
 
+import (
+	"context"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/k8s"
+)
+
 // FilterByID returns ListLB with specified ID.
 func (ll ListLB) FilterByID(id uint64) ListLB {
 	predicate := func(ill ItemLoadBalancer) bool {
@@ -34,6 +41,26 @@ func (ll ListLB) FilterByImageID(imageID uint64) ListLB {
 	}
 
 	return ll.FilterFunc(predicate)
+}
+
+// FilterByK8SID returns ListLB used by specified K8S cluster.
+func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (ListLB, error) {
+	caller := k8s.New(decortClient)
+
+	req := k8s.GetRequest{
+		K8SID: k8sID,
+	}
+
+	cluster, err := caller.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	predicate := func(ill ItemLoadBalancer) bool {
+		return cluster.LBID == ill.ID
+	}
+
+	return ll.FilterFunc(predicate), nil
 }
 
 // FilterFunc allows filtering ListLB based on a user-specified predicate.

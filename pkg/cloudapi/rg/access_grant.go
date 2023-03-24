@@ -2,7 +2,6 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,44 +12,31 @@ import (
 type AccessGrantRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// User or group name to grant access
 	// Required: true
-	User string `url:"user" json:"user"`
+	User string `url:"user" json:"user" validate:"required"`
 
 	// Access rights to set, one of:
 	//	- "R"
 	//	-  "RCX"
 	//	- "ARCXDU"
 	// Required: true
-	Right string `url:"right" json:"right"`
+	Right string `url:"right" json:"right" validate:"accessType"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq AccessGrantRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("field RGID can not be empty or equal to 0")
-	}
-	if rgrq.User == "" {
-		return errors.New("field User can not be empty")
-	}
-	validate := validators.StringInSlice(rgrq.Right, []string{"R", "RCX", "ARCXDU"})
-	if !validate {
-		return errors.New("field Right can only be one of 'R', 'RCX' or 'ARCXDU'")
-	}
-
-	return nil
-}
-
 // AccessGrant grants user or group access to the resource group as specified
 func (r RG) AccessGrant(ctx context.Context, req AccessGrantRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/rg/accessGrant"

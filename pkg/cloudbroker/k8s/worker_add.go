@@ -3,41 +3,33 @@ package k8s
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for add worker to a kubernetes cluster
 type WorkerAddRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// ID of the workers compute group
 	// Required: true
-	WorkersGroupID uint64 `url:"workersGroupId" json:"workersGroupId"`
+	WorkersGroupID uint64 `url:"workersGroupId" json:"workersGroupId" validate:"required"`
 
 	// How many worker nodes to add
-	// Required: true
-	Num uint64 `url:"num" json:"num"`
-}
-
-func (krq WorkerAddRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID must be set")
-	}
-	if krq.WorkersGroupID == 0 {
-		return errors.New("validation-error: field WorkersGroupID must be set")
-	}
-
-	return nil
+	// Required: false
+	Num uint64 `url:"num,omitempty" json:"num,omitempty"`
 }
 
 // WorkerAdd adds worker nodes to a kubernetes cluster
 func (k K8S) WorkerAdd(ctx context.Context, req WorkerAddRequest) ([]uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/workerAdd"

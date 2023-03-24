@@ -2,37 +2,29 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for restore a deleted account
 type RestoreRequest struct {
 	// ID an account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Reason to restore
 	// Required: true
-	Reason string `url:"reason" json:"reason"`
-}
-
-func (arq RestoreRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	if arq.Reason == "" {
-		return errors.New("validation-error: field Reason must be set")
-	}
-
-	return nil
+	Reason string `url:"reason" json:"reason" validate:"required"`
 }
 
 // Restore restores a deleted account
 func (a Account) Restore(ctx context.Context, req RestoreRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/restore"

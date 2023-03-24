@@ -14,7 +14,7 @@ Also the library have structures for responses.
 ## Install
 
 ```bash
-go get -u github.com/rudecs/decort-sdk
+go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 ```
 
 ## API List
@@ -29,8 +29,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/rudecs/decort-sdk/config"
-	"github.com/rudecs/decort-sdk/pkg/cloudapi/kvmx86"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/kvmx86"
 )
 
 func main() {

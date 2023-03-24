@@ -24,7 +24,7 @@ type CreateRequest struct {
 
 	// Boot type of image bios or UEFI
 	// Required: true
-	BootType string `url:"boottype" json:"boottype" validate:"required,bootType"`
+	BootType string `url:"boottype" json:"boottype" validate:"required,imageBootType"`
 
 	// Image type
 	// Should be:

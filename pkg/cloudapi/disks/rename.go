@@ -2,38 +2,30 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for rename disk
 type RenameRequest struct {
 	// ID of the disk to rename
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
 	// New name of disk
 	// Required: true
-	Name string `url:"name" json:"name"`
-}
-
-func (drq RenameRequest) validate() error {
-	if drq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID can not be empty or equal to 0")
-	}
-	if drq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-
-	return nil
+	Name string `url:"name" json:"name" validate:"required"`
 }
 
 // Rename rename disk
 func (d Disks) Rename(ctx context.Context, req RenameRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/disks/rename"

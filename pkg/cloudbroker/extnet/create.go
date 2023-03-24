@@ -2,33 +2,34 @@ package extnet
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create external network
 type CreateRequest struct {
 	// External network name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// IP network CIDR
 	// For example 192.168.0.0/24
 	// Required: true
-	IPCIDR string `url:"ipcidr" json:"ipcidr"`
+	IPCIDR string `url:"ipcidr" json:"ipcidr" validate:"required"`
 
 	// External network gateway IP address
 	// Required: true
-	Gateway string `url:"gateway" json:"gateway"`
+	Gateway string `url:"gateway" json:"gateway" validate:"required"`
 
 	// VLAN ID
 	// Required: true
-	VLANID uint64 `url:"vlanId" json:"vlanId"`
+	VLANID uint64 `url:"vlanId" json:"vlanId" validate:"required"`
 
 	// List of DNS addresses
 	// Required: false
@@ -71,31 +72,13 @@ type CreateRequest struct {
 	OVSBridge string `url:"ovsBridge,omitempty" json:"ovsBridge,omitempty"`
 }
 
-func (erq CreateRequest) validate() error {
-	if erq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if erq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if erq.IPCIDR == "" {
-		return errors.New("validation-error: field IPCIDR must be set")
-	}
-	if erq.Gateway == "" {
-		return errors.New("validation-error: field Gateway must be set")
-	}
-	if erq.VLANID == 0 {
-		return errors.New("validation-error: field VLANID must be set")
-	}
-
-	return nil
-}
-
 // Create creates new external network into platform
 func (e ExtNet) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/extnet/create"

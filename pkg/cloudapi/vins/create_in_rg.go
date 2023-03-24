@@ -2,24 +2,25 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create VINS in resource group
 type CreateInRGRequest struct {
 	// VINS name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Private network IP CIDR
 	// Required: false
-	IPCIDR string `url:"ipcidr,omitempty" json:"ipcidr,omitempty"`
+	IPCIDR string `url:"ipcidr,omitempty" json:"ipcidr,omitempty" validate:"required"`
 
 	// External network ID
 	// Required: false
@@ -38,22 +39,13 @@ type CreateInRGRequest struct {
 	PreReservationsNum uint `url:"preReservationsNum,omitempty" json:"preReservationsNum,omitempty"`
 }
 
-func (vrq CreateInRGRequest) validate() error {
-	if vrq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-	if vrq.RGID == 0 {
-		return errors.New("validation-error: field RGID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // CreateInRG creates VINS in resource group level
 func (v VINS) CreateInRG(ctx context.Context, req CreateInRGRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/createInRG"

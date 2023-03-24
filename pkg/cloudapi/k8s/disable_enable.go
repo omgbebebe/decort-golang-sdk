@@ -2,31 +2,26 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for disable/enable kubernetes cluster
 type DisabelEnableRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
-}
-
-func (krq DisabelEnableRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID can not be empty or equal to 0")
-	}
-
-	return nil
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 }
 
 // Disable disables kubernetes cluster by ID
 func (k8s K8S) Disable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/disable"
@@ -46,9 +41,11 @@ func (k8s K8S) Disable(ctx context.Context, req DisabelEnableRequest) (bool, err
 
 // Enable enables kubernetes cluster by ID
 func (k8s K8S) Enable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/enable"

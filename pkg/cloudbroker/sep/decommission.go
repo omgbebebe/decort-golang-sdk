@@ -2,35 +2,30 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for decommission
 type DecommissionRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// Clear disks and images physically
 	// Required: false
 	ClearPhisically bool `url:"clear_physically,omitempty" json:"clear_physically,omitempty"`
 }
 
-func (srq DecommissionRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-
-	return nil
-}
-
 // Decommission unlink everything that exists from SEP
 func (s SEP) Decommission(ctx context.Context, req DecommissionRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/decommission"

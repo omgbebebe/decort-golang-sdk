@@ -3,42 +3,34 @@ package k8s
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get information about group of kubernetes cluster
 type FindGroupByLabelRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// List of labels to search
 	// Required: true
-	Labels []string `url:"labels" json:"labels"`
+	Labels []string `url:"labels" json:"labels" validate:"min=1"`
 
 	// If true and more than one label provided, select only groups that have all provided labels.
 	// If false - groups that have at least one label
-	// Required: true
-	Strict bool `url:"strict" json:"strict"`
-}
-
-func (krq FindGroupByLabelRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID can not be empty or equal to 0")
-	}
-	if len(krq.Labels) == 0 {
-		return errors.New("validation-error: field Labels can not be empty")
-	}
-
-	return nil
+	// Required: false
+	Strict bool `url:"strict,omitempty" json:"strict,omitempty"`
 }
 
 // FindGroupByLabel find worker group information by one on more labels
 func (k8s K8S) FindGroupByLabel(ctx context.Context, req FindGroupByLabelRequest) (ListK8SGroups, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/findGroupByLabel"

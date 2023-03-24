@@ -2,20 +2,21 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for add workers group
 type WorkersGroupAddRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// Worker group name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// ID of SEP to create boot disks for default worker nodes group.
 	// Uses images SEP ID if not set
@@ -59,22 +60,13 @@ type WorkersGroupAddRequest struct {
 	WorkerDisk uint64 `url:"workerDisk,omitempty" json:"workerDisk,omitempty"`
 }
 
-func (krq WorkersGroupAddRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID must be set")
-	}
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-
-	return nil
-}
-
 // WorkersGroupAdd adds workers group to kubernetes cluster
 func (k K8S) WorkersGroupAdd(ctx context.Context, req WorkersGroupAddRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/workersGroupAdd"

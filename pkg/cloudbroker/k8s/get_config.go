@@ -2,31 +2,26 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get configuration of kubernetes cluster
 type GetConfigRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
-}
-
-func (krq GetConfigRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID must be set")
-	}
-
-	return nil
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 }
 
 // GetConfig gets configuration data to access kubernetes cluster
 func (k K8S) GetConfig(ctx context.Context, req GetConfigRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/getConfig"

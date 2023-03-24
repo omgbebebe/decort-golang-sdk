@@ -2,42 +2,34 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for revoke access
 type AccessRevokeRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// User or group name to revoke access
 	// Required: true
-	User string `url:"user" json:"user"`
+	User string `url:"user" json:"user" validate:"required"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq AccessRevokeRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if rgrq.User == "" {
-		return errors.New("validation-error: field User must be set")
-	}
-
-	return nil
-}
-
 // AccessRevoke revokes specified user or group access from the resource group
 func (r RG) AccessRevoke(ctx context.Context, req AccessRevokeRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/accessRevoke"

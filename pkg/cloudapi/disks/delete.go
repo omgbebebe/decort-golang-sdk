@@ -2,16 +2,17 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request for delete disk
 type DeleteRequest struct {
 	// ID of disk to delete
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
 	// Detach disk from machine first
 	// Required: false
@@ -26,19 +27,13 @@ type DeleteRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (d DeleteRequest) validate() error {
-	if d.DiskID == 0 {
-		return errors.New("validation-error: field DiskID must be set")
-	}
-
-	return nil
-}
-
 // Delete deletes disk by ID
 func (d Disks) Delete(ctx context.Context, req DeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/disks/delete"

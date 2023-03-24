@@ -11,6 +11,11 @@ func ValidateRequest(req interface{}) error {
 	return validate.Struct(req)
 }
 
+func ValidateConfig(cfg interface{}) error {
+	validate := getDecortValidator()
+	return validate.Struct(cfg)
+}
+
 func ValidationError(fe validator.FieldError) error {
 	return errors.New(errorMessage(fe))
 }

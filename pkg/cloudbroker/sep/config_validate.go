@@ -2,38 +2,30 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for validate config
 type ConfigValidateRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// Storage provider config
 	// Required: true
-	Config string `url:"config" json:"config"`
-}
-
-func (srq ConfigValidateRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-	if srq.Config == "" {
-		return errors.New("validation-error: feold Config must be set")
-	}
-
-	return nil
+	Config string `url:"config" json:"config" validate:"required"`
 }
 
 // ConfigValidate verify config for the SEP
 func (s SEP) ConfigValidate(ctx context.Context, req ConfigValidateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/configValidate"

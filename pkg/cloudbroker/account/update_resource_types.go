@@ -2,7 +2,6 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,7 +12,7 @@ import (
 type UpdateResourceTypesRequest struct {
 	// ID of account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Resource types available to create in this account
 	// Each element in a resource type slice must be one of:
@@ -24,29 +23,15 @@ type UpdateResourceTypesRequest struct {
 	//	- lb
 	//	- flipgroup
 	// Required: true
-	ResTypes []string `url:"resourceTypes" json:"resourceTypes"`
-}
-
-func (arq UpdateResourceTypesRequest) validate() error {
-	if arq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-	if len(arq.ResTypes) > 0 {
-		for _, value := range arq.ResTypes {
-			validate := validators.StringInSlice(value, []string{"compute", "vins", "k8s", "openshift", "lb", "flipgroup"})
-			if !validate {
-				return errors.New("validation-error: Every resource type specified should be one of [compute, vins, k8s, openshift, lb, flipgroup]")
-			}
-		}
-	}
-
-	return nil
+	ResTypes []string `url:"resourceTypes" json:"resourceTypes" validate:"min=1,resTypes"`
 }
 
 func (a Account) UpdateResourceTypes(ctx context.Context, req UpdateResourceTypesRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/updateResourceTypes"

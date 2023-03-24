@@ -24,7 +24,7 @@ type UserUpdateRequest struct {
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-	AccessType string `url:"accesstype" json:"accesstype" validate:"accountAccessType"`
+	AccessType string `url:"accesstype" json:"accesstype" validate:"accessType"`
 }
 
 // UserUpdate updates user access to the compute

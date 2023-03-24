@@ -2,45 +2,34 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete bind
 type FrontendBindDeleteRequest struct {
 	// ID of the load balancer instance to FrontendBindDelete
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Name of the frontend to delete
 	// Required: true
-	FrontendName string `url:"frontendName" json:"frontendName"`
+	FrontendName string `url:"frontendName" json:"frontendName" validate:"required"`
 
 	// Name of the binding to delete
 	// Required: true
-	BindingName string `url:"bindingName" json:"bindingName"`
-}
-
-func (lbrq FrontendBindDeleteRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID must be set")
-	}
-	if lbrq.FrontendName == "" {
-		return errors.New("validation-error: field FrontendName must be set")
-	}
-	if lbrq.BindingName == "" {
-		return errors.New("validation-error: field BindingName must be set")
-	}
-
-	return nil
+	BindingName string `url:"bindingName" json:"bindingName" validate:"required"`
 }
 
 // FrontendBindDelete deletes binding from the specified load balancer frontend
 func (lb LB) FrontendBindDelete(ctx context.Context, req FrontendBindDeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/lb/frontendBindDelete"

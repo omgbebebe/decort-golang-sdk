@@ -2,16 +2,17 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for update resource group
 type UpdateRequest struct {
 	// Resource group ID
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// New name
 	// Required: false
@@ -54,19 +55,13 @@ type UpdateRequest struct {
 	UniqPools []string `url:"uniqPools,omitempty" json:"uniqPools,omitempty"`
 }
 
-func (rgrq UpdateRequest) validate() error {
-	if rgrq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-
-	return nil
-}
-
 // Update updates resource group
 func (r RG) Update(ctx context.Context, req UpdateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/update"

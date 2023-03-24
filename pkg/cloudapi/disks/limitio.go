@@ -2,16 +2,17 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for limit IO
 type LimitIORequest struct {
 	// ID of the disk to limit
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
 	// Alias for total_iops_sec for backwards compatibility
 	// Required: false
@@ -70,21 +71,15 @@ type LimitIORequest struct {
 	SizeIOPSSec uint64 `url:"size_iops_sec,omitempty" json:"size_iops_sec,omitempty"`
 }
 
-func (drq LimitIORequest) validate() error {
-	if drq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // LimitIO limit IO for a certain disk
 // total and read/write options are not allowed to be combined
 // see http://libvirt.org/formatdomain.html#elementsDisks iotune section for more details
 func (d Disks) LimitIO(ctx context.Context, req LimitIORequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/disks/limitIO"

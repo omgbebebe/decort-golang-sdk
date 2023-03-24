@@ -3,31 +3,26 @@ package disks
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get information about disk
 type GetRequest struct {
 	// ID of the disk
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
-}
-
-func (drq GetRequest) validate() error {
-	if drq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID must be set")
-	}
-
-	return nil
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 }
 
 // Get gets  disk details
 // Notice: the devicename field is the name as it is passed to the kernel (kname in linux) for unattached disks this field has no relevant value
 func (d Disks) Get(ctx context.Context, req GetRequest) (*RecordDisk, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/disks/get"

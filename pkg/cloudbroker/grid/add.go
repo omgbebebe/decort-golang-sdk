@@ -2,45 +2,34 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for location code
 type AddRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Name of the location
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Location code typicly used in dns names
 	// Required: true
-	LocationCode string `url:"locationcode" json:"locationcode"`
-}
-
-func (grq AddRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-	if grq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if grq.LocationCode == "" {
-		return errors.New("validation-error: field LocationCode must be set")
-	}
-
-	return nil
+	LocationCode string `url:"locationcode" json:"locationcode" validate:"required"`
 }
 
 // Add location code (e.g. DNS name of this grid)
 func (g Grid) Add(ctx context.Context, req AddRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/add"

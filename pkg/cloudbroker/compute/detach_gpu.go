@@ -2,36 +2,31 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for detach VGPU for compute
 type DetachGPURequest struct {
 	// Identifier compute
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Identifier virtual GPU
 	// Required: false
 	VGPUID int64 `url:"vgpuId,omitempty" json:"vgpuId,omitempty"`
 }
 
-func (crq DetachGPURequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-
-	return nil
-}
-
 // DetachGPU detach VGPU for compute.
 // If param VGPU ID is equivalent -1, then detach all VGPU for compute
 func (c Compute) DetachGPU(ctx context.Context, req DetachGPURequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/detachGpu"

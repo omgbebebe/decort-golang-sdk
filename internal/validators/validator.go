@@ -34,7 +34,27 @@ func getDecortValidator() *validator.Validate {
 
 // registerAllValidators registers all custom validators in DecortValidator.
 func registerAllValidators(validate *validator.Validate) error {
-	err := validate.RegisterValidation("bootType", imageBootTypeValidator)
+	err := validate.RegisterValidation("proto", protoValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("accessType", accessTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("resTypes", resTypesValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("driver", driverValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("imageBootType", imageBootTypeValidator)
 	if err != nil {
 		return err
 	}
@@ -54,17 +74,7 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
-	err = validate.RegisterValidation("accountAccessType", accountAccessTypeValidator)
-	if err != nil {
-		return err
-	}
-
 	err = validate.RegisterValidation("accountCUType", accountCUTypeValidator)
-	if err != nil {
-		return err
-	}
-
-	err = validate.RegisterValidation("bserviceDriver", bserviceDriverValidator)
 	if err != nil {
 		return err
 	}
@@ -99,7 +109,52 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
-	err = validate.RegisterValidation("computeProto", computeProtoValidator)
+	err = validate.RegisterValidation("computeOrder", computeOrderValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("computeDataDisks", computeDataDisksValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("diskType", diskTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("flipgroupClientType", flipgroupClientTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("kvmNetType", kvmNetTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("lbAlgorithm", lbAlgorithmValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("rgDefNet", rgDefNetValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("rgNetType", rgNetTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("vinsType", vinsTypeValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("sepFieldType", sepFieldTypeValidator)
 	if err != nil {
 		return err
 	}

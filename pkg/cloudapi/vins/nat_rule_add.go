@@ -2,28 +2,29 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create NAT rules
 type NATRuleAddRequest struct {
 	// VINS ID
 	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// Internal IP address to apply this rule to
 	// Required: true
-	IntIP string `url:"intIp" json:"intIp"`
+	IntIP string `url:"intIp" json:"intIp" validate:"required"`
 
 	// Internal IP port number to use for this rule
 	// Required: true
-	IntPort uint `url:"intPort" json:"intPort"`
+	IntPort uint `url:"intPort" json:"intPort" validate:"required"`
 
 	// External IP start port to use for this rule
 	// Required: true
-	ExtPortStart uint `url:"extPortStart" json:"extPortStart"`
+	ExtPortStart uint `url:"extPortStart" json:"extPortStart" validate:"required"`
 
 	// External IP end port to use for this rule
 	// Required: false
@@ -34,31 +35,16 @@ type NATRuleAddRequest struct {
 	//	- "tcp"
 	//	- "udp"
 	// Required: false
-	Proto string `url:"proto,omitempty" json:"proto,omitempty"`
-}
-
-func (vrq NATRuleAddRequest) validate() error {
-	if vrq.VINSID == 0 {
-		return errors.New("validation-error: field VINSID can not be empty or equal to 0")
-	}
-	if vrq.IntIP == "" {
-		return errors.New("validation-error: field IntIP can not be empty")
-	}
-	if vrq.IntPort == 0 {
-		return errors.New("validation-error: field IntPort can not be empty or equal to 0")
-	}
-	if vrq.ExtPortStart == 0 {
-		return errors.New("validation-error: field ExtPortStart can not be empty or equal to 0")
-	}
-
-	return nil
+	Proto string `url:"proto,omitempty" json:"proto,omitempty" validate:"omitempty,proto"`
 }
 
 // NATRuleAdd create NAT (port forwarding) rule on VINS
 func (v VINS) NATRuleAdd(ctx context.Context, req NATRuleAddRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/vins/natRuleAdd"

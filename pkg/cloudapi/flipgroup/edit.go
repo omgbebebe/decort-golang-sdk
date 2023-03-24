@@ -2,39 +2,34 @@ package flipgroup
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for edit FLIPGroup
 type EditRequest struct {
 	// FLIPGroup ID
 	// Required: true
-	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId"`
+	FLIPGroupID uint64 `url:"flipgroupId" json:"flipgroupId" validate:"required"`
 
 	// FLIPGroup name
-	// Required: true
+	// Required: false
 	Name string `url:"name,omitempty" json:"name,omitempty"`
 
 	// FLIPGroup description
-	// Required: true
+	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
-}
-
-func (frq EditRequest) validate() error {
-	if frq.FLIPGroupID == 0 {
-		return errors.New("field FLIPGroupID can not be empty or equal to 0")
-	}
-
-	return nil
 }
 
 // Edit edits FLIPGroup fields
 func (f FLIPGroup) Edit(ctx context.Context, req EditRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/flipgroup/edit"

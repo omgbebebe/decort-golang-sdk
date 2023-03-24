@@ -3,37 +3,29 @@ package k8s
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get information about worker group
 type WorkersGroupGetByNameRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
-	K8SID uint64 `url:"k8sId" json:"k8sId"`
+	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 
 	// Worker group name
 	// Required: true
-	GroupName string `url:"groupName" json:"groupName"`
-}
-
-func (krq WorkersGroupGetByNameRequest) validate() error {
-	if krq.K8SID == 0 {
-		return errors.New("validation-error: field K8SID can not be empty or equal to 0")
-	}
-	if krq.GroupName == "" {
-		return errors.New("validation-error: field WorkersGroupID can not be empty")
-	}
-
-	return nil
+	GroupName string `url:"groupName" json:"groupName" validate:"required"`
 }
 
 // WorkersGroupGetByName gets worker group metadata by name
 func (k8s K8S) WorkersGroupGetByName(ctx context.Context, req WorkersGroupGetByNameRequest) (*RecordK8SGroups, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/k8s/workersGroupGetByName"

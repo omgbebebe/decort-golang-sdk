@@ -2,31 +2,26 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for clear affinity label for compute
 type AffinityLabelRemoveRequest struct {
 	// IDs of the compute instances
 	// Required: true
-	ComputeIDs []uint64 `url:"computeIds" json:"computeIds"`
-}
-
-func (crq AffinityLabelRemoveRequest) validate() error {
-	if len(crq.ComputeIDs) == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-
-	return nil
+	ComputeIDs []uint64 `url:"computeIds" json:"computeIds" validate:"min=1"`
 }
 
 // AffinityLabelRemove clear affinity label for compute
 func (c Compute) AffinityLabelRemove(ctx context.Context, req AffinityLabelRemoveRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/affinityLabelRemove"

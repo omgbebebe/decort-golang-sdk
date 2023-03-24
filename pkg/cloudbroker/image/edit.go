@@ -2,16 +2,17 @@ package image
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for edit image
 type EditRequest struct {
 	// ID of the image to edit
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Name for the image
 	// Required: false
@@ -38,19 +39,13 @@ type EditRequest struct {
 	Bootable bool `url:"bootable,omitempty" json:"bootable,omitempty"`
 }
 
-func (irq EditRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
-}
-
 // Edit edits an existing image
 func (i Image) Edit(ctx context.Context, req EditRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/edit"

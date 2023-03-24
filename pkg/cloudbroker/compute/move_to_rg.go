@@ -2,20 +2,21 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for move compute new resource group
 type MoveToRGRequest struct {
 	// ID of the compute instance to move
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// ID of the target resource group
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// New name for the compute upon successful move,
 	// if name change required.
@@ -33,22 +34,13 @@ type MoveToRGRequest struct {
 	ForceStop bool `url:"forceStop,omitempty" json:"forceStop,omitempty"`
 }
 
-func (crq MoveToRGRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-
-	return nil
-}
-
 // MoveToRG moves compute instance to new resource group
 func (c Compute) Validate(ctx context.Context, req MoveToRGRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/moveToRg"

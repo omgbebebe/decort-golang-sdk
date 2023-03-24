@@ -15,7 +15,7 @@ type RecordResource struct {
 	CPU uint64 `json:"cpu"`
 
 	// Disk size
-	DiskSize uint64 `json:"disksize"`
+	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
 	DiskSizeMax int64 `json:"disksizemax"`

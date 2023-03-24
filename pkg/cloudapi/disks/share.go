@@ -2,31 +2,26 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for share data disk
 type ShareRequest struct {
 	// ID of the disk to share
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId"`
-}
-
-func (drq ShareRequest) validate() error {
-	if drq.DiskID == 0 {
-		return errors.New("validation-error: field DiskID can not be empty or equal to 0")
-	}
-
-	return nil
+	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 }
 
 // Share shares data disk
 func (d Disks) Share(ctx context.Context, req ShareRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/disks/share"

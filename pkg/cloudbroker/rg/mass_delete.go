@@ -2,15 +2,16 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete several resource groups
 type MassDeleteRequest struct {
 	// IDs of the resource groups
 	// Required: true
-	RGIDs []uint64 `url:"rgIds" json:"rgIds"`
+	RGIDs []uint64 `url:"rgIds" json:"rgIds" validate:"min=1"`
 
 	// Set to true if you want force delete non-empty resource groups
 	// Required: false
@@ -28,19 +29,13 @@ type MassDeleteRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (rgrq MassDeleteRequest) validate() error {
-	if len(rgrq.RGIDs) == 0 {
-		return errors.New("validation-error: field RGIDs must be set")
-	}
-
-	return nil
-}
-
 // MassDelete starts jobs to delete several resource groups
 func (r RG) MassDelete(ctx context.Context, req MassDeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/massDelete"

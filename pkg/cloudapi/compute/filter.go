@@ -1,5 +1,13 @@
 package compute
 
+import (
+	"context"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/interfaces"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/k8s"
+	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/lb"
+)
+
 // FilterByID returns ListComputes with specified ID.
 func (lc ListComputes) FilterByID(id uint64) ListComputes {
 	predicate := func(ic ItemCompute) bool {
@@ -36,7 +44,7 @@ func (lc ListComputes) FilterByTechStatus(techStatus string) ListComputes {
 	return lc.FilterFunc(predicate)
 }
 
-// FilterByDiskID return ListComputes with specified DiskID.
+// FilterByDiskID returns ListComputes with specified DiskID.
 func (lc ListComputes) FilterByDiskID(diskID uint64) ListComputes {
 	predicate := func(ic ItemCompute) bool {
 		for _, disk := range ic.Disks {
@@ -48,6 +56,88 @@ func (lc ListComputes) FilterByDiskID(diskID uint64) ListComputes {
 	}
 
 	return lc.FilterFunc(predicate)
+}
+
+// FilterByK8SID returns master and worker nodes (ListComputes) inside specified K8S cluster.
+func (lc ListComputes) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (ListComputes, error) {
+	caller := k8s.New(decortClient)
+
+	req := k8s.GetRequest{
+		K8SID: k8sID,
+	}
+
+	cluster, err := caller.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	predicate := func(ic ItemCompute) bool {
+		for _, info := range cluster.K8SGroups.Masters.DetailedInfo {
+			if info.ID == ic.ID {
+				return true
+			}
+		}
+
+		for _, worker := range cluster.K8SGroups.Workers {
+			for _, info := range worker.DetailedInfo {
+				if info.ID == ic.ID {
+					return true
+				}
+			}
+		}
+
+		return false
+	}
+
+	return lc.FilterFunc(predicate), nil
+}
+
+// K8SMasters is used to filter master nodes. Best used after FilterByK8SID function.
+func (lc ListComputes) FilterByK8SMasters() ListComputes {
+	predicate := func(ic ItemCompute) bool {
+		for _, rule := range ic.AntiAffinityRules {
+			if rule.Value == "master" {
+				return true
+			}
+		}
+		return false
+	}
+
+	return lc.FilterFunc(predicate)
+}
+
+// K8SMasters is used to filter worker nodes. Best used after FilterByK8SID function.
+func (lc ListComputes) FilterByK8SWorkers() ListComputes {
+	predicate := func(ic ItemCompute) bool {
+		for _, rule := range ic.AntiAffinityRules {
+			if rule.Value == "worker" {
+				return true
+			}
+		}
+		return false
+	}
+
+	return lc.FilterFunc(predicate)
+}
+
+// FilterByLBID returns ListComputes used by specified Load Balancer.
+func (lc ListComputes) FilterByLBID(ctx context.Context, lbID uint64, decortClient interfaces.Caller) (ListComputes, error) {
+	caller := lb.New(decortClient)
+
+	req := lb.GetRequest{
+		LBID: lbID,
+	}
+
+	foundLB, err := caller.Get(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	predicate := func(ic ItemCompute) bool {
+		return ic.ID == foundLB.PrimaryNode.ComputeID || ic.ID == foundLB.SecondaryNode.ComputeID
+	}
+
+	return lc.FilterFunc(predicate), nil
 }
 
 // FilterFunc allows filtering ListComputes based on a user-specified predicate.

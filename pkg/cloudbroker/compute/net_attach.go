@@ -3,7 +3,6 @@ package compute
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
@@ -13,19 +12,19 @@ import (
 type NetAttachRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Network type
 	// 'EXTNET' for connect to external network directly
 	// and 'VINS' for connect to ViNS
 	// Required: true
-	NetType string `url:"netType" json:"netType"`
+	NetType string `url:"netType" json:"netType" validate:"computeNetType"`
 
 	// Network ID for connect to
 	// For EXTNET - external network ID
 	// For VINS - VINS ID
 	// Required: true
-	NetID uint64 `url:"netId" json:"netId"`
+	NetID uint64 `url:"netId" json:"netId" validate:"required"`
 
 	// Directly required IP address for new network interface
 	// Required: true
@@ -36,29 +35,13 @@ type NetAttachRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq NetAttachRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.NetType == "" {
-		return errors.New("validation-error: field NetType must be set")
-	}
-	validator := validators.StringInSlice(crq.NetType, []string{"EXTNET", "VINS"})
-	if !validator {
-		return errors.New("validation-error: field NetType can be only EXTNET or VINS")
-	}
-	if crq.NetID == 0 {
-		return errors.New("validation-error: field NetID must be set")
-	}
-
-	return nil
-}
-
 // NetAttach attach network to compute and gets info about network
 func (c Compute) NetAttach(ctx context.Context, req NetAttachRequest) (*RecordNetAttach, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/netAttach"

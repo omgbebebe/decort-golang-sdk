@@ -2,38 +2,30 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for exclude consumer nodes
 type DelConsumerNodesRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// List of consumer node IDs
 	// Required: true
-	ConsumerNIDs []uint64 `url:"consumer_nids" json:"consumer_nids"`
-}
-
-func (srq DelConsumerNodesRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-	if len(srq.ConsumerNIDs) == 0 {
-		return errors.New("validation-error: field ConsumerNIDs must be set")
-	}
-
-	return nil
+	ConsumerNIDs []uint64 `url:"consumer_nids" json:"consumer_nids" validate:"min=1"`
 }
 
 // DelConsumerNodes exclude consumer nodes from SEP parameters
 func (s SEP) DelConsumerNodes(ctx context.Context, req DelConsumerNodesRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/delConsumerNodes"

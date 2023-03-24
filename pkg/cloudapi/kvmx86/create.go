@@ -2,34 +2,35 @@ package kvmx86
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create KVM x86 VM
 type CreateRequest struct {
 	// ID of the resource group, which will own this VM
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// Name of this VM.
 	// Must be unique among all VMs (including those in DELETED state) in target resource group
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Number CPUs to allocate to this VM
 	// Required: true
-	CPU uint64 `url:"cpu" json:"cpu"`
+	CPU uint64 `url:"cpu" json:"cpu" validate:"required"`
 
 	// Volume of RAM in MB to allocate to this VM
 	// Required: true
-	RAM uint64 `url:"ram" json:"ram"`
+	RAM uint64 `url:"ram" json:"ram" validate:"required"`
 
 	// ID of the OS image to base this VM on;
 	// Could be boot disk image or CD-ROM image
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 
 	// Size of the boot disk in GB
 	// Required: false
@@ -50,7 +51,7 @@ type CreateRequest struct {
 	//	- EXTNET
 	//	- NONE
 	// Required: false
-	NetType string `url:"netType,omitempty" json:"netType,omitempty"`
+	NetType string `url:"netType,omitempty" json:"netType,omitempty" validate:"omitempty,kvmNetType"`
 
 	// Network ID for connect to,
 	// for EXTNET - external network ID,
@@ -84,31 +85,13 @@ type CreateRequest struct {
 	IPAType string `url:"ipaType,omitempty" json:"ipaType,omitempty"`
 }
 
-func (krq CreateRequest) validate() error {
-	if krq.RGID == 0 {
-		return errors.New("validation-error: field RGID can not be empty or equal to 0")
-	}
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name can not be empty")
-	}
-	if krq.CPU == 0 {
-		return errors.New("validation-error: field CPU can not be empty or equal to 0")
-	}
-	if krq.RAM == 0 {
-		return errors.New("validation-error: field RAM can not be empty or equal to 0")
-	}
-	if krq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID can not be empty or equal to 0")
-	}
-
-	return nil
-}
-
 // Create creates KVM x86 VM based on specified OS image
 func (k KVMX86) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/kvmx86/create"

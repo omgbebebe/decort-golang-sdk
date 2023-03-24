@@ -3,34 +3,29 @@ package sep
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get list of disk IDs
 type DiskListRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// Pool name
 	// Required: false
 	PoolName string `url:"pool_name,omitempty" json:"pool_name,omitempty"`
 }
 
-func (srq DiskListRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-
-	return nil
-}
-
 // DiskList get list of disk IDs, who use this SEP and pool (if provided)
 func (s SEP) DiskList(ctx context.Context, req DiskListRequest) ([]uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/diskList"

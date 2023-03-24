@@ -2,35 +2,30 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for reboot several computes
 type MassRebootRequest struct {
 	// IDs of compute instances to reboot
 	// Required: true
-	ComputeIDs []uint64 `url:"computeIds" json:"computeIds"`
+	ComputeIDs []uint64 `url:"computeIds" json:"computeIds" validate:"min=1"`
 
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (crq MassRebootRequest) validate() error {
-	if len(crq.ComputeIDs) == 0 {
-		return errors.New("validation-error: field ComputeIDs must be set")
-	}
-
-	return nil
-}
-
 // MassReboot starts jobs to reboot several computes
 func (c Compute) MassReboot(ctx context.Context, req MassRebootRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/massReboot"

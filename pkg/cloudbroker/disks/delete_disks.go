@@ -2,42 +2,34 @@ package disks
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for multiple disks
 type DeleteDisksRequest struct {
 	// List of disk ids to delete
 	// Required: true
-	DisksIDs []uint64 `url:"diskIds" json:"diskIds"`
+	DisksIDs []uint64 `url:"diskIds" json:"diskIds" validate:"min=1"`
 
 	// Reason for deleting the disks
 	// Required: true
-	Reason string `url:"reason" json:"reason"`
+	Reason string `url:"reason" json:"reason" validate:"required"`
 
 	// Whether to completely delete the disks, works only with non attached disks
 	// Required: false
 	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
 }
 
-func (drq DeleteDisksRequest) validate() error {
-	if len(drq.DisksIDs) == 0 {
-		return errors.New("validation-error: field DiskIDs must be set")
-	}
-	if drq.Reason == "" {
-		return errors.New("validation-error: field Reason must be set")
-	}
-
-	return nil
-}
-
 // DeleteDisks deletes multiple disks permanently
 func (d Disks) DeleteDisks(ctx context.Context, req DeleteDisksRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/disks/deleteDisks"

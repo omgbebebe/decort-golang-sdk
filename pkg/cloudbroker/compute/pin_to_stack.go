@@ -2,42 +2,34 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for pin comptute to stack
 type PinToStackRequest struct {
 	// ID of the compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Stack ID to pin to
 	// Required: true
-	TargetStackID uint64 `url:"targetStackId" json:"targetStackId"`
+	TargetStackID uint64 `url:"targetStackId" json:"targetStackId" validate:"required"`
 
 	// Try to migrate or not if compute in running states
 	// Required: false
 	Force bool `url:"force" json:"force"`
 }
 
-func (crq PinToStackRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.TargetStackID == 0 {
-		return errors.New("validation-error: field TargetStackID must be set")
-	}
-
-	return nil
-}
-
 // PinToStack pin compute to current stack
 func (c Compute) PinToStack(ctx context.Context, req PinToStackRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/pinToStack"

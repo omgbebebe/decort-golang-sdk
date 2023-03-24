@@ -23,7 +23,7 @@ type AddUserRequest struct {
 	//	- 'RCX' for Write
 	//	- 'ARCXDU' for Admin
 	// Required: true
-	AccessType string `url:"accesstype" json:"accesstype" validate:"required,accountAccessType"`
+	AccessType string `url:"accesstype" json:"accesstype" validate:"required,accessType"`
 }
 
 // AddUser gives a user access rights.

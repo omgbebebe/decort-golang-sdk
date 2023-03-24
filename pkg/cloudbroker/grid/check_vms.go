@@ -2,31 +2,26 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for check virtual machine
 type CheckVMsRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
-}
-
-func (grq CheckVMsRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-
-	return nil
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 }
 
 // CheckVMs run checkvms jumpscript
 func (g Grid) CheckVMs(ctx context.Context, req CheckVMsRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/checkVMs"

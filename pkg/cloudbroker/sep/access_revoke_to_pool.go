@@ -2,20 +2,21 @@ package sep
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for revoke access to pool SEP
 type AccessRevokeToPoolRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 
 	// Pool name
 	// Required: true
-	PoolName string `url:"pool_name" json:"pool_name"`
+	PoolName string `url:"pool_name" json:"pool_name" validate:"required"`
 
 	// Account ID to grant access to the specified pool SEP
 	// Required: false
@@ -26,22 +27,13 @@ type AccessRevokeToPoolRequest struct {
 	RGID uint64 `url:"resgroup_id,omitempty" json:"resgroup_id,omitempty"`
 }
 
-func (srq AccessRevokeToPoolRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-	if srq.PoolName == "" {
-		return errors.New("validation-error: field PoolName must be set")
-	}
-
-	return nil
-}
-
 // AccessRevokeToPool revoke access to pool SEP
 func (s SEP) AccessRevokeToPool(ctx context.Context, req AccessRevokeToPoolRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/accessRevokeToPool"

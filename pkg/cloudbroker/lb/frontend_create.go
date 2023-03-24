@@ -2,47 +2,36 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create frontend
 type FrontendCreateRequest struct {
 	// ID of the load balancer instance to FrontendCreate
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Must be unique among all frontends of
 	// this load balancer - name of the new frontend to create
 	// Required: true
-	FrontendName string `url:"frontendName" json:"frontendName"`
+	FrontendName string `url:"frontendName" json:"frontendName" validate:"required"`
 
 	// Should be one of the backends existing on
 	// this load balancer - name of the backend to use
 	// Required: true
-	BackendName string `url:"backendName" json:"backendName"`
-}
-
-func (lbrq FrontendCreateRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID must be set")
-	}
-	if lbrq.FrontendName == "" {
-		return errors.New("validation-error: field FrontendName must be set")
-	}
-	if lbrq.BackendName == "" {
-		return errors.New("validation-error: field BackendName must be set")
-	}
-
-	return nil
+	BackendName string `url:"backendName" json:"backendName" validate:"required"`
 }
 
 // FrontendCreate creates new frontend on the specified load balancer
 func (l LB) FrontendCreate(ctx context.Context, req FrontendCreateRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/lb/frontendCreate"

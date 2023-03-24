@@ -3,30 +3,25 @@ package image
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get image details
 type GetRequest struct {
 	// ID of image
 	// Required: true
-	ImageID uint64 `url:"imageId" json:"imageId"`
-}
-
-func (irq GetRequest) validate() error {
-	if irq.ImageID == 0 {
-		return errors.New("validation-error: field ImageID must be set")
-	}
-
-	return nil
+	ImageID uint64 `url:"imageId" json:"imageId" validate:"required"`
 }
 
 // Get get image details by ID
 func (i Image) Get(ctx context.Context, req GetRequest) (*RecordImage, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/image/get"

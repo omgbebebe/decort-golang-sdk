@@ -2,30 +2,25 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get platform snapshot with additional diagnosis
 type GetDiagnosisRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
-}
-
-func (grq GetDiagnosisRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-
-	return nil
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 }
 
 // GetDiagnosis get platform snapshot with additional diagnosis info like a logs, etc
 func (g Grid) GetDiagnosis(ctx context.Context, req GetDiagnosisRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/getDiagnosis"
@@ -40,9 +35,11 @@ func (g Grid) GetDiagnosis(ctx context.Context, req GetDiagnosisRequest) (string
 
 // GetDiagnosisGET get platform snapshot with additional diagnosis info like a logs, etc
 func (g Grid) GetDiagnosisGET(ctx context.Context, req GetDiagnosisRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/getDiagnosis"

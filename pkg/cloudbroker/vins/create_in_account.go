@@ -2,20 +2,21 @@ package vins
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create VINS in account
 type CreateInAccountRequest struct {
 	// VINS name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// ID of account
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Grid ID
 	// Required: false
@@ -38,22 +39,13 @@ type CreateInAccountRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-func (vrq CreateInAccountRequest) validate() error {
-	if vrq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if vrq.AccountID == 0 {
-		return errors.New("validation-error: field AccountID must be set")
-	}
-
-	return nil
-}
-
 // CreateInAccount creates VINS in account level
 func (v VINS) CreateInAccount(ctx context.Context, req CreateInAccountRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/vins/createInAccount"

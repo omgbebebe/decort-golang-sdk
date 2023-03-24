@@ -2,7 +2,6 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -13,18 +12,18 @@ import (
 type NetQOSRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Network ID
 	// Required: true
-	NetID uint64 `url:"netId" json:"netId"`
+	NetID uint64 `url:"netId" json:"netId" validate:"required"`
 
 	// Network type
 	// Should be one of:
 	//	- VINS
 	//	- EXTNET
 	// Required: true
-	NetType string `url:"netType" json:"netType"`
+	NetType string `url:"netType" json:"netType" validate:"computeNetType"`
 
 	// Internal traffic, kbit
 	// Required: false
@@ -39,29 +38,13 @@ type NetQOSRequest struct {
 	EgressRate uint64 `url:"egress_rate,omitempty" json:"egress_rate,omitempty"`
 }
 
-func (crq NetQOSRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.NetType == "" {
-		return errors.New("validation-error: field NetType must be set")
-	}
-	validator := validators.StringInSlice(crq.NetType, []string{"EXTNET", "VINS"})
-	if !validator {
-		return errors.New("validation-error: field NetType can be only EXTNET or VINS")
-	}
-	if crq.NetID == 0 {
-		return errors.New("validation-error: field NetID must be set")
-	}
-
-	return nil
-}
-
 // NetQOS update compute interfaces QOS
 func (c Compute) NetQOS(ctx context.Context, req NetQOSRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/netQos"

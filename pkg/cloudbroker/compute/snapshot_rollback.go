@@ -2,38 +2,30 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for rollback
 type SnapshotRollbackRequest struct {
 	// ID of the compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Text label of snapshot to rollback
 	// Required: true
-	Label string `url:"label" json:"label"`
-}
-
-func (crq SnapshotRollbackRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.Label == "" {
-		return errors.New("validation-error: field Label must be set")
-	}
-
-	return nil
+	Label string `url:"label" json:"label" validate:"required"`
 }
 
 // SnapshotRollback rollback specified compute snapshot
 func (c Compute) SnapshotRollback(ctx context.Context, req SnapshotRollbackRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/snapshotRollback"

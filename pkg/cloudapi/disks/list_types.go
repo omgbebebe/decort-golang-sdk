@@ -10,7 +10,7 @@ import (
 type ListTypesRequest struct {
 	// Show detailed disk types by seps
 	// Required: false
-	Detailed bool `url:"detailed" json:"detailed"`
+	Detailed bool `url:"detailed,omitempty" json:"detailed,omitempty"`
 }
 
 // ListTypes gets list defined disk types

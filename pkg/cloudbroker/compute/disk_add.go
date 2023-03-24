@@ -2,31 +2,32 @@ package compute
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create and attach disk to compute
 type DiskAddRequest struct {
 	// ID of compute instance
 	// Required: true
-	ComputeID uint64 `url:"computeId" json:"computeId"`
+    ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Name for disk
 	// Required: true
-	DiskName string `url:"diskName" json:"diskName"`
+    DiskName string `url:"diskName" json:"diskName" validate:"required"`
 
 	// Disk size in GB
 	// Required: true
-	Size uint64 `url:"size" json:"size"`
+    Size uint64 `url:"size" json:"size" validate:"required"`
 
 	// Type of the disk
 	// Should be one of:
 	//	- D
 	//	- B
 	// Required: false
-	DiskType string `url:"diskType,omitempty" json:"diskType,omitempty"`
+    DiskType string `url:"diskType,omitempty" json:"diskType,omitempty" validate:"omitempty,computeDiskType"`
 
 	// Storage endpoint provider ID
 	// By default the same with boot disk
@@ -47,25 +48,13 @@ type DiskAddRequest struct {
 	ImageID uint64 `url:"imageId,omitempty" json:"imageId,omitempty"`
 }
 
-func (crq DiskAddRequest) validate() error {
-	if crq.ComputeID == 0 {
-		return errors.New("validation-error: field ComputeID must be set")
-	}
-	if crq.DiskName == "" {
-		return errors.New("validation-error: field DiskName must be set")
-	}
-	if crq.Size == 0 {
-		return errors.New("validation-error: field Size must be set")
-	}
-
-	return nil
-}
-
 // DiskAdd creates new disk and attach to compute
 func (c Compute) DiskAdd(ctx context.Context, req DiskAddRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/compute/diskAdd"

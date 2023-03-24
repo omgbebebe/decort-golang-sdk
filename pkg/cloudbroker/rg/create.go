@@ -2,24 +2,25 @@ package rg
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create resource group
 type CreateRequest struct {
 	// Account, which will own this resource group
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Grid ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 
 	// Name of this resource group. Must be unique within the account
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Max size of memory in MB
 	// Required: false
@@ -53,7 +54,7 @@ type CreateRequest struct {
 	//	- PUBLIC
 	//	- NONE
 	// Required: false
-	DefNet string `url:"def_net,omitempty" json:"def_net,omitempty"`
+	DefNet string `url:"def_net,omitempty" json:"def_net,omitempty" validate:"omitempty,rgDefNet"`
 
 	// Private network IP CIDR if default network PRIVATE
 	// Required: false
@@ -84,25 +85,13 @@ type CreateRequest struct {
 	UniqPools []string `url:"unuqPools,omitempty" json:"unuqPools,omitempty"`
 }
 
-func (rgrq CreateRequest) validate() error {
-	if rgrq.AccountID == 0 {
-		return errors.New("field AccountID can not be empty or equal to 0")
-	}
-	if rgrq.GID == 0 {
-		return errors.New("field GID can not be empty or equal to 0")
-	}
-	if len(rgrq.Name) < 2 {
-		return errors.New("field Name can not be shorter than two bytes")
-	}
-
-	return nil
-}
-
 // Create creates resource group
 func (r RG) Create(ctx context.Context, req CreateRequest) (uint64, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return 0, err
+		for _, validationError := range validators.GetErrors(err) {
+			return 0, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/rg/create"

@@ -3,7 +3,6 @@ package flipgroup
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
@@ -13,28 +12,28 @@ import (
 type CreateRequest struct {
 	// Account ID
 	// Required: true
-	AccountID uint64 `url:"accountId" json:"accountId"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// FLIPGroup name
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Network type
 	// Should be one of:
 	//	- EXTNET
 	//	- VINS
 	// Required: true
-	NetType string `url:"netType" json:"netType"`
+	NetType string `url:"netType" json:"netType" validate:"computeNetType"`
 
 	// ID of external network or VINS
 	// Required: true
-	NetID uint64 `url:"netId" json:"netId"`
+	NetID uint64 `url:"netId" json:"netId" validate:"required"`
 
 	// Type of client
 	//	- 'compute'
 	//	- 'vins' (will be later)
 	// Required: true
-	ClientType string `url:"clientType" json:"clientType"`
+	ClientType string `url:"clientType" json:"clientType" validate:"flipgroupClientType"`
 
 	// IP address to associate with this group. If empty, the platform will autoselect IP address
 	// Required: false
@@ -45,33 +44,13 @@ type CreateRequest struct {
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-func (frq CreateRequest) validate() error {
-	if frq.AccountID == 0 {
-		return errors.New("field AccountID can not be empty or equal to 0")
-	}
-	if frq.NetID == 0 {
-		return errors.New("field NetID can not be empty or equal to 0")
-	}
-	if frq.Name == "" {
-		return errors.New("field Name can not be empty")
-	}
-	validator := validators.StringInSlice(frq.NetType, []string{"EXTNET", "VINS"})
-	if !validator {
-		return errors.New("field Name can be only EXTNET or VINS")
-	}
-	validator = validators.StringInSlice(frq.ClientType, []string{"compute", "node"})
-	if !validator {
-		return errors.New("field Name can be only compute or node")
-	}
-
-	return nil
-}
-
 // Create method will create a new FLIPGorup in the specified Account
 func (f FLIPGroup) Create(ctx context.Context, req CreateRequest) (*RecordFLIPGroup, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/flipgroup/create"

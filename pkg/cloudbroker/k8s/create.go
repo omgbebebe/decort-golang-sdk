@@ -2,28 +2,29 @@ package k8s
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for create K8S
 type CreateRequest struct {
 	// Name of kubernetes cluster
 	// Required: true
-	Name string `url:"name" json:"name"`
+	Name string `url:"name" json:"name" validate:"required"`
 
 	// Resource group ID for cluster placement
 	// Required: true
-	RGID uint64 `url:"rgId" json:"rgId"`
+	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
 	// ID of kubernetes catalog item (K8CI) for cluster
 	// Required: true
-	K8CIID uint64 `url:"k8ciId" json:"k8ciId"`
+	K8CIID uint64 `url:"k8ciId" json:"k8ciId" validate:"required"`
 
 	// Name for first worker group created with cluster
 	// Required: true
-	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName"`
+	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required"`
 
 	// ID of SEP to create boot disks for master nodes.
 	// Uses images SEP ID if not set
@@ -104,28 +105,13 @@ type CreateRequest struct {
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-func (krq CreateRequest) validate() error {
-	if krq.Name == "" {
-		return errors.New("validation-error: field Name must be set")
-	}
-	if krq.RGID == 0 {
-		return errors.New("validation-error: field RGID must be set")
-	}
-	if krq.K8CIID == 0 {
-		return errors.New("validation-error: field K8CIID must be set")
-	}
-	if krq.WorkerGroupName == "" {
-		return errors.New("validation-error: field WorkerGroupName must be set")
-	}
-
-	return nil
-}
-
 // Create creates a new kubernetes cluster in the specified resource group
 func (k K8S) Create(ctx context.Context, req CreateRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/k8s/create"

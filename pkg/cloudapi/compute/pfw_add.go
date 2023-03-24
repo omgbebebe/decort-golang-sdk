@@ -29,7 +29,7 @@ type PFWAddRequest struct {
 	// Network protocol
 	// either "tcp" or "udp"
 	// Required: true
-	Proto string `url:"proto" json:"proto" validate:"computeProto"`
+	Proto string `url:"proto" json:"proto" validate:"proto"`
 }
 
 // PFWAdd add port forward rule

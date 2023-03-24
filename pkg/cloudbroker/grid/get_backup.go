@@ -2,30 +2,25 @@ package grid
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get backup
 type GetBackupRequest struct {
 	// Grid (platform) ID
 	// Required: true
-	GID uint64 `url:"gid" json:"gid"`
-}
-
-func (grq GetBackupRequest) validate() error {
-	if grq.GID == 0 {
-		return errors.New("validation-error: field GID must be set")
-	}
-
-	return nil
+	GID uint64 `url:"gid" json:"gid" validate:"required"`
 }
 
 // GetBackup gets platform backup
 func (g Grid) GetBackup(ctx context.Context, req GetBackupRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/getBackup"
@@ -40,9 +35,11 @@ func (g Grid) GetBackup(ctx context.Context, req GetBackupRequest) (string, erro
 
 // GetBackupGET gets platform backup
 func (g Grid) GetBackupGET(ctx context.Context, req GetBackupRequest) (string, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return "", err
+		for _, validationError := range validators.GetErrors(err) {
+			return "", validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/grid/getBackup"

@@ -2,39 +2,31 @@ package lb
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strconv"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for delete backend
 type BackendDeleteRequest struct {
 	// ID of the load balancer instance to BackendDelete
 	// Required: true
-	LBID uint64 `url:"lbId" json:"lbId"`
+	LBID uint64 `url:"lbId" json:"lbId" validate:"required"`
 
 	// Cannot be emtpy string - name of the backend to delete
 	// Required: true
-	BackendName string `url:"backendName" json:"backendName"`
-}
-
-func (lbrq BackendDeleteRequest) validate() error {
-	if lbrq.LBID == 0 {
-		return errors.New("validation-error: field LBID can not be empty or equal to 0")
-	}
-	if lbrq.BackendName == "" {
-		return errors.New("validation-error: field BackendName can not be empty")
-	}
-
-	return nil
+	BackendName string `url:"backendName" json:"backendName" validate:"required"`
 }
 
 // BackendDelete deletes backend from the specified load balancer.
 // Warning: you cannot undo this action!
 func (l LB) BackendDelete(ctx context.Context, req BackendDeleteRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudapi/lb/backendDelete"

@@ -3,30 +3,25 @@ package sep
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for get SEP parameters
 type GetRequest struct {
 	// Storage endpoint provider ID
 	// Required: true
-	SEPID uint64 `url:"sep_id" json:"sep_id"`
-}
-
-func (srq GetRequest) validate() error {
-	if srq.SEPID == 0 {
-		return errors.New("validation-error: field SEPID must be set")
-	}
-
-	return nil
+	SEPID uint64 `url:"sep_id" json:"sep_id" validate:"required"`
 }
 
 // Get gets SEP parameters
 func (s SEP) Get(ctx context.Context, req GetRequest) (*RecordSEP, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return nil, err
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/sep/get"

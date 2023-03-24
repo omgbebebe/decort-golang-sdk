@@ -2,30 +2,25 @@ package account
 
 import (
 	"context"
-	"errors"
 	"net/http"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for disable group accounts
 type DisableAccountsRequest struct {
 	// IDs of accounts
 	// Required: true
-	AccountIDs []uint64 `url:"accountIds,omitempty" json:"accountIds,omitempty"`
-}
-
-func (arq DisableAccountsRequest) validate() error {
-	if len(arq.AccountIDs) == 0 {
-		return errors.New("validation-error: field AccountIDs must be set")
-	}
-
-	return nil
+	AccountIDs []uint64 `url:"accountIds" json:"accountIds" validate:"min=1"`
 }
 
 // DisableAccounts disables accounts
 func (a Account) DisableAccounts(ctx context.Context, req DisableAccountsRequest) (bool, error) {
-	err := req.validate()
+	err := validators.ValidateRequest(req)
 	if err != nil {
-		return false, err
+		for _, validationError := range validators.GetErrors(err) {
+			return false, validators.ValidationError(validationError)
+		}
 	}
 
 	url := "/cloudbroker/account/disableAccounts"
