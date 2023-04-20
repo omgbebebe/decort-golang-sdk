@@ -14,7 +14,7 @@ type ListUnattachedRequest struct {
 }
 
 // ListUnattached gets list of unattached disks
-func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (ListDisks, error) {
+func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (ListDisksUnattached, error) {
 	url := "/cloudapi/disks/listUnattached"
 
 	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -22,7 +22,7 @@ func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (L
 		return nil, err
 	}
 
-	list := ListDisks{}
+	list := ListDisksUnattached{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

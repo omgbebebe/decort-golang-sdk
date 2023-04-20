@@ -18,6 +18,15 @@ func (ll ListLocations) FilterByName(name string) ListLocations {
 	return ll.FilterFunc(predicate)
 }
 
+// FilterByGID returns ListLocations with specified GID.
+func (ll ListLocations) FilterByGID(gid uint64) ListLocations {
+	predicate := func(il ItemLocation) bool {
+		return il.GID == gid
+	}
+
+	return ll.FilterFunc(predicate)
+}
+
 // FilterFunc allows filtering ListLocations based on a user-specified predicate.
 func (ll ListLocations) FilterFunc(predicate func(ItemLocation) bool) ListLocations {
 	var result ListLocations

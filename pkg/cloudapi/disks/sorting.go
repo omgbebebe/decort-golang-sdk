@@ -58,3 +58,60 @@ func (ld ListDisks) SortByDeletedTime(inverse bool) ListDisks {
 
 	return ld
 }
+
+// SortByCreatedTime sorts ListDisksUnattached by the CreatedTime field in ascending order.
+//
+// If inverse param is set to true, the order is reversed.
+func (lu ListDisksUnattached) SortByCreatedTime(inverse bool) ListDisksUnattached {
+	if len(lu) < 2 {
+		return lu
+	}
+
+	sort.Slice(lu, func(i, j int) bool {
+		if inverse {
+			return lu[i].CreatedTime > lu[j].CreatedTime
+		}
+
+		return lu[i].CreatedTime < lu[j].CreatedTime
+	})
+
+	return lu
+}
+
+// SortByDestructionTime sorts ListDisksUnattached by the DestructionTime field in ascending order.
+//
+// If inverse param is set to true, the order is reversed.
+func (lu ListDisksUnattached) SortByDestructionTime(inverse bool) ListDisksUnattached {
+	if len(lu) < 2 {
+		return lu
+	}
+
+	sort.Slice(lu, func(i, j int) bool {
+		if inverse {
+			return lu[i].DestructionTime > lu[j].DestructionTime
+		}
+
+		return lu[i].DestructionTime < lu[j].DestructionTime
+	})
+
+	return lu
+}
+
+// SortByDeletedTime sorts ListDisksUnattached by the DeletedTime field in ascending order.
+//
+// If inverse param is set to true, the order is reversed.
+func (lu ListDisksUnattached) SortByDeletedTime(inverse bool) ListDisksUnattached {
+	if len(lu) < 2 {
+		return lu
+	}
+
+	sort.Slice(lu, func(i, j int) bool {
+		if inverse {
+			return lu[i].DeletedTime > lu[j].DeletedTime
+		}
+
+		return lu[i].DeletedTime < lu[j].DeletedTime
+	})
+
+	return lu
+}

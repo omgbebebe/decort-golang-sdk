@@ -159,5 +159,10 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
+	err = validate.RegisterValidation("hwPath", hwPathValidator)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

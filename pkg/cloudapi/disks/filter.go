@@ -130,3 +130,62 @@ func (ld ListDisks) FindOne() ItemDisk {
 
 	return ld[0]
 }
+
+// FilterByID returns ListDisksUnattached with specified ID.
+func (lu ListDisksUnattached) FilterByID(id uint64) ListDisksUnattached {
+	predicate := func(idisk ItemDiskUnattached) bool {
+		return idisk.ID == id
+	}
+
+	return lu.FilterFunc(predicate)
+}
+
+// FilterByName returns ListDisksUnattached with specified Name.
+func (lu ListDisksUnattached) FilterByName(name string) ListDisksUnattached {
+	predicate := func(idisk ItemDiskUnattached) bool {
+		return idisk.Name == name
+	}
+
+	return lu.FilterFunc(predicate)
+}
+
+// FilterByStatus returns ListDisksUnattached with specified Status.
+func (lu ListDisksUnattached) FilterByStatus(status string) ListDisksUnattached {
+	predicate := func(idisk ItemDiskUnattached) bool {
+		return idisk.Status == status
+	}
+
+	return lu.FilterFunc(predicate)
+}
+
+// FilterByTechStatus returns ListDisksUnattached with specified TechStatus.
+func (lu ListDisksUnattached) FilterByTechStatus(techStatus string) ListDisksUnattached {
+	predicate := func(idisk ItemDiskUnattached) bool {
+		return idisk.TechStatus == techStatus
+	}
+
+	return lu.FilterFunc(predicate)
+}
+
+// FilterFunc allows filtering ListDisksUnattached based on a user-specified predicate.
+func (lu ListDisksUnattached) FilterFunc(predicate func(ItemDiskUnattached) bool) ListDisksUnattached {
+	var result ListDisksUnattached
+
+	for _, item := range lu {
+		if predicate(item) {
+			result = append(result, item)
+		}
+	}
+
+	return result
+}
+
+// FindOne returns first found ItemDiskUnattached
+// If none was found, returns an empty struct.
+func (lu ListDisksUnattached) FindOne() ItemDiskUnattached {
+	if len(lu) == 0 {
+		return ItemDiskUnattached{}
+	}
+
+	return lu[0]
+}

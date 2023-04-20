@@ -4,7 +4,7 @@ import "testing"
 
 var computes = ListComputes{
 	ItemCompute{
-		ACL:           []interface{}{},
+		ACL:           ListACL{},
 		AccountID:     132847,
 		AccountName:   "std_2",
 		AffinityLabel: "",
@@ -85,7 +85,7 @@ var computes = ListComputes{
 		VirtualImageID:   0,
 	},
 	ItemCompute{
-		ACL:               []interface{}{},
+		ACL:               ListACL{},
 		AccountID:         132848,
 		AccountName:       "std_broker",
 		AffinityLabel:     "",
@@ -150,92 +150,92 @@ var computes = ListComputes{
 }
 
 func TestFilterByID(t *testing.T) {
-    actual := computes.FilterByID(48500).FindOne()
+	actual := computes.FilterByID(48500).FindOne()
 
-    if actual.ID != 48500 {
-        t.Fatal("expected ID 48500, found: ", actual.ID)
-    }
+	if actual.ID != 48500 {
+		t.Fatal("expected ID 48500, found: ", actual.ID)
+	}
 
-    actualEmpty := computes.FilterByID(0)
+	actualEmpty := computes.FilterByID(0)
 
-    if len(actualEmpty) != 0 {
-        t.Fatal("expected empty, actual: ", len(actualEmpty))
-    }
+	if len(actualEmpty) != 0 {
+		t.Fatal("expected empty, actual: ", len(actualEmpty))
+	}
 }
 
 func TestFilterByName(t *testing.T) {
-    actual := computes.FilterByName("test").FindOne()
+	actual := computes.FilterByName("test").FindOne()
 
-    if actual.Name != "test" {
-        t.Fatal("expected compute with name 'test', found: ", actual.Name)
-    }
+	if actual.Name != "test" {
+		t.Fatal("expected compute with name 'test', found: ", actual.Name)
+	}
 }
 
 func TestFilterByStatus(t *testing.T) {
-    actual := computes.FilterByStatus("ENABLED")
+	actual := computes.FilterByStatus("ENABLED")
 
-    for _, item := range actual {
-        if item.Status != "ENABLED" {
-            t.Fatal("expected ENABLED status, found: ", item.Status)
-        }
-    }
+	for _, item := range actual {
+		if item.Status != "ENABLED" {
+			t.Fatal("expected ENABLED status, found: ", item.Status)
+		}
+	}
 }
 
 func TestFilterByTechStatus(t *testing.T) {
-    actual := computes.FilterByTechStatus("STARTED").FindOne()
+	actual := computes.FilterByTechStatus("STARTED").FindOne()
 
-    if actual.ID != 48556 {
-        t.Fatal("expected 48556 with STARTED techStatus, found: ", actual.ID)
-    }
+	if actual.ID != 48556 {
+		t.Fatal("expected 48556 with STARTED techStatus, found: ", actual.ID)
+	}
 }
 
 func TestFilterByDiskID(t *testing.T) {
-    actual := computes.FilterByDiskID(65248).FindOne()
+	actual := computes.FilterByDiskID(65248).FindOne()
 
-    if actual.ID != 48556 {
-        t.Fatal("expected 48556 with DiskID 65248, found: ", actual.ID)
-    }
+	if actual.ID != 48556 {
+		t.Fatal("expected 48556 with DiskID 65248, found: ", actual.ID)
+	}
 }
 
 func TestFilterFunc(t *testing.T) {
-    actual := computes.FilterFunc(func(ic ItemCompute) bool {
-        return ic.Registered == true
-    })
+	actual := computes.FilterFunc(func(ic ItemCompute) bool {
+		return ic.Registered == true
+	})
 
-    if len(actual) != 2 {
-        t.Fatal("expected 2 elements found, actual: ", len(actual))
-    }
+	if len(actual) != 2 {
+		t.Fatal("expected 2 elements found, actual: ", len(actual))
+	}
 
-    for _, item := range actual {
-        if item.Registered != true {
-            t.Fatal("expected Registered to be true, actual: ", item.Registered)
-        }
-    }
+	for _, item := range actual {
+		if item.Registered != true {
+			t.Fatal("expected Registered to be true, actual: ", item.Registered)
+		}
+	}
 }
 
 func TestSortingByCreatedTime(t *testing.T) {
-    actual := computes.SortByCreatedTime(false)
+	actual := computes.SortByCreatedTime(false)
 
-    if actual[0].Name != "test" {
-        t.Fatal("expected 'test', found: ", actual[0].Name)
-    }
+	if actual[0].Name != "test" {
+		t.Fatal("expected 'test', found: ", actual[0].Name)
+	}
 
-    actual = computes.SortByCreatedTime(true)
-    if actual[0].Name != "compute_2" {
-        t.Fatal("expected 'compute_2', found: ", actual[0].Name)
-    }
+	actual = computes.SortByCreatedTime(true)
+	if actual[0].Name != "compute_2" {
+		t.Fatal("expected 'compute_2', found: ", actual[0].Name)
+	}
 }
 
 func TestSortingByCPU(t *testing.T) {
-    actual := computes.SortByCPU(false)
+	actual := computes.SortByCPU(false)
 
-    if actual[0].CPU != 4{
-        t.Fatal("expected 4 CPU cores, found: ", actual[0].CPU)
-    }
+	if actual[0].CPU != 4 {
+		t.Fatal("expected 4 CPU cores, found: ", actual[0].CPU)
+	}
 
-    actual = computes.SortByCPU(true)
+	actual = computes.SortByCPU(true)
 
-    if actual[0].CPU != 6 {
-        t.Fatal("expected 6 CPU cores, found: ", actual[0].CPU)
-    }
+	if actual[0].CPU != 6 {
+		t.Fatal("expected 6 CPU cores, found: ", actual[0].CPU)
+	}
 }

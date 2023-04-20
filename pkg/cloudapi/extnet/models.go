@@ -107,6 +107,23 @@ type VNFs struct {
 	DHCP uint64 `json:"dhcp"`
 }
 
+type Excluded struct {
+	// ClientType
+	ClientType string `json:"clientType"`
+
+	// IP
+	IP string `json:"ip"`
+
+	// MAC
+	MAC string `json:"mac"`
+
+	// Type
+	Type string `json:"type"`
+
+	// VMID
+	VMID uint64 `json:"vmId"`
+}
+
 // Detailed information about external network
 type RecordExtNet struct {
 	// CKey
@@ -134,7 +151,7 @@ type RecordExtNet struct {
 	DNS []string `json:"dns"`
 
 	// Excluded
-	Excluded []string `json:"excluded"`
+	Excluded []Excluded `json:"excluded"`
 
 	// Free IPs
 	FreeIPs uint64 `json:"free_ips"`

@@ -1,6 +1,9 @@
 package validators
 
-import "github.com/go-playground/validator/v10"
+import (
+	"github.com/go-playground/validator/v10"
+	"regexp"
+)
 
 // protoValidator is used to validate Proto fields.
 func protoValidator(fe validator.FieldLevel) bool {
@@ -202,4 +205,13 @@ func sepFieldTypeValidator(fe validator.FieldLevel) bool {
 	fieldValue := fe.Field().String()
 
 	return StringInSlice(fieldValue, sepFieldTypeValues)
+}
+
+// hwPathValidator is used to validate HWPath field.
+func hwPathValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+
+	ok, _ := regexp.MatchString(`^\b[0-9a-f]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}.\d{1}$`, fieldValue)
+
+	return ok
 }

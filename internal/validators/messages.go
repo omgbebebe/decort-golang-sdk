@@ -187,6 +187,10 @@ func errorMessage(fe validator.FieldError) string {
 			fe.Field(),
 			joinValues(sepFieldTypeValues))
 
+	case "hwPath":
+		return fmt.Sprintf("%s %s must be in format 0000:1f:2b.0",
+			prefix,
+			fe.Field())
 	}
 
 	return fe.Error()

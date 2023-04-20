@@ -1,5 +1,7 @@
 package compute
 
+import "strconv"
+
 // Access Control List
 type RecordACL struct {
 	// Account ACL list
@@ -12,10 +14,27 @@ type RecordACL struct {
 	RGACL ListACL `json:"rgAcl"`
 }
 
+type Explicit bool
+
+func (e *Explicit) UnmarshalJSON(b []byte) error {
+	if b[0] == '"' {
+		b = b[1 : len(b)-1]
+	}
+
+	res, err := strconv.ParseBool(string(b))
+	if err != nil {
+		return err
+	}
+
+	*e = Explicit(res)
+
+	return nil
+}
+
 // ACL information
 type ItemACL struct {
 	// Explicit
-	Explicit bool `json:"explicit"`
+	Explicit Explicit `json:"explicit"`
 
 	// GUID
 	GUID string `json:"guid"`
@@ -709,8 +728,7 @@ type IOTune struct {
 // Main information about compute
 type ItemCompute struct {
 	// Access Control List
-	ACL []interface{} `json:"acl"`
-
+	ACL ListACL `json:"acl"`
 	// Account ID
 	AccountID uint64 `json:"accountId"`
 

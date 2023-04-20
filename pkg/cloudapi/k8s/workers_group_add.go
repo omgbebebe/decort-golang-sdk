@@ -59,11 +59,11 @@ type WorkersGroupAddRequest struct {
 }
 
 // WorkersGroupAdd adds workers group to Kubernetes cluster
-func (k8s K8S) WorkersGroupAdd(ctx context.Context, req WorkersGroupAddRequest) (bool, error) {
+func (k8s K8S) WorkersGroupAdd(ctx context.Context, req WorkersGroupAddRequest) (uint64, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
-			return false, validators.ValidationError(validationError)
+			return 0, validators.ValidationError(validationError)
 		}
 	}
 
@@ -71,12 +71,12 @@ func (k8s K8S) WorkersGroupAdd(ctx context.Context, req WorkersGroupAddRequest) 
 
 	res, err := k8s.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
-	result, err := strconv.ParseBool(string(res))
+	result, err := strconv.ParseUint(string(res), 10, 64)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
 	return result, nil

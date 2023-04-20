@@ -24,23 +24,23 @@ type UpdateRequest struct {
 
 	// Max size of memory in MB
 	// Required: false
-	MaxMemoryCapacity uint64 `url:"maxMemoryCapacity,omitempty" json:"maxMemoryCapacity,omitempty"`
+	MaxMemoryCapacity int64 `url:"maxMemoryCapacity,omitempty" json:"maxMemoryCapacity,omitempty"`
 
 	// Max size of aggregated virtual disks in GB
 	// Required: false
-	MaxVDiskCapacity uint64 `url:"maxVDiskCapacity,omitempty" json:"maxVDiskCapacity,omitempty"`
+	MaxVDiskCapacity int64 `url:"maxVDiskCapacity,omitempty" json:"maxVDiskCapacity,omitempty"`
 
 	// Max number of CPU cores
 	// Required: false
-	MaxCPUCapacity uint64 `url:"maxCPUCapacity,omitempty" json:"maxCPUCapacity,omitempty"`
+	MaxCPUCapacity int64 `url:"maxCPUCapacity,omitempty" json:"maxCPUCapacity,omitempty"`
 
 	// Max sent/received network transfer peering
 	// Required: false
-	MaxNetworkPeerTransfer uint64 `url:"maxNetworkPeerTransfer,omitempty" json:"maxNetworkPeerTransfer,omitempty"`
+	MaxNetworkPeerTransfer int64 `url:"maxNetworkPeerTransfer,omitempty" json:"maxNetworkPeerTransfer,omitempty"`
 
 	// Max number of assigned public IPs
 	// Required: false
-	MaxNumPublicIP uint64 `url:"maxNumPublicIP,omitempty" json:"maxNumPublicIP,omitempty"`
+	MaxNumPublicIP int64 `url:"maxNumPublicIP,omitempty" json:"maxNumPublicIP,omitempty"`
 
 	// Register computes in registration system
 	// Required: false

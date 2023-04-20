@@ -15,8 +15,8 @@ type UpdateRequest struct {
 	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Display name
-	// Required: true
-	Name string `url:"name" json:"name" validate:"required"`
+	// Required: false
+	Name string `url:"name" json:"name"`
 
 	// Name of the account
 	// Required: true
@@ -24,27 +24,27 @@ type UpdateRequest struct {
 
 	// Email
 	// Required: false
-    EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty" validate:"omitempty,email"`
+	EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty" validate:"omitempty,email"`
 
 	// Max size of memory in MB
 	// Required: false
-	MaxMemoryCapacity uint64 `url:"maxMemoryCapacity,omitempty" json:"maxMemoryCapacity,omitempty"`
+	MaxMemoryCapacity int64 `url:"maxMemoryCapacity,omitempty" json:"maxMemoryCapacity,omitempty"`
 
 	// Max size of aggregated vdisks in GB
 	// Required: false
-	MaxVDiskCapacity uint64 `url:"maxVDiskCapacity,omitempty" json:"maxVDiskCapacity,omitempty"`
+	MaxVDiskCapacity int64 `url:"maxVDiskCapacity,omitempty" json:"maxVDiskCapacity,omitempty"`
 
 	// Max number of CPU cores
 	// Required: false
-	MaxCPUCapacity uint64 `url:"maxCPUCapacity,omitempty" json:"maxCPUCapacity,omitempty"`
+	MaxCPUCapacity int64 `url:"maxCPUCapacity,omitempty" json:"maxCPUCapacity,omitempty"`
 
 	// Max sent/received network transfer peering
 	// Required: false
-	MaxNetworkPeerTransfer uint64 `url:"maxNetworkPeerTransfer,omitempty" json:"maxNetworkPeerTransfer,omitempty"`
+	MaxNetworkPeerTransfer int64 `url:"maxNetworkPeerTransfer,omitempty" json:"maxNetworkPeerTransfer,omitempty"`
 
 	// Max number of assigned public IPs
 	// Required: false
-	MaxNumPublicIP uint64 `url:"maxNumPublicIP,omitempty" json:"maxNumPublicIP,omitempty"`
+	MaxNumPublicIP int64 `url:"maxNumPublicIP,omitempty" json:"maxNumPublicIP,omitempty"`
 
 	// If true send emails when a user is granted access to resources
 	// Required: false
@@ -52,7 +52,7 @@ type UpdateRequest struct {
 
 	// Limit (positive) or disable (0) GPU resources
 	// Required: false
-	GPUUnits uint64 `url:"gpu_units,omitempty" json:"gpu_units,omitempty"`
+	GPUUnits int64 `url:"gpu_units,omitempty" json:"gpu_units,omitempty"`
 
 	// List of strings with pools
 	// i.e.: ["sep1_poolName1", "sep2_poolName2", etc]

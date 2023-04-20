@@ -1,39 +1,33 @@
-## Version 1.3.0
+## Version 1.3.1
 
 ### Features
 
-- Created CloudAPI/CloudBroker filtering, sorting and serialization functions for List requests.
-	- Every handler with present List request has available FilterBy functions. Filtering by ID, Name is common for each handler.
-	- In case user needs to filter response by uncommon field FilterFunc with user-specified predicate is also available.
-	- CloudAPI/CloudBroker computes, disks and lb also have specific Filter methods predefined, to name a few:
-		- computes: 
-			- FilterByK8SID, used to filter computes used by specified k8s cluster;
-			- FilterByK8SMasters, FilterByK8SWorkers, used to filter master/workers nodes. Best used after FilterByK8SID call;
-			- FilterByLBID, used to filter computes used by specified load balancer;
-
-		- disks:
-			- FilterByK8SID, used to filter disks attached to computes inside specified k8s cluster;
-			- FilterByLBID, used to filter disks attached to computes inside specified load balancer;
-
-		- lb:
-			- FilterByK8SID, used to filter load balancers used by specified k8s cluster;
-
-- Reinvented request validation using go-validator. Made easier to manipulate and add on to.
-	- Request/Config validation now uses tags instead of hard-coded validation functions;
-
-- Added ability to parse client configuration from JSON or YAML formatted files.
+- Added FilterByGID for cloudapi/locations/list handler response, used to filter locations by specified GID.
+- Added /cloudbroker/pcidevices endpoints support
+  - /cloudbroker/pcidevices/create
+  - /cloudbroker/pcidevices/delete
+  - /cloudbroker/pcidevices/disable
+  - /cloudbroker/pcidevices/enable
+  - /cloudbroker/pcidevices/list
+- Added /cloudbroker/vgpu endpoints support
+  - /cloudbroker/vgpu/allocate
+  - /cloudbroker/vgpu/create
+  - /cloudbroker/vgpu/deallocate
+  - /cloudbroker/vgpu/destroy
+  - /cloudbroker/vgpu/list
 
 ### Bug Fixes
 
-- Fixed SSO_URL trailing slash possibly breaking authentication process.
-- Fixed cloudbroker/vins/nat_rule_add request model types.
-- Fixed cloudbroker/grid DiskSize field type 
-- Fixed TasksResult, InfoResult in cloudbroker/cloudapi/tasks/models JSON unmarshalling.
+- Fixed cloudbroker/cloudapi/account/update request model types.
+- Fixed cloudbroker/cloudapi/rg/update request model types.
+- Fixed cloudapi/account DeactivationTime field type.
+- Fixed cloudapi/k8s/workersGroupAdd return value type.
+- Fixed cloudapi/disks/listUnattached return value type.
+- Added ListDisksUnattached model as a cloudapi/disks/listUnattached handler response with filters.
+- Fixed cloudapi/extnet Excluded field type.
+- Fixed cloudapi/rg RecordResourceUsage model.
+- Fixed cloudapi/compute ItemACL model.
 
 ### Tests
 
-- Covered CloudAPI/CloudBroker filters with unit tests.
-
-### Other
-
-- Updated module to new repository
+- Covered cloudapi/disks ListDisksUnattached filters with unit tests.

@@ -165,7 +165,7 @@ type RecordAccount struct {
 	CreatedTime uint64 `json:"createdTime"`
 
 	// Deactivation time
-	DeactivationTime uint64 `json:"deactivationTime"`
+	DeactivationTime float64 `json:"deactivationTime"`
 
 	// Deleted by
 	DeletedBy string `json:"deletedBy"`

@@ -735,7 +735,10 @@ type RecordResourceUsage struct {
 	CPU uint64 `json:"cpu"`
 
 	// Disk size
-	DiskSize uint64 `json:"disksize"`
+	DiskSize float64 `json:"disksize"`
+
+	// Max disk size
+	DiskSizeMax uint64 `json:"disksizemax"`
 
 	// Number of external IPs
 	ExtIPs uint64 `json:"extips"`
@@ -748,4 +751,7 @@ type RecordResourceUsage struct {
 
 	// Number of RAM
 	RAM uint64 `json:"ram"`
+
+	// SEPs
+	SEPs map[string]map[string]DiskUsage `json:"seps"`
 }
