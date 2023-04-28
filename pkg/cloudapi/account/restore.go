@@ -3,8 +3,6 @@ package account
 import (
 	"context"
 	"net/http"
-	"strconv"
-
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
@@ -26,15 +24,10 @@ func (a Account) Restore(ctx context.Context, req RestoreRequest) (bool, error) 
 
 	url := "/cloudapi/account/restore"
 
-	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	_, err = a.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return false, err
 	}
 
-	result, err := strconv.ParseBool(string(res))
-	if err != nil {
-		return false, err
-	}
-
-	return result, nil
+	return true, nil
 }

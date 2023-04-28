@@ -131,6 +131,12 @@ type ItemRG struct {
 	// List ACL
 	ACL ListACL `json:"acl"`
 
+	// CPU allocation parameter
+	CPUAllocationParameter string `json:"cpu_allocation_parameter"`
+
+	// CPU allocation ratio
+	CPUAllocationRatio float64 `json:"cpu_allocation_ratio"`
+
 	// Created by
 	CreatedBy string `json:"createdBy"`
 
@@ -176,11 +182,17 @@ type ItemRG struct {
 	// Resource limits
 	ResourceLimits ResourceLimits `json:"resourceLimits"`
 
+	// Resource types list
+	ResTypes []string `json:"resourceTypes"`
+
 	// Secret
 	Secret string `json:"secret"`
 
 	// Status
 	Status string `json:"status"`
+
+	// Uniq pools
+	UniqPools []string `json:"uniqPools"`
 
 	// Updated by
 	UpdatedBy string `json:"updatedBy"`
@@ -193,12 +205,6 @@ type ItemRG struct {
 
 	// List virtual machine IDs
 	VMs []uint64 `json:"vms"`
-
-	// Resource types list
-	ResTypes []string `json:"resourceTypes"`
-
-	// Uniq pools
-	UniqPools []string `json:"uniqPools"`
 }
 
 // List resource groups

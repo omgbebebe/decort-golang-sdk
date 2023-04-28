@@ -59,6 +59,9 @@ type ListExtNetComputes []ItemExtNetCompute
 
 // QOS
 type QOS struct {
+	// EBurst
+	EBurst uint64 `json:"eBurst"`
+
 	// ERate
 	ERate uint64 `json:"eRate"`
 

@@ -22,17 +22,17 @@ type DiskAddRequest struct {
 	// Required: true
 	Size uint64 `url:"size" json:"size" validate:"required"`
 
+	// Storage endpoint provider ID
+	// By default the same with boot disk
+	// Required: false
+	SepID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
+
 	// Type of the disk
 	// Should be one of:
 	//	- D
 	//	- B
 	// Required: false
 	DiskType string `url:"diskType,omitempty" json:"diskType,omitempty" validate:"omitempty,computeDiskType"`
-
-	// Storage endpoint provider ID
-	// By default the same with boot disk
-	// Required: false
-	SepID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
 
 	// Pool name
 	// By default will be chosen automatically

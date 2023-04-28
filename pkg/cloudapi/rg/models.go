@@ -59,6 +59,12 @@ type RecordResourceGroup struct {
 	// Access Control List
 	ACL ListACL `json:"acl"`
 
+	// CPU allocation parameter
+	CPUAllocationParameter string `json:"cpu_allocation_parameter"`
+
+	// CPU allocation ratio
+	CPUAllocationRatio float64 `json:"cpu_allocation_ratio"`
+
 	// Created by
 	CreatedBy string `json:"createdBy"`
 
@@ -107,11 +113,17 @@ type RecordResourceGroup struct {
 	// Resource limits
 	ResourceLimits ResourceLimits `json:"resourceLimits"`
 
+	// List of resource types
+	ResTypes []string `json:"resourceTypes"`
+
 	// Secret
 	Secret string `json:"secret"`
 
 	// Status
 	Status string `json:"status"`
+
+	// UniqPools
+	UniqPools []string `json:"uniqPools"`
 
 	// Updated by
 	UpdatedBy string `json:"updatedBy"`
@@ -124,12 +136,6 @@ type RecordResourceGroup struct {
 
 	// List of compute IDs
 	Computes []uint64 `json:"vms"`
-
-	// List of resource types
-	ResTypes []string `json:"resourceTypes"`
-
-	// UniqPools
-	UniqPools []string `json:"uniqPools"`
 }
 
 // Main information about resource group
@@ -146,6 +152,12 @@ type ItemResourceGroup struct {
 	// Access Control List
 	ACL ListACL `json:"acl"`
 
+	// CPU allocation parameter
+	CPUAllocationParameter string `json:"cpu_allocation_parameter"`
+
+	// CPU allocation ratio
+	CPUAllocationRatio float64 `json:"cpu_allocation_ratio"`
+
 	// Created by
 	CreatedBy string `json:"createdBy"`
 
@@ -194,11 +206,17 @@ type ItemResourceGroup struct {
 	// Resource limits
 	ResourceLimits ResourceLimits `json:"resourceLimits"`
 
+	// List of resource types
+	ResTypes []string `json:"resourceTypes"`
+
 	// Secret
 	Secret string `json:"secret"`
 
 	// Status
 	Status string `json:"status"`
+
+	// UniqPools
+	UniqPools []string `json:"uniqPools"`
 
 	// Updated by
 	UpdatedBy string `json:"updatedBy"`
@@ -211,12 +229,6 @@ type ItemResourceGroup struct {
 
 	// List of compute IDs
 	Computes []uint64 `json:"vms"`
-
-	// List of resource types
-	ResTypes []string `json:"resourceTypes"`
-
-	// UniqPools
-	UniqPools []string `json:"uniqPools"`
 }
 
 // List of resource groups

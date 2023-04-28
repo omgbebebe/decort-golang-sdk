@@ -261,7 +261,7 @@ type ItemVNFInterface struct {
 	NetType string `json:"netType"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// QOS
 	QOS QOS `json:"qos"`

@@ -123,6 +123,12 @@ type InfoAccount struct {
 	// Company URL
 	CompanyURL string `json:"companyurl"`
 
+	// CPU allocation parameter
+	CPUAllocationParameter string `json:"cpu_allocation_parameter"`
+
+	// CPU allocation ratio
+	CPUAllocationRatio float64 `json:"cpu_allocation_ratio"`
+
 	// Created by
 	CreatedBy string `json:"createdBy"`
 
@@ -154,7 +160,7 @@ type InfoAccount struct {
 	ResourceLimits ResourceLimits `json:"resourceLimits"`
 
 	// Resource types
-	ResourceTypes []string `json:"resourceTypes"`
+	ResTypes []string `json:"resourceTypes"`
 
 	// Send access emails
 	SendAccessEmails bool `json:"sendAccessEmails"`

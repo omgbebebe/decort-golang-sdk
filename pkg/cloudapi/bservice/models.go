@@ -35,11 +35,8 @@ type RecordBasicService struct {
 	// Grid ID
 	GID uint64 `json:"gid"`
 
-	// List of Service Compute Group IDs
-	Groups []uint64 `json:"groups"`
-
-	// List of compute groups by name
-	GroupsName []string `json:"groupsName"`
+	// List of Service Compute Groups
+	Groups ListGroups `json:"groups"`
 
 	// GUID
 	GUID uint64 `json:"guid"`
@@ -95,6 +92,12 @@ type RecordBasicService struct {
 
 // Main information about Compute
 type ItemCompute struct {
+	// Account ID
+	AccountID uint64
+
+	// Architecture
+	Architecture string `json:"arch"`
+
 	// Compute group ID
 	CompGroupID uint64 `json:"compgroupId"`
 
@@ -109,10 +112,46 @@ type ItemCompute struct {
 
 	// Name
 	Name string `json:"name"`
+
+	// Resource group ID
+	RGID uint64 `json:"rgId"`
+
+	// StackID
+	StackID uint64 `json:"stackId"`
+
+	// Status
+	Status string `json:"status"`
+
+	// Tech status
+	TechStatus string `json:"techStatus"`
 }
 
 // List of Computes
 type ListComputes []ItemCompute
+
+// Main information about Group
+type ItemGroup struct {
+	// Amount of computes
+	Computes uint64 `json:"computes"`
+
+	// Consistency
+	Consistency bool `json:"consistency"`
+
+	// Group ID
+	ID uint64 `json:"id"`
+
+	// Group name
+	Name string `json:"name"`
+
+	// Status
+	Status string `json:"status"`
+
+	// TechStatus
+	TechStatus string `json:"techStatus"`
+}
+
+// List of Groups
+type ListGroups []ItemGroup
 
 // Main information about Snapshot
 type ItemSnapshot struct {

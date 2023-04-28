@@ -23,6 +23,9 @@ type RecordK8CI struct {
 	// Name
 	Name string `json:"name"`
 
+	// Network plugins
+	NetworkPlugins []string `json:"networkPlugins"`
+
 	// Version
 	Version string `json:"version"`
 }

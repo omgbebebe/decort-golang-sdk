@@ -12,27 +12,27 @@ import (
 type DiskAddRequest struct {
 	// ID of compute instance
 	// Required: true
-    ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
+	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
 	// Name for disk
 	// Required: true
-    DiskName string `url:"diskName" json:"diskName" validate:"required"`
+	DiskName string `url:"diskName" json:"diskName" validate:"required"`
 
 	// Disk size in GB
 	// Required: true
-    Size uint64 `url:"size" json:"size" validate:"required"`
+	Size uint64 `url:"size" json:"size" validate:"required"`
+
+	// Storage endpoint provider ID
+	// By default the same with boot disk
+	// Required: false
+	SepID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
 
 	// Type of the disk
 	// Should be one of:
 	//	- D
 	//	- B
 	// Required: false
-    DiskType string `url:"diskType,omitempty" json:"diskType,omitempty" validate:"omitempty,computeDiskType"`
-
-	// Storage endpoint provider ID
-	// By default the same with boot disk
-	// Required: false
-	SepID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
+	DiskType string `url:"diskType,omitempty" json:"diskType,omitempty" validate:"omitempty,computeDiskType"`
 
 	// Pool name
 	// By default will be chosen automatically

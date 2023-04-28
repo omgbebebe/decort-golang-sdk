@@ -3,28 +3,28 @@ package compute
 import (
 	"context"
 	"net/http"
-	"strconv"
-
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
+	"strconv"
 )
 
-// Request struct for attach disk to compute
-type DiskAttachRequest struct {
-	// ID of compute instance
+// Request struct for changing link state
+type ChangeLinkStateRequest struct {
+	// Compute ID
 	// Required: true
 	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
-	// ID of the disk to attach
+	// Interface name or MAC address
 	// Required: true
-	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
+	Interface string `url:"interface" json:"interface" validate:"required"`
 
-	// Type of the disk B;D
-	// Required: false
-	DiskType string `url:"diskType,omitempty" json:"diskType,omitempty" validate:"omitempty,computeDiskType"`
+	// Interface state
+	// Must be either "on" or "off"
+	// Required: true
+	State string `url:"state" json:"state" validate:"required,interfaceState"`
 }
 
-// DiskAttach attach disk to compute
-func (c Compute) DiskAttach(ctx context.Context, req DiskAttachRequest) (bool, error) {
+// ChangeLinkState changes the status link virtual of compute
+func (c Compute) ChangeLinkState(ctx context.Context, req ChangeLinkStateRequest) (bool, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -32,7 +32,7 @@ func (c Compute) DiskAttach(ctx context.Context, req DiskAttachRequest) (bool, e
 		}
 	}
 
-	url := "/cloudapi/compute/diskAttach"
+	url := "/cloudapi/compute/changeLinkState"
 
 	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
@@ -43,6 +43,5 @@ func (c Compute) DiskAttach(ctx context.Context, req DiskAttachRequest) (bool, e
 	if err != nil {
 		return false, err
 	}
-
 	return result, nil
 }

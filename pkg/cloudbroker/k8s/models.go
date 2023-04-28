@@ -101,6 +101,9 @@ type RecordK8S struct {
 	// Name
 	Name string `json:"name"`
 
+	// Network plugin
+	NetworkPlugin string `json:"networkPlugin"`
+
 	// Resource group ID
 	RGID uint64 `json:"rgId"`
 
@@ -244,6 +247,9 @@ type ItemK8S struct {
 
 	// Name
 	Name string `json:"name"`
+
+	// Network plugin
+	NetworkPlugin string `json:"networkPlugin"`
 
 	// Resource group ID
 	RGID uint64 `json:"rgId"`

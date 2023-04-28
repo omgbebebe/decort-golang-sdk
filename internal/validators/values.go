@@ -37,4 +37,10 @@ var (
 	imageArchitectureValues = []string{"X86_64", "PPC64_LE"}
 
 	sepFieldTypeValues = []string{"int", "str", "bool", "list", "dict"}
+
+	networkPluginValues = []string{"flannel", "weawenet", "calico"}
+
+	strictLooseValues = []string{"strict", "loose"}
+
+	interfaceStateValues = []string{"on", "off"}
 )

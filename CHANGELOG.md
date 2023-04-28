@@ -1,33 +1,44 @@
-## Version 1.3.1
+## Version 1.4.0
 
 ### Features
 
-- Added FilterByGID for cloudapi/locations/list handler response, used to filter locations by specified GID.
-- Added /cloudbroker/pcidevices endpoints support
-  - /cloudbroker/pcidevices/create
-  - /cloudbroker/pcidevices/delete
-  - /cloudbroker/pcidevices/disable
-  - /cloudbroker/pcidevices/enable
-  - /cloudbroker/pcidevices/list
-- Added /cloudbroker/vgpu endpoints support
-  - /cloudbroker/vgpu/allocate
-  - /cloudbroker/vgpu/create
-  - /cloudbroker/vgpu/deallocate
-  - /cloudbroker/vgpu/destroy
-  - /cloudbroker/vgpu/list
+- Actualized SDK to platform version 3.8.6:
+  - Added required field networkPlugin to requests in:
+    - /cloudapi/cloudbroker/k8s/create;
+    - /cloudbroker/k8ci/create.
+  - Added networkPlugin field in models:
+    - /cloudapi/cloudbroker/k8s;
+    - /cloudbroker/k8ci.
+  - Updated list of compute objects fields and added list of group objects in bservice model.
+  - Added cpuAllocationRatio and cpuAllocationParameter fields in models:
+    - /cloudapi/cloudbroker/rg;
+    - /cloudapi/cloudbroker/account.
+  - Added setCpuAllocationRatio endpoint support in:
+    - /cloudbroker/account;
+    - /cloudbroker/rg.
+  - Added /cloudbrocker/grid/setCpuAllocationRatioForVM endpoint support.
+  - Added setCpuAllocationParameter endpoint support in:
+    - /cloudbroker/account;
+    - /cloudbroker/rg;
+    - /cloudbroker/grid.
+  - Added cloudapi/cloudbroker/compute/changeLinkState endpoint support.
+
+- Added enabled field in cloudapi/compute models:
+  - interfaces in compute/list response;
+  - RecordNetAttach (compute/netAttach response).
+
+- Added cloudapi/compute/bootOrderSet endpoint support.
+
+- Added cloudapi/compute/bootOrderGet endpoint support.
 
 ### Bug Fixes
 
-- Fixed cloudbroker/cloudapi/account/update request model types.
-- Fixed cloudbroker/cloudapi/rg/update request model types.
-- Fixed cloudapi/account DeactivationTime field type.
-- Fixed cloudapi/k8s/workersGroupAdd return value type.
-- Fixed cloudapi/disks/listUnattached return value type.
-- Added ListDisksUnattached model as a cloudapi/disks/listUnattached handler response with filters.
-- Fixed cloudapi/extnet Excluded field type.
-- Fixed cloudapi/rg RecordResourceUsage model.
-- Fixed cloudapi/compute ItemACL model.
+- Fixed pciSlot field type in models:
+  - cloudapi/cloudbroker/computes;
+  - cloudapi/cloudbroker/vins.
 
-### Tests
+- Fixed handling cloudapi/account/restore endpoint response (panicked when marhalling).
 
-- Covered cloudapi/disks ListDisksUnattached filters with unit tests.
+- Added missing field diskType in cloudapi/compute/diskAttach request.
+
+- Added missing eBurst field in cloudapi/extnet QOS model.

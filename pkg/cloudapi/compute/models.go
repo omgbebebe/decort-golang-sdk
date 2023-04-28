@@ -150,6 +150,9 @@ type RecordNetAttach struct {
 	// Default GW
 	DefGW string `json:"defGw"`
 
+	// Enabled
+	Enabled bool `json:"enabled"`
+
 	// FLIPGroup ID
 	FLIPGroupID uint64 `json:"flipgroupId"`
 
@@ -178,7 +181,7 @@ type RecordNetAttach struct {
 	NetType string `json:"netType"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// QOS
 	QOS QOS `json:"qos"`
@@ -483,6 +486,9 @@ type ItemVNFInterface struct {
 	// Default GW
 	DefGW string `json:"defGw"`
 
+	// Enabled
+	Enabled bool `json:"enabled"`
+
 	// FLIPGroup ID
 	FLIPGroupID uint64 `json:"flipgroupId"`
 
@@ -511,7 +517,7 @@ type ItemVNFInterface struct {
 	NetType string `json:"netType"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// QOS
 	QOS QOS `json:"qos"`
@@ -611,7 +617,7 @@ type ItemComputeDisk struct {
 	Passwd string `json:"passwd"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// Pool
 	Pool string `json:"pool"`
@@ -895,7 +901,7 @@ type InfoDisk struct {
 	ID uint64 `json:"id"`
 
 	// PCISlot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 }
 
 // List information about computes

@@ -187,10 +187,36 @@ func errorMessage(fe validator.FieldError) string {
 			fe.Field(),
 			joinValues(sepFieldTypeValues))
 
+	// HWPath Validators
 	case "hwPath":
 		return fmt.Sprintf("%s %s must be in format 0000:1f:2b.0",
 			prefix,
 			fe.Field())
+
+	// Network plugin Validators
+	case "networkPlugin":
+		return fmt.Sprintf("%s %s must be one of the following: %s",
+			prefix,
+			fe.Field(),
+			joinValues(networkPluginValues))
+
+	case "networkPlugins":
+		return fmt.Sprintf("%s %s must contain only the following: %s",
+			prefix,
+			fe.Field(),
+			joinValues(networkPluginValues))
+
+	case "strict_loose":
+		return fmt.Sprintf("%s %s must be one of the following: %s",
+			prefix,
+			fe.Field(),
+			joinValues(strictLooseValues))
+
+	case "interfaceState":
+		return fmt.Sprintf("%s %s must be one of the following: %s",
+			prefix,
+			fe.Field(),
+			joinValues(interfaceStateValues))
 	}
 
 	return fe.Error()

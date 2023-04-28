@@ -34,6 +34,11 @@ type CreateRequest struct {
 	// Required: true
 	MasterDriver string `url:"masterDriver" json:"masterDriver" validate:"driver"`
 
+	// Network plugins
+	// Values of slice must be flannel, weawenet or calico
+	//Required: true
+	NetworkPlugins []string `url:"networkPlugins" json:"networkPlugins" validate:"required,networkPlugins"`
+
 	// Image ID for worker K8S node
 	// Required: true
 	WorkerImageID uint64 `url:"workerImageId" json:"workerImageId" validate:"required"`

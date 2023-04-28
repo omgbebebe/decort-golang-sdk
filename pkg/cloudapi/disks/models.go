@@ -377,7 +377,7 @@ type RecordDisk struct {
 	ParentID uint64 `json:"parentId"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// Pool
 	Pool string `json:"pool"`

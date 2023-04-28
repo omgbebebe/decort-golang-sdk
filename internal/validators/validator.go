@@ -164,5 +164,25 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
+	err = validate.RegisterValidation("networkPlugin", networkPluginValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("networkPlugins", networkPluginsValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("strict_loose", strictLooseValidator)
+	if err != nil {
+		return err
+	}
+
+	err = validate.RegisterValidation("interfaceState", interfaceStateValidator)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

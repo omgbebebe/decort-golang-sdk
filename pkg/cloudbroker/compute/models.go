@@ -147,7 +147,7 @@ type RecordNetAttach struct {
 	NetType string `json:"netType"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// QOS
 	QOS QOS `json:"qos"`
@@ -396,7 +396,7 @@ type ItemDisk struct {
 	Password string `json:"passwd"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// Pool
 	Pool string `json:"pool"`
@@ -498,7 +498,7 @@ type ItemInterface struct {
 	NetType string `json:"netType"`
 
 	// PCI slot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 
 	// QOS
 	QOS QOS `json:"qos"`
@@ -738,7 +738,7 @@ type InfoDisk struct {
 	ID uint64 `json:"id"`
 
 	// PCISlot
-	PCISlot uint64 `json:"pciSlot"`
+	PCISlot int64 `json:"pciSlot"`
 }
 
 // List computes

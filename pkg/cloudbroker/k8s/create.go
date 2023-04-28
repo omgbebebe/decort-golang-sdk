@@ -26,6 +26,11 @@ type CreateRequest struct {
 	// Required: true
 	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required"`
 
+	// Network plugin
+	// Must be one of these values: flunnel, weawenet, calico
+	// Required: true
+	NetworkPlugin string `url:"networkPlugin" json:"networkPlugin" validate:"required,networkPlugin"`
+
 	// ID of SEP to create boot disks for master nodes.
 	// Uses images SEP ID if not set
 	// Required: false

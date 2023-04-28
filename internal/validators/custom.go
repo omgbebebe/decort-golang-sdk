@@ -3,6 +3,7 @@ package validators
 import (
 	"github.com/go-playground/validator/v10"
 	"regexp"
+	"strings"
 )
 
 // protoValidator is used to validate Proto fields.
@@ -214,4 +215,44 @@ func hwPathValidator(fe validator.FieldLevel) bool {
 	ok, _ := regexp.MatchString(`^\b[0-9a-f]{4}:[0-9a-fA-F]{2}:[0-9a-fA-F]{2}.\d{1}$`, fieldValue)
 
 	return ok
+}
+
+// networkPluginValidator is used to validate NetworkPlugin field
+func networkPluginValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+	fieldValue = strings.ToLower(fieldValue)
+
+	return StringInSlice(fieldValue, networkPluginValues)
+}
+
+// networkPluginsValidator is used to validate NetworkPlugins field
+func networkPluginsValidator(fe validator.FieldLevel) bool {
+	fieldSlice, ok := fe.Field().Interface().([]string)
+	if !ok {
+		return false
+	}
+
+	for _, item := range fieldSlice {
+		item = strings.ToLower(item)
+
+		if !StringInSlice(item, networkPluginValues) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func interfaceStateValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+	fieldValue = strings.ToLower(fieldValue)
+
+	return StringInSlice(fieldValue, interfaceStateValues)
+}
+
+func strictLooseValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+	fieldValue = strings.ToLower(fieldValue)
+
+	return StringInSlice(fieldValue, strictLooseValues)
 }
