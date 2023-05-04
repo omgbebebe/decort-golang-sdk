@@ -44,7 +44,7 @@ type CreateRequest struct {
 
 	// If true send emails when a user is granted access to resources
 	// Required: false
-	SendAccessEmails bool `url:"sendAccessEmails,omitempty" json:"sendAccessEmails,omitempty"`
+	SendAccessEmails bool `url:"sendAccessEmails" json:"sendAccessEmails"`
 
 	// Limit (positive) or disable (0) GPU resources
 	// Required: false

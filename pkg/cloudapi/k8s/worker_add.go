@@ -2,9 +2,8 @@ package k8s
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
-	"strconv"
-
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
@@ -24,11 +23,11 @@ type WorkerAddRequest struct {
 }
 
 // WorkerAdd add worker nodes to a Kubernetes cluster
-func (k8s K8S) WorkerAdd(ctx context.Context, req WorkerAddRequest) (bool, error) {
+func (k8s K8S) WorkerAdd(ctx context.Context, req WorkerAddRequest) ([]uint64, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
-			return false, validators.ValidationError(validationError)
+			return nil, validators.ValidationError(validationError)
 		}
 	}
 
@@ -36,12 +35,14 @@ func (k8s K8S) WorkerAdd(ctx context.Context, req WorkerAddRequest) (bool, error
 
 	res, err := k8s.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	result, err := strconv.ParseBool(string(res))
+	result := make([]uint64, 0)
+
+	err = json.Unmarshal(res, &result)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	return result, nil
