@@ -1,6 +1,6 @@
-## Version 1.4.1
+## Version 1.4.2
 
 ### Bug Fixes
 
-- Fixed cloudapi/k8s/workerAdd returning value type
-- Fixed cloudapi/cloudbroker/account/create/update SendAccessEmails field tags
+- Fixed cloudapi/cloudbroker/compute/pfwAdd publicPortEnd request field type
+- Fixed typo in cloudapi/k8s/disable/enable request name 

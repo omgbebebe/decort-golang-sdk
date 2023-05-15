@@ -19,8 +19,9 @@ type PFWAddRequest struct {
 	PublicPortStart uint64 `url:"publicPortStart" json:"publicPortStart" validate:"required"`
 
 	// End port number (inclusive) for the ranged rule
+	// Default value: -1
 	// Required: false
-	PublicPortEnd uint64 `url:"publicPortEnd,omitempty" json:"publicPortEnd,omitempty"`
+	PublicPortEnd int64 `url:"publicPortEnd,omitempty" json:"publicPortEnd,omitempty"`
 
 	// Internal base port number
 	// Required: true

@@ -9,14 +9,14 @@ import (
 )
 
 // Request struct for disable/enable kubernetes cluster
-type DisabelEnableRequest struct {
+type DisableEnableRequest struct {
 	// Kubernetes cluster ID
 	// Required: true
 	K8SID uint64 `url:"k8sId" json:"k8sId" validate:"required"`
 }
 
 // Disable disables kubernetes cluster by ID
-func (k8s K8S) Disable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
+func (k8s K8S) Disable(ctx context.Context, req DisableEnableRequest) (bool, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -40,7 +40,7 @@ func (k8s K8S) Disable(ctx context.Context, req DisabelEnableRequest) (bool, err
 }
 
 // Enable enables kubernetes cluster by ID
-func (k8s K8S) Enable(ctx context.Context, req DisabelEnableRequest) (bool, error) {
+func (k8s K8S) Enable(ctx context.Context, req DisableEnableRequest) (bool, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
