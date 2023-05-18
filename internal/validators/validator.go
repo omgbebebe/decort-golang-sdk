@@ -7,29 +7,20 @@ import (
 )
 
 var (
-	once     sync.Once
-	instance *DecortValidator
+	once            sync.Once
+	decortValidator = validator.New()
 )
-
-type DecortValidator struct {
-	decortValidator *validator.Validate
-}
 
 // getDecortValidator returns singleton instance of DecortValidator.
 func getDecortValidator() *validator.Validate {
-	if instance == nil {
-		once.Do(func() {
-			instance = new(DecortValidator)
-			instance.decortValidator = validator.New()
+	once.Do(func() {
+		err := registerAllValidators(decortValidator)
+		if err != nil {
+			panic(err)
+		}
+	})
 
-			err := registerAllValidators(instance.decortValidator)
-			if err != nil {
-				panic(err)
-			}
-		})
-	}
-
-	return instance.decortValidator
+	return decortValidator
 }
 
 // registerAllValidators registers all custom validators in DecortValidator.
