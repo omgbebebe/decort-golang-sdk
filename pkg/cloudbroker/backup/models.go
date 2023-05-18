@@ -10,6 +10,9 @@ type InfoBackup struct {
 
 	// Backup path
 	BackupPath string `json:"backupPath"`
+
+	// Possible error
+	Error string `json:"error"`
 }
 
 // CreateDisksBackup response
