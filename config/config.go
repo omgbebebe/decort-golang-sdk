@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
@@ -44,6 +45,15 @@ type Config struct {
 	// Skip verify, true by default
 	// Required: false
 	SSLSkipVerify bool `json:"sslSkipVerify" yaml:"sslSkipVerify"`
+
+	// HTTP client timeout, unlimited if left empty
+	// Required: false
+	Timeout Duration `json:"timeout" yaml:"timeout"`
+}
+
+// SetTimeout is used to set HTTP client timeout.
+func (c *Config) SetTimeout(dur time.Duration) {
+	c.Timeout = Duration(dur)
 }
 
 // ParseConfigJSON parses Config from specified JSON-formatted file.

@@ -1,7 +1,8 @@
 {
-    "username": "<USERNAME>",
-    "password": "<PASSWORD>",
-    "decortUrl": "https://mr4.digitalenergy.online",
-    "retries": 5,
-    "sslSkipVerify": true
+	"username": "<USERNAME>",
+	"password": "<PASSWORD>",
+	"decortUrl": "https://mr4.digitalenergy.online",
+	"retries": 5,
+	"timeout": "5m",
+	"sslSkipVerify": true
 }

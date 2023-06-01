@@ -118,6 +118,7 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 | SSOURL | string | Да | URL адрес сервиса аутентификации и авторизации |
 | DecortURL | string | Да | URL адрес платформы, с которой будет осуществляться взаимодействие |
 | Retries | uint | Нет | Кол-во неудачных попыток выполнения запроса, по умолчанию - 5 |
+| Timeout | config.Duration | Нет | Таймаут HTTP клиента, по умолчанию - без ограничений |
 | SSLSkipVerify | bool | Нет | Пропуск проверки подлинности сертификата, по умолчанию - true |
 | Token | string | Нет | JWT токен |
 
@@ -127,6 +128,7 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 import (
     "repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
+
 func main(){
     // Настройка конфигурации
     cfg := config.Config{
@@ -136,6 +138,8 @@ func main(){
         DecortURL: "https://mr4.digitalenergy.online",
         Retries:   5,
     }
+
+    cfg.SetTimeout(5 * time.Minute)
 }
 ```
 
@@ -165,6 +169,7 @@ func main() {
     "ssoUrl": "https://sso.digitalenergy.online",
     "decortUrl": "https://mr4.digitalenergy.online",
     "retries": 5,
+    "timeout": "5m",
     "sslSkipVerify": false
 }
 ```
@@ -177,6 +182,7 @@ appSecret: <APP_SECRET>
 ssoUrl: https://sso.digitalenergy.online
 decortUrl: https://mr4.digitalenergy.online
 retries: 5
+timeout: 5m
 sslSkipVerify: false
 ```
 
@@ -203,6 +209,8 @@ func main() {
         DecortURL: "https://mr4.digitalenergy.online",
         Retries:   5,
     }
+
+    cfg.SetTimeout(5 * time.Minute)
 
     // Создание клиента
     client := decort.New(cfg)
@@ -647,6 +655,8 @@ func main() {
 		DecortURL:     "<DECORT_URL>",
 		Retries:       5,
 	}
+
+	cfg.SetTimeout(5 * time.Minute)
 	
 	// Создание клиента
 	client := decort.New(cfg)
@@ -693,6 +703,7 @@ func main() {
 | Password      | string | Да           | пароль legacy пользователя                                         |
 | DecortURL     | string | Да           | URL адрес платформы, с которой будет осуществляться взаимодействие |
 | Retries       | uint   | Нет          | Кол-во неудачных попыток выполнения запроса, по умолчанию - 5      |
+| Timeout       | config.Duration | Нет | Таймаут HTTP клиента, по умолчанию - без ограничений               |
 | SSLSkipVerify | bool   | Нет          | Пропуск проверки подлинности сертификата, по умолчанию - true      |
 | Token         | string | Нет          | JWT токен                                                          |
 
@@ -711,6 +722,8 @@ func main(){
         DecortURL: "https://mr4.digitalenergy.online",
         Retries:   5,
     }
+
+    legacyCfg.SetTimeout(5 * time.Minute)
 }
 ```
 
@@ -739,6 +752,7 @@ func main() {
     "password": "<PASSWORD>",
     "decortUrl": "https://mr4.digitalenergy.online",
     "retries": 5,
+    "timeout": "5m",
     "sslSkipVerify": true
 }
 ```
@@ -749,6 +763,7 @@ username: <USERNAME>
 password: <PASSWORD>
 decortUrl: https://mr4.digitalenergy.online
 retries: 5
+timeout: 5m
 sslSkipVerify: true
 ```
 ### Создание legacy клиента
@@ -773,6 +788,8 @@ func main() {
         DecortURL: "https://mr4.digitalenergy.online",
         Retries:   5,
     }
+
+    legacyCfg.SetTimeout(5 * time.Minute)
 
     // Создание клиента
     legacyClient := decort.NewLegacy(cfg)

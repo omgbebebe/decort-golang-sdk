@@ -35,6 +35,6 @@ func NewHttpClient(cfg config.Config) *http.Client {
 			//TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 
-		Timeout: 5 * time.Minute,
+		Timeout: cfg.Timeout.Get(),
 	}
 }

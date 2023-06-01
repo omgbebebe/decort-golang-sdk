@@ -1,4 +1,4 @@
-## Version 1.4.3
+## Version 1.4.4
 
-### Bug Fixes
-- Fixed possible nil-pointer reference to validator instance (in concurrent conditions).
+### Features
+- Added "Timeout" param to Config/LegacyConfig that allows configuring HTTP client timeout

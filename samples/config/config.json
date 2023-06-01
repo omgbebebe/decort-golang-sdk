@@ -1,8 +1,9 @@
 {
-    "appId": "<APP_ID>",
-    "appSecret": "<APP_SECRET>",
-    "ssoUrl": "https://sso.digitalenergy.online",
-    "decortUrl": "https://mr4.digitalenergy.online",
-    "retries": 5,
-    "sslSkipVerify": false
+	"appId": "<APP_ID>",
+	"appSecret": "<APP_SECRET>",
+	"ssoUrl": "https://sso.digitalenergy.online",
+	"decortUrl": "https://mr4.digitalenergy.online",
+	"retries": 5,
+	"timeout": "5m",
+	"sslSkipVerify": false
 }
