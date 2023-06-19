@@ -1,4 +1,4 @@
-## Version 1.4.4
+## Version 1.4.5
 
-### Features
-- Added "Timeout" param to Config/LegacyConfig that allows configuring HTTP client timeout
+### Bugfix
+- Removed omitempty tag from field WithLB in cloudapi/k8s/create request
