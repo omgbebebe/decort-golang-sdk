@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for restoring disk from backup
@@ -21,12 +22,12 @@ type RestoreDiskFromBackupRequest struct {
 
 	// Backup file
 	BackupFile string `url:"backupFile" json:"backupFile" validate:"required"`
+}
 
-	// Async API Call
-	// For async call use RestoreDiskFromBackupAsync
-	// For sync call use RestoreDiskFromBackup
-	// Required: true
-	async bool `url:"async"`
+type wrapperRestoreDiskFromBackupRequest struct {
+	RestoreDiskFromBackupRequest
+
+	Async bool `url:"async"`
 }
 
 // RestoreDiskFromBackup restores disk from backup
@@ -38,11 +39,14 @@ func (b Backup) RestoreDiskFromBackup(ctx context.Context, req RestoreDiskFromBa
 		}
 	}
 
-	req.async = false
+	reqWrapped := wrapperRestoreDiskFromBackupRequest{
+		RestoreDiskFromBackupRequest: req,
+		Async:                        false,
+	}
 
 	url := "/cloudbroker/backup/restoreDiskFromBackup"
 
-	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return nil, err
 	}
@@ -66,11 +70,14 @@ func (b Backup) RestoreDiskFromBackupAsync(ctx context.Context, req RestoreDiskF
 		}
 	}
 
-	req.async = true
+	reqWrapped := wrapperRestoreDiskFromBackupRequest{
+		RestoreDiskFromBackupRequest: req,
+		Async:                        true,
+	}
 
 	url := "/cloudbroker/backup/restoreDiskFromBackup"
 
-	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return "", err
 	}

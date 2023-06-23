@@ -39,11 +39,11 @@ type NATRuleAddRequest struct {
 }
 
 // NATRuleAdd create NAT (port forwarding) rule on VINS
-func (v VINS) NATRuleAdd(ctx context.Context, req NATRuleAddRequest) (bool, error) {
+func (v VINS) NATRuleAdd(ctx context.Context, req NATRuleAddRequest) (uint64, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
-			return false, validators.ValidationError(validationError)
+			return 0, validators.ValidationError(validationError)
 		}
 	}
 
@@ -51,12 +51,12 @@ func (v VINS) NATRuleAdd(ctx context.Context, req NATRuleAddRequest) (bool, erro
 
 	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
-	result, err := strconv.ParseBool(string(res))
+	result, err := strconv.ParseUint(string(res), 10, 64)
 	if err != nil {
-		return false, err
+		return 0, err
 	}
 
 	return result, nil

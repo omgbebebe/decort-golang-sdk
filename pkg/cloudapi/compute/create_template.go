@@ -18,12 +18,12 @@ type CreateTemplateRequest struct {
 	// Name to assign to the template being created
 	// Required: true
 	Name string `url:"name" json:"name" validate:"required"`
+}
 
-	// Async API call
-	// For async call use CreateTemplateAsync
-	// For sync call use CreateTemplate
-	// Required: true
-	async bool `url:"async"`
+type wrapperCreateTemplateRequest struct {
+	CreateTemplateRequest
+
+	Async bool `url:"async"`
 }
 
 // CreateTemplate create template from compute instance
@@ -35,11 +35,14 @@ func (c Compute) CreateTemplate(ctx context.Context, req CreateTemplateRequest) 
 		}
 	}
 
-	req.async = false
+	reqWrapped := wrapperCreateTemplateRequest{
+		CreateTemplateRequest: req,
+		Async:                 false,
+	}
 
 	url := "/cloudapi/compute/createTemplate"
 
-	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
 	}
@@ -61,11 +64,14 @@ func (c Compute) CreateTemplateAsync(ctx context.Context, req CreateTemplateRequ
 		}
 	}
 
-	req.async = true
+	reqWrapped := wrapperCreateTemplateRequest{
+		CreateTemplateRequest: req,
+		Async:                 true,
+	}
 
 	url := "/cloudapi/compute/createTemplate"
 
-	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return "", err
 	}

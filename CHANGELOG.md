@@ -1,4 +1,12 @@
-## Version 1.4.5
+## Version 1.4.6
 
 ### Bugfix
-- Removed omitempty tag from field WithLB in cloudapi/k8s/create request
+- Fixed returning value type of VINS.NATRuleAdd()
+- Fixed RuleID field type of VINS.NATRuleDel() request struct
+- Added wrapper for requests to async methods
+- - CloudAPI()/CloudBroker().Compute().CreateTemplate() 
+
+### Feature
+- Added cloubroker/apiaccess group of endpoints support
+- Added cloubroker/group group of endpoints support
+- Added cloubroker/user group of endpoints support

@@ -3,9 +3,10 @@ package backup
 import (
 	"context"
 	"net/http"
-	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 	"strconv"
 	"strings"
+
+	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
 // Request struct for deleting disk backup
@@ -15,12 +16,12 @@ type DeleteDiskBackupRequest struct {
 
 	// Backup file
 	BackupFile string `url:"backupFile" json:"backupFile" validate:"required"`
+}
 
-	// Async API Call
-	// For async call use DeleteDiskBackupAsync
-	// For sync call use DeleteDiskBackup
-	// Required: true
-	async bool `url:"async"`
+type wrapperDeleteDiskBackupRequest struct {
+	DeleteDiskBackupRequest
+
+	Async bool `url:"async"`
 }
 
 // DeleteDiskBackup deletes disk backup
@@ -32,11 +33,14 @@ func (b Backup) DeleteDiskBackup(ctx context.Context, req DeleteDiskBackupReques
 		}
 	}
 
-	req.async = false
+	reqWrapped := wrapperDeleteDiskBackupRequest{
+		DeleteDiskBackupRequest: req,
+		Async:                   false,
+	}
 
 	url := "/cloudbroker/backup/deleteDiskBackup"
 
-	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return false, err
 	}
@@ -58,11 +62,14 @@ func (b Backup) DeleteDiskBackupAsync(ctx context.Context, req DeleteDiskBackupR
 		}
 	}
 
-	req.async = true
+	reqWrapped := wrapperDeleteDiskBackupRequest{
+		DeleteDiskBackupRequest: req,
+		Async:                   true,
+	}
 
 	url := "/cloudbroker/backup/deleteDiskBackup"
 
-	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return "", err
 	}
