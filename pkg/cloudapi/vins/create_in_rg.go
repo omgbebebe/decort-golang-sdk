@@ -20,7 +20,7 @@ type CreateInRGRequest struct {
 
 	// Private network IP CIDR
 	// Required: false
-	IPCIDR string `url:"ipcidr,omitempty" json:"ipcidr,omitempty" validate:"required"`
+	IPCIDR string `url:"ipcidr,omitempty" json:"ipcidr,omitempty"`
 
 	// External network ID
 	// Required: false
