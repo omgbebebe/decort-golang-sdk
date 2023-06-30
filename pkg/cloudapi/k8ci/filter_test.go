@@ -3,33 +3,50 @@ package k8ci
 import "testing"
 
 var k8ciItems = ListK8CI{
-	ItemK8CI{
-		CreatedTime: 123902139,
-		RecordK8CI: RecordK8CI{
+	Data: []ItemK8CI{
+		{
+			CreatedTime: 123902139,
+			Status:      "ENABLED",
 			Description: "",
 			ID:          1,
 			Name:        "purple_snake",
 			Version:     "1",
+			LBImageID:   654,
+			NetworkPlugins: []string{
+				"flannel",
+				"calico",
+				"weavenet",
+			},
 		},
-	},
-	ItemK8CI{
-		CreatedTime: 123902232,
-		RecordK8CI: RecordK8CI{
+		{
+			CreatedTime: 123902232,
+			Status:      "ENABLED",
 			Description: "",
 			ID:          2,
 			Name:        "green_giant",
 			Version:     "2",
+			LBImageID:   654,
+			NetworkPlugins: []string{
+				"flannel",
+				"calico",
+				"weavenet",
+			},
 		},
-	},
-	ItemK8CI{
-		CreatedTime: 123902335,
-		RecordK8CI: RecordK8CI{
+		{
+			CreatedTime: 123902335,
+			Status:      "DISABLED",
 			Description: "",
 			ID:          3,
 			Name:        "magenta_cloud",
 			Version:     "3",
+			NetworkPlugins: []string{
+				"flannel",
+				"calico",
+				"weavenet",
+			},
 		},
 	},
+	EntryCount: 3,
 }
 
 func TestFilterByID(t *testing.T) {
@@ -53,11 +70,11 @@ func TestFilterFunc(t *testing.T) {
 		return ikc.CreatedTime > 123902139
 	})
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.CreatedTime < 123902139 {
 			t.Fatal("expected CreatedTime greater than 123902139, found: ", item.CreatedTime)
 		}
@@ -67,7 +84,7 @@ func TestFilterFunc(t *testing.T) {
 func TestSortingByCreatedTime(t *testing.T) {
 	actual := k8ciItems.SortByCreatedTime(true)
 
-	if actual[0].CreatedTime != 123902335 && actual[2].CreatedTime != 123902139 {
+	if actual.Data[0].CreatedTime != 123902335 && actual.Data[2].CreatedTime != 123902139 {
 		t.Fatal("expected inverse sort, found normal")
 	}
 }

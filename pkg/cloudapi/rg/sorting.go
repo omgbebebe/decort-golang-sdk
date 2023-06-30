@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (lrg ListResourceGroups) SortByCreatedTime(inverse bool) ListResourceGroups {
-	if len(lrg) < 2 {
+	if len(lrg.Data) < 2 {
 		return lrg
 	}
 
-	sort.Slice(lrg, func(i, j int) bool {
+	sort.Slice(lrg.Data, func(i, j int) bool {
 		if inverse {
-			return lrg[i].CreatedTime > lrg[j].CreatedTime
+			return lrg.Data[i].CreatedTime > lrg.Data[j].CreatedTime
 		}
 
-		return lrg[i].CreatedTime < lrg[j].CreatedTime
+		return lrg.Data[i].CreatedTime < lrg.Data[j].CreatedTime
 	})
 
 	return lrg
@@ -25,16 +25,16 @@ func (lrg ListResourceGroups) SortByCreatedTime(inverse bool) ListResourceGroups
 //
 // If inverse param is set to true, the order is reversed.
 func (lrg ListResourceGroups) SortByUpdatedTime(inverse bool) ListResourceGroups {
-	if len(lrg) < 2 {
+	if len(lrg.Data) < 2 {
 		return lrg
 	}
 
-	sort.Slice(lrg, func(i, j int) bool {
+	sort.Slice(lrg.Data, func(i, j int) bool {
 		if inverse {
-			return lrg[i].UpdatedTime > lrg[j].UpdatedTime
+			return lrg.Data[i].UpdatedTime > lrg.Data[j].UpdatedTime
 		}
 
-		return lrg[i].UpdatedTime < lrg[j].UpdatedTime
+		return lrg.Data[i].UpdatedTime < lrg.Data[j].UpdatedTime
 	})
 
 	return lrg
@@ -44,16 +44,16 @@ func (lrg ListResourceGroups) SortByUpdatedTime(inverse bool) ListResourceGroups
 //
 // If inverse param is set to true, the order is reversed.
 func (lrg ListResourceGroups) SortByDeletedTime(inverse bool) ListResourceGroups {
-	if len(lrg) < 2 {
+	if len(lrg.Data) < 2 {
 		return lrg
 	}
 
-	sort.Slice(lrg, func(i, j int) bool {
+	sort.Slice(lrg.Data, func(i, j int) bool {
 		if inverse {
-			return lrg[i].DeletedTime > lrg[j].DeletedTime
+			return lrg.Data[i].DeletedTime > lrg.Data[j].DeletedTime
 		}
 
-		return lrg[i].DeletedTime < lrg[j].DeletedTime
+		return lrg.Data[i].DeletedTime < lrg.Data[j].DeletedTime
 	})
 
 	return lrg

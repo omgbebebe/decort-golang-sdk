@@ -14,8 +14,8 @@ type DeleteAccountsRequest struct {
 	AccountsIDs []uint64 `url:"accountIds" json:"accountIds" validate:"min=1"`
 
 	// Reason for deletion
-	// Required: true
-	Reason string `url:"reason" json:"reason" validate:"required"`
+	// Required: false
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 
 	// Whether to completely destroy accounts or not
 	// Required: false

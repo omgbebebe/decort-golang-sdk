@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (lc ListComputes) SortByCPU(inverse bool) ListComputes {
-	if len(lc) < 2 {
+	if len(lc.Data) < 2 {
 		return lc
 	}
 
-	sort.Slice(lc, func(i, j int) bool {
+	sort.Slice(lc.Data, func(i, j int) bool {
 		if inverse {
-			return lc[i].CPU > lc[j].CPU
+			return lc.Data[i].CPU > lc.Data[j].CPU
 		}
 
-		return lc[i].CPU < lc[j].CPU
+		return lc.Data[i].CPU < lc.Data[j].CPU
 	})
 
 	return lc
@@ -25,16 +25,16 @@ func (lc ListComputes) SortByCPU(inverse bool) ListComputes {
 //
 // If inverse param is set to true, the order is reversed.
 func (lc ListComputes) SortByRAM(inverse bool) ListComputes {
-	if len(lc) < 2 {
+	if len(lc.Data) < 2 {
 		return lc
 	}
 
-	sort.Slice(lc, func(i, j int) bool {
+	sort.Slice(lc.Data, func(i, j int) bool {
 		if inverse {
-			return lc[i].RAM > lc[j].RAM
+			return lc.Data[i].RAM > lc.Data[j].RAM
 		}
 
-		return lc[i].RAM < lc[j].RAM
+		return lc.Data[i].RAM < lc.Data[j].RAM
 	})
 
 	return lc
@@ -44,16 +44,16 @@ func (lc ListComputes) SortByRAM(inverse bool) ListComputes {
 //
 // If inverse param is set to true, the order is reversed.
 func (lc ListComputes) SortByCreatedTime(inverse bool) ListComputes {
-	if len(lc) < 2 {
+	if len(lc.Data) < 2 {
 		return lc
 	}
 
-	sort.Slice(lc, func(i, j int) bool {
+	sort.Slice(lc.Data, func(i, j int) bool {
 		if inverse {
-			return lc[i].CreatedTime > lc[j].CreatedTime
+			return lc.Data[i].CreatedTime > lc.Data[j].CreatedTime
 		}
 
-		return lc[i].CreatedTime < lc[j].CreatedTime
+		return lc.Data[i].CreatedTime < lc.Data[j].CreatedTime
 	})
 
 	return lc
@@ -63,16 +63,16 @@ func (lc ListComputes) SortByCreatedTime(inverse bool) ListComputes {
 //
 // If inverse param is set to true, the order is reversed.
 func (lc ListComputes) SortByUpdatedTime(inverse bool) ListComputes {
-	if len(lc) < 2 {
+	if len(lc.Data) < 2 {
 		return lc
 	}
 
-	sort.Slice(lc, func(i, j int) bool {
+	sort.Slice(lc.Data, func(i, j int) bool {
 		if inverse {
-			return lc[i].UpdatedTime > lc[j].UpdatedTime
+			return lc.Data[i].UpdatedTime > lc.Data[j].UpdatedTime
 		}
 
-		return lc[i].UpdatedTime < lc[j].UpdatedTime
+		return lc.Data[i].UpdatedTime < lc.Data[j].UpdatedTime
 	})
 
 	return lc
@@ -82,16 +82,16 @@ func (lc ListComputes) SortByUpdatedTime(inverse bool) ListComputes {
 //
 // If inverse param is set to true, the order is reversed.
 func (lc ListComputes) SortByDeletedTime(inverse bool) ListComputes {
-	if len(lc) < 2 {
+	if len(lc.Data) < 2 {
 		return lc
 	}
 
-	sort.Slice(lc, func(i, j int) bool {
+	sort.Slice(lc.Data, func(i, j int) bool {
 		if inverse {
-			return lc[i].DeletedTime > lc[j].DeletedTime
+			return lc.Data[i].DeletedTime > lc.Data[j].DeletedTime
 		}
 
-		return lc[i].DeletedTime < lc[j].DeletedTime
+		return lc.Data[i].DeletedTime < lc.Data[j].DeletedTime
 	})
 
 	return lc

@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lbs ListBasicServices) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lbs) == 0 {
+	if lbs.EntryCount == 0 {
 		return []byte{}, nil
 	}
 

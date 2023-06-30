@@ -26,6 +26,7 @@ type GetConsumedCloudUnitsByTypeRequest struct {
 //   - CU_M: returns consumed memory in MB
 //   - CU_C: returns number of virtual cpu cores
 //   - CU_D: returns consumed virtual disk storage in GB
+//   - CU_DM: returns consumed max virtual disk storage in GB
 //   - CU_S: returns consumed primary storage (NAS) in TB
 //   - CU_A: returns consumed secondary storage (Archive) in TB
 //   - CU_NO: returns sent/received network transfer in operator in GB

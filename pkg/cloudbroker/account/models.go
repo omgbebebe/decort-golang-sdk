@@ -27,6 +27,17 @@ type RecordResources struct {
 
 	// Reserved information about resources
 	Reserved Resource `json:"Reserved"`
+
+	// ID of account
+	AccountID uint64 `json:"id"`
+}
+
+type ListResources struct {
+	// Data
+	Data []RecordResources `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
 }
 
 type Resource struct {
@@ -61,7 +72,7 @@ type DiskUsage struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 }
 
 // Access Control List
@@ -87,11 +98,14 @@ type ACL struct {
 
 // Resource limits
 type ResourceLimits struct {
-	// CuC
+	// CuC 
 	CuC float64 `json:"CU_C"`
 
 	// CuD
 	CuD float64 `json:"CU_D"`
+
+	// CuDM
+	CuDM float64 `json:"CU_DM"`
 
 	// CuI
 	CuI float64 `json:"CU_I"`
@@ -183,9 +197,6 @@ type InfoAccount struct {
 
 // Deatailed information about account
 type RecordAccount struct {
-	// Resources
-	Resources RecordResources `json:"Resources"`
-
 	// Main information about account
 	InfoAccount
 }
@@ -200,7 +211,14 @@ type ItemAccount struct {
 }
 
 // List of accounts
-type ListAccounts []ItemAccount
+type ListDeleted []ItemAccount
+
+// List of accounts
+type ListAccounts struct {
+	Data []ItemAccount `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // List of computes
 type ListComputes []ItemCompute
@@ -379,7 +397,7 @@ type Consumed struct {
 	CPU uint64 `json:"cpu"`
 
 	// Disk size
-	DiskSize uint64 `json:"disksize"`
+	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
 	DiskSizeMax int64 `json:"disksizemax"`

@@ -3,23 +3,25 @@ package extnet
 import "testing"
 
 var extnets = ListExtNets{
-	ItemExtNet{
-		ID:     3,
-		IPCIDR: "176.118.164.0/24",
-		Name:   "176.118.164.0/24",
-		Status: "ENABLED",
-	},
-	ItemExtNet{
-		ID:     10,
-		IPCIDR: "45.134.255.0/24",
-		Name:   "45.134.255.0/24",
-		Status: "ENABLED",
-	},
-	ItemExtNet{
-		ID:     13,
-		IPCIDR: "88.218.249.0/24",
-		Name:   "88.218.249.0/24",
-		Status: "DISABLED",
+	Data: []ItemExtNet{
+		{
+			ID:     3,
+			IPCIDR: "176.118.164.0/24",
+			Name:   "176.118.164.0/24",
+			Status: "ENABLED",
+		},
+		{
+			ID:     10,
+			IPCIDR: "45.134.255.0/24",
+			Name:   "45.134.255.0/24",
+			Status: "ENABLED",
+		},
+		{
+			ID:     13,
+			IPCIDR: "88.218.249.0/24",
+			Name:   "88.218.249.0/24",
+			Status: "DISABLED",
+		},
 	},
 }
 
@@ -43,11 +45,11 @@ func TestFilterByName(t *testing.T) {
 func TestFilterByStatus(t *testing.T) {
 	actual := extnets.FilterByStatus("ENABLED")
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.Status != "ENABLED" {
 			t.Fatal("expected Status 'ENABLED', found: ", item.Status)
 		}
@@ -59,7 +61,7 @@ func TestFilterFunc(t *testing.T) {
 		return ien.IPCIDR == ien.Name
 	})
 
-	if len(actual) != 3 {
-		t.Fatal("expected 3 elements, found: ", len(actual))
+	if len(actual.Data) != 3 {
+		t.Fatal("expected 3 elements, found: ", len(actual.Data))
 	}
 }

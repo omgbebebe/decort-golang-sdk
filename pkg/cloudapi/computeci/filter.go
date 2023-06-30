@@ -31,11 +31,13 @@ func (lci ListComputeCI) FilterByStatus(status string) ListComputeCI {
 func (lci ListComputeCI) FilterFunc(predicate func(ItemComputeCI) bool) ListComputeCI {
 	var result ListComputeCI
 
-	for _, item := range lci {
+	for _, item := range lci.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -43,9 +45,9 @@ func (lci ListComputeCI) FilterFunc(predicate func(ItemComputeCI) bool) ListComp
 // FindOne returns first found ItemComputeCI
 // If none was found, returns an empty struct.
 func (lci ListComputeCI) FindOne() ItemComputeCI {
-	if len(lci) == 0 {
+	if lci.EntryCount == 0 {
 		return ItemComputeCI{}
 	}
 
-	return lci[0]
+	return lci.Data[0]
 }

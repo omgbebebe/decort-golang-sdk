@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var accounts = ListAccounts{
+var accounts = ListDeleted{
 	ItemAccount{
 		Meta: []interface{}{},
 		InfoAccount: InfoAccount{

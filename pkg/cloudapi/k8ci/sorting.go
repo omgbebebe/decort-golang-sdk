@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (lkc ListK8CI) SortByCreatedTime(inverse bool) ListK8CI {
-	if len(lkc) < 2 {
+	if len(lkc.Data) < 2 {
 		return lkc
 	}
 
-	sort.Slice(lkc, func(i, j int) bool {
+	sort.Slice(lkc.Data, func(i, j int) bool {
 		if inverse {
-			return lkc[i].CreatedTime > lkc[j].CreatedTime
+			return lkc.Data[i].CreatedTime > lkc.Data[j].CreatedTime
 		}
 
-		return lkc[i].CreatedTime < lkc[j].CreatedTime
+		return lkc.Data[i].CreatedTime < lkc.Data[j].CreatedTime
 	})
 
 	return lkc

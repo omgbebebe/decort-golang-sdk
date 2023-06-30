@@ -14,8 +14,8 @@ type RestoreRequest struct {
 	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Reason to restore
-	// Required: true
-	Reason string `url:"reason" json:"reason" validate:"required"`
+	// Required: false
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 // Restore restores a deleted account

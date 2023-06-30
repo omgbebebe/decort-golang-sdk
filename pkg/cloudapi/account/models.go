@@ -32,6 +32,9 @@ type ResourceLimits struct {
 	// Disk size, GB
 	CUD float64 `json:"CU_D"`
 
+	// Max disk size, GB
+	CU_DM float64 `json:"CU_DM"`
+
 	// Number of public IP addresses
 	CUI float64 `json:"CU_I"`
 
@@ -70,7 +73,11 @@ type ItemAccount struct {
 }
 
 // List of accounts
-type ListAccounts []ItemAccount
+type ListAccounts struct {
+	Data []ItemAccount `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Resources used
 type Resource struct {
@@ -109,12 +116,21 @@ type DiskUsage struct {
 }
 
 // Information about resources
-type Resources struct {
+type ItemResourceConsumption struct {
 	// Current information about resources
 	Current Resource `json:"Current"`
 
 	// Reserved information about resources
 	Reserved Resource `json:"Reserved"`
+
+	// Account ID
+	AccountID uint64 `json:"id"`
+}
+
+type ListResourceConsumption struct {
+	Data []ItemResourceConsumption `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
 }
 
 // Information about computes
@@ -139,9 +155,6 @@ type Machines struct {
 type RecordAccount struct {
 	// DCLocation
 	DCLocation string `json:"DCLocation"`
-
-	// Resources
-	Resources Resources `json:"Resources"`
 
 	// CKey
 	CKey string `json:"_ckey"`

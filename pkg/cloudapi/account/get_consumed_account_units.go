@@ -20,6 +20,7 @@ type GetConsumedAccountUnitsRequest struct {
 //   - CU_M: consumed memory in MB
 //   - CU_C: number of cpu cores
 //   - CU_D: consumed vdisk storage in GB
+//   - CU_DM: consumed max vdisk storage in GB
 //   - CU_I: number of public IPs
 func (a Account) GetConsumedAccountUnits(ctx context.Context, req GetConsumedAccountUnitsRequest) (*ResourceLimits, error) {
 	err := validators.ValidateRequest(req)

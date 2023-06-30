@@ -49,11 +49,13 @@ func (lbs ListBasicServices) FilterByTechStatus(techStatus string) ListBasicServ
 func (lbs ListBasicServices) FilterFunc(predicate func(ItemBasicService) bool) ListBasicServices {
 	var result ListBasicServices
 
-	for _, item := range lbs {
+	for _, item := range lbs.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(lbs.Data))
 
 	return result
 }
@@ -61,9 +63,9 @@ func (lbs ListBasicServices) FilterFunc(predicate func(ItemBasicService) bool) L
 // FindOne returns first found ItemBasicService
 // If none was found, returns an empty struct.
 func (lbs ListBasicServices) FindOne() ItemBasicService {
-	if len(lbs) == 0 {
+	if lbs.EntryCount == 0 {
 		return ItemBasicService{}
 	}
 
-	return lbs[0]
+	return lbs.Data[0]
 }

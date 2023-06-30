@@ -248,11 +248,24 @@ type ItemDiskUnattached struct {
 	VMID uint64 `json:"vmid"`
 }
 
+// List of disks searched
+type ListSearchDisks []ItemDisk
+
 // List of disks
-type ListDisks []ItemDisk
+type ListDisks struct {
+	// Data
+	Data []ItemDisk `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // List of unattached disks
-type ListDisksUnattached []ItemDiskUnattached
+type ListDisksUnattached struct {
+	Data []ItemDiskUnattached `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about snapshot
 type ItemSnapshot struct {
@@ -261,6 +274,8 @@ type ItemSnapshot struct {
 
 	// Label
 	Label string `json:"label"`
+
+	ReferenceID string `json:"referenceId"`
 
 	// Resource ID
 	ResID string `json:"resId"`

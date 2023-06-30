@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lkc ListK8CI) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lkc) == 0 {
+	if len(lkc.Data) == 0 {
 		return []byte{}, nil
 	}
 

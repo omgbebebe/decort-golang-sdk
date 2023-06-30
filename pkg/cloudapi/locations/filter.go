@@ -31,11 +31,13 @@ func (ll ListLocations) FilterByGID(gid uint64) ListLocations {
 func (ll ListLocations) FilterFunc(predicate func(ItemLocation) bool) ListLocations {
 	var result ListLocations
 
-	for _, item := range ll {
+	for _, item := range ll.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -43,9 +45,9 @@ func (ll ListLocations) FilterFunc(predicate func(ItemLocation) bool) ListLocati
 // FindOne returns first found ItemLocation
 // If none was found, returns an empty struct.
 func (ll ListLocations) FindOne() ItemLocation {
-	if len(ll) == 0 {
+	if len(ll.Data) == 0 {
 		return ItemLocation{}
 	}
 
-	return ll[0]
+	return ll.Data[0]
 }

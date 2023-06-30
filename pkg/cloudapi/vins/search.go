@@ -26,7 +26,7 @@ type SearchRequest struct {
 }
 
 // Search  search VINSes
-func (v VINS) Search(ctx context.Context, req SearchRequest) (ListVINS, error) {
+func (v VINS) Search(ctx context.Context, req SearchRequest) (SearchListVINS, error) {
 	url := "/cloudapi/vins/search"
 
 	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -34,7 +34,7 @@ func (v VINS) Search(ctx context.Context, req SearchRequest) (ListVINS, error) {
 		return nil, err
 	}
 
-	list := ListVINS{}
+	list := SearchListVINS{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

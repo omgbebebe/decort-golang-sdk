@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lenet ListExtNets) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lenet) == 0 {
+	if lenet.EntryCount == 0 {
 		return []byte{}, nil
 	}
 

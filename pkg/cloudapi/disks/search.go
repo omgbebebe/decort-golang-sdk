@@ -21,7 +21,7 @@ type SearchRequest struct {
 }
 
 // Search search disks
-func (d Disks) Search(ctx context.Context, req SearchRequest) (ListDisks, error) {
+func (d Disks) Search(ctx context.Context, req SearchRequest) (ListSearchDisks, error) {
 	url := "/cloudapi/disks/search"
 
 	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -29,7 +29,7 @@ func (d Disks) Search(ctx context.Context, req SearchRequest) (ListDisks, error)
 		return nil, err
 	}
 
-	list := ListDisks{}
+	list := ListSearchDisks{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

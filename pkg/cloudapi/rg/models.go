@@ -9,7 +9,7 @@ type Resource struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Max disk size
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 
 	// Number of External IPs
 	ExtIPs int64 `json:"extips"`
@@ -33,7 +33,7 @@ type DiskUsage struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 }
 
 // Information about resources
@@ -45,11 +45,26 @@ type Resources struct {
 	Reserved Resource `json:"Reserved"`
 }
 
+// Detailed information about resource consumption
+type ItemResourceConsumption struct {
+	// Consumed information about resources
+	Consumed Resource `json:"Consumed"`
+
+	// Reserved information about resources
+	Reserved Resource `json:"Reserved"`
+
+	// Resource group ID
+	RGID uint64 `json:"rgid"`
+}
+
+type ListResourceConsumption struct {
+	Data []ItemResourceConsumption `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
+
 // Detailed information about resource group
 type RecordResourceGroup struct {
-	// Resources
-	Resources Resources `json:"Resources"`
-
 	// Account ID
 	AccountID uint64 `json:"accountId"`
 
@@ -232,7 +247,11 @@ type ItemResourceGroup struct {
 }
 
 // List of resource groups
-type ListResourceGroups []ItemResourceGroup
+type ListResourceGroups struct {
+	Data []ItemResourceGroup `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about Access Control List
 type ItemACL struct {
@@ -265,6 +284,9 @@ type ResourceLimits struct {
 
 	// CUD
 	CUD float64 `json:"CU_D"`
+
+	// CUDM
+	CUDM float64 `json:"CU_DM"`
 
 	// CUI
 	CUI float64 `json:"CU_I"`

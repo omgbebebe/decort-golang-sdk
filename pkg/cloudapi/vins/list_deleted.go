@@ -18,7 +18,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list of deleted VINSes available for current user
-func (v VINS) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListVINS, error) {
+func (v VINS) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListVINS, error) {
 	url := "/cloudapi/vins/listDeleted"
 
 	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +33,5 @@ func (v VINS) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListVINS
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

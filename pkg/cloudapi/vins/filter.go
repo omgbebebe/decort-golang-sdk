@@ -58,11 +58,13 @@ func (lv ListVINS) FilterByDeletedBy(deletedBy string) ListVINS {
 func (lv ListVINS) FilterFunc(predicate func(ItemVINS) bool) ListVINS {
 	var result ListVINS
 
-	for _, item := range lv {
+	for _, item := range lv.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -70,9 +72,9 @@ func (lv ListVINS) FilterFunc(predicate func(ItemVINS) bool) ListVINS {
 // FindOne returns first found ItemVINS
 // If none was found, returns an empty struct.
 func (lv ListVINS) FindOne() ItemVINS {
-	if len(lv) == 0 {
+	if len(lv.Data) == 0 {
 		return ItemVINS{}
 	}
 
-	return lv[0]
+	return lv.Data[0]
 }

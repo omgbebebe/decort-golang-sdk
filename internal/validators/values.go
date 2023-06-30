@@ -6,7 +6,7 @@ var (
 	resTypesValues   = []string{"compute", "vins", "k8s", "openshift", "lb", "flipgroup"}
 	protoValues      = []string{"tcp", "udp"}
 
-	accountCUTypeValues = []string{"CU_M", "CU_C", "CU_D", "CU_S", "CU_A", "CU_NO", "CU_I", "CU_NP"}
+	accountCUTypeValues = []string{"CU_M", "CU_C", "CU_D", "CU_DM", "CU_S", "CU_A", "CU_NO", "CU_I", "CU_NP"}
 
 	bserviceModeValues = []string{"ABSOLUTE", "RELATIVE"}
 

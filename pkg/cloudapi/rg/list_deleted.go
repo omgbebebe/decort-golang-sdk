@@ -18,7 +18,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list all deleted resource groups the user has access to
-func (r RG) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListResourceGroups, error) {
+func (r RG) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListResourceGroups, error) {
 	url := "/cloudapi/rg/listDeleted"
 
 	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +33,5 @@ func (r RG) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListResour
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

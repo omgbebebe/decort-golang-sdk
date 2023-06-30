@@ -14,17 +14,9 @@ type UpdateRequest struct {
 	// Required: true
 	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
-	// Display name
+	// Name of the account
 	// Required: false
 	Name string `url:"name" json:"name"`
-
-	// Name of the account
-	// Required: true
-	Username string `url:"username,omitempty" json:"username,omitempty"`
-
-	// Email
-	// Required: false
-	EmailAddress string `url:"emailaddress,omitempty" json:"emailaddress,omitempty" validate:"omitempty,email"`
 
 	// Max size of memory in MB
 	// Required: false

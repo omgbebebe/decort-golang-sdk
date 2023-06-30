@@ -18,7 +18,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list all deleted k8ci catalog items available to the current user
-func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListK8CI, error) {
+func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListK8CI, error) {
 	url := "/cloudapi/k8ci/listDeleted"
 
 	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +33,5 @@ func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListK8CI
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

@@ -673,6 +673,9 @@ type SnapshotExtend struct {
 	// Label
 	Label string `json:"label"`
 
+	// Reference ID
+	ReferenceID string `json:"referenceId"`
+
 	// Resource ID
 	ResID string `json:"resId"`
 
@@ -905,4 +908,10 @@ type InfoDisk struct {
 }
 
 // List information about computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	// Data
+	Data []ItemCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

@@ -3,7 +3,7 @@ package k8ci
 // FilterByID returns ListK8CI with specified ID.
 func (lkc ListK8CI) FilterByID(id uint64) ListK8CI {
 	predicate := func(ikc ItemK8CI) bool {
-		return ikc.RecordK8CI.ID == id
+		return ikc.ID == id
 	}
 
 	return lkc.FilterFunc(predicate)
@@ -12,7 +12,7 @@ func (lkc ListK8CI) FilterByID(id uint64) ListK8CI {
 // FilterByName returns ListK8CI with specified Name.
 func (lkc ListK8CI) FilterByName(name string) ListK8CI {
 	predicate := func(ikc ItemK8CI) bool {
-		return ikc.RecordK8CI.Name == name
+		return ikc.Name == name
 	}
 
 	return lkc.FilterFunc(predicate)
@@ -22,11 +22,13 @@ func (lkc ListK8CI) FilterByName(name string) ListK8CI {
 func (lkc ListK8CI) FilterFunc(predicate func(ItemK8CI) bool) ListK8CI {
 	var result ListK8CI
 
-	for _, item := range lkc {
+	for _, item := range lkc.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -34,9 +36,9 @@ func (lkc ListK8CI) FilterFunc(predicate func(ItemK8CI) bool) ListK8CI {
 // FindOne returns first found ItemK8CI
 // If none was found, returns an empty struct.
 func (lkc ListK8CI) FindOne() ItemK8CI {
-	if len(lkc) == 0 {
+	if len(lkc.Data) == 0 {
 		return ItemK8CI{}
 	}
 
-	return lkc[0]
+	return lkc.Data[0]
 }

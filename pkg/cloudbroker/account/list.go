@@ -8,6 +8,22 @@ import (
 
 // Request struct for get list of accounts
 type ListRequest struct {
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"by_id" json:"by_id"`
+
+	// Find by name
+	// Required: false
+	Name string `urL:"name" json:"name"`
+
+	// Find by access control list
+	// Required: false
+	ACL string `url:"acl" json:"acl"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status" json:"status"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page" json:"page"`
@@ -18,7 +34,7 @@ type ListRequest struct {
 }
 
 // List gets list all accounts the user has access to
-func (a Account) List(ctx context.Context, req ListRequest) (ListAccounts, error) {
+func (a Account) List(ctx context.Context, req ListRequest) (*ListAccounts, error) {
 	url := "/cloudbroker/account/list"
 
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +49,5 @@ func (a Account) List(ctx context.Context, req ListRequest) (ListAccounts, error
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

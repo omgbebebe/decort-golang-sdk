@@ -10,15 +10,15 @@ import (
 type ListDeletedRequest struct {
 	// Page number
 	// Required: false
-	Page uint64 `url:"page" json:"page"`
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
 
 	// Page size
 	// Required: false
-	Size uint64 `url:"size" json:"size"`
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
 // ListDeleted gets list all deleted accounts the user has access to
-func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListAccounts, error) {
+func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListAccounts, error) {
 	url := "/cloudapi/account/listDeleted"
 
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +33,5 @@ func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListA
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

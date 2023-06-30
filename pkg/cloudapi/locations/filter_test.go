@@ -3,48 +3,51 @@ package locations
 import "testing"
 
 var locationItems = ListLocations{
-	{
-		GID:          212,
-		ID:           1,
-		GUID:         1,
-		LocationCode: "alfa",
-		Name:         "alfa",
-		Flag:         "",
-		Meta: []interface{}{
-			"cloudbroker",
-			"location",
-			1,
+	Data: []ItemLocation{
+		{
+			GID:          212,
+			ID:           1,
+			GUID:         1,
+			LocationCode: "alfa",
+			Name:         "alfa",
+			Flag:         "",
+			Meta: []interface{}{
+				"cloudbroker",
+				"location",
+				1,
+			},
+			CKey: "",
 		},
-		CKey: "",
-	},
-	{
-		GID:          222,
-		ID:           2,
-		GUID:         2,
-		LocationCode: "beta",
-		Name:         "beta",
-		Flag:         "",
-		Meta: []interface{}{
-			"cloudbroker",
-			"location",
-			1,
+		{
+			GID:          222,
+			ID:           2,
+			GUID:         2,
+			LocationCode: "beta",
+			Name:         "beta",
+			Flag:         "",
+			Meta: []interface{}{
+				"cloudbroker",
+				"location",
+				1,
+			},
+			CKey: "",
 		},
-		CKey: "",
-	},
-	{
-		GID:          232,
-		ID:           3,
-		GUID:         3,
-		LocationCode: "gamma",
-		Name:         "gamma",
-		Flag:         "",
-		Meta: []interface{}{
-			"cloudbroker",
-			"location",
-			1,
+		{
+			GID:          232,
+			ID:           3,
+			GUID:         3,
+			LocationCode: "gamma",
+			Name:         "gamma",
+			Flag:         "",
+			Meta: []interface{}{
+				"cloudbroker",
+				"location",
+				1,
+			},
+			CKey: "",
 		},
-		CKey: "",
 	},
+	EntryCount: 3,
 }
 
 func TestFilterByID(t *testing.T) {

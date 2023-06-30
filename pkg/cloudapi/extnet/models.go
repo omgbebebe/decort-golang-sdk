@@ -25,7 +25,11 @@ type ItemExtNetExtend struct {
 }
 
 // List of information about external network
-type ListExtNets []ItemExtNet
+type ListExtNets struct {
+	Data []ItemExtNet `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // List of extend information about external network
 type ListExtNetExtends []ItemExtNetExtend

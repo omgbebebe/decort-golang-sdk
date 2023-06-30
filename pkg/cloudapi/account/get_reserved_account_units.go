@@ -21,6 +21,7 @@ type GetReservedAccountUnitsRequest struct {
 //   - CU_M: reserved memory in MB
 //   - CU_C: number of cpu cores
 //   - CU_D: reserved vdisk storage in GB
+//   - CU_DM: reserved max vdisk storage in GB
 //   - CU_I: number of public IPs
 func (a Account) GetReservedAccountUnits(ctx context.Context, req GetReservedAccountUnitsRequest) (*ResourceLimits, error) {
 	err := validators.ValidateRequest(req)

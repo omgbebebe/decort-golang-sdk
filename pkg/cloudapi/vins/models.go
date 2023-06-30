@@ -52,7 +52,14 @@ type ItemVINS struct {
 }
 
 // List of VINSes
-type ListVINS []ItemVINS
+type ListVINS struct {
+	Data []ItemVINS `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}
+
+// List of VINSes search result
+type SearchListVINS []ItemVINS
 
 // Main information about audit
 type ItemAudit struct {
@@ -619,6 +626,12 @@ type RecordVINS struct {
 
 	// Status
 	Status string `json:"status"`
+
+	// Updated by
+	UpdatedBy string `json:"updatedBy"`
+
+	// Updated time
+	UpdatedTime uint64 `json:"updatedTime"`
 
 	// User managed
 	UserManaged bool `json:"userManaged"`

@@ -6,8 +6,32 @@ import (
 	"net/http"
 )
 
-// Request struct for get list/list_deleted of disks
+// Request struct for get list of disks
 type ListRequest struct {
+	// Find by id
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by account name
+	// Required: false
+	AccountName string `url:"accountName,omitempty" json:"accountName,omitempty"`
+
+	// Find by max size disk
+	// Required: false
+	DiskMaxSize int64 `url:"diskMaxSize,omitempty" json:"diskMaxSize,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by shared, true or false
+	// Required: false
+	Shared bool `url:"shared,omitempty" json:"shared,omitempty"`
+
 	// ID of the account the disks belong to
 	// Required: false
 	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
@@ -26,7 +50,7 @@ type ListRequest struct {
 }
 
 // List gets list the created disks belonging to an account
-func (d Disks) List(ctx context.Context, req ListRequest) (ListDisks, error) {
+func (d Disks) List(ctx context.Context, req ListRequest) (*ListDisks, error) {
 	url := "/cloudapi/disks/list"
 
 	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -41,24 +65,5 @@ func (d Disks) List(ctx context.Context, req ListRequest) (ListDisks, error) {
 		return nil, err
 	}
 
-	return list, nil
-}
-
-// ListDeleted gets list the deleted disks belonging to an account
-func (d Disks) ListDeleted(ctx context.Context, req ListRequest) (ListDisks, error) {
-	url := "/cloudapi/disks/listDeleted"
-
-	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
-	if err != nil {
-		return nil, err
-	}
-
-	list := ListDisks{}
-
-	err = json.Unmarshal(res, &list)
-	if err != nil {
-		return nil, err
-	}
-
-	return list, nil
+	return &list, nil
 }

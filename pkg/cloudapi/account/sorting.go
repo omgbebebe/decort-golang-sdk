@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
-	if len(la) < 2 {
+	if la.EntryCount < 2 {
 		return la
 	}
 
-	sort.Slice(la, func(i, j int) bool {
+	sort.Slice(la.Data, func(i, j int) bool {
 		if inverse {
-			return la[i].CreatedTime > la[j].CreatedTime
+			return la.Data[i].CreatedTime > la.Data[j].CreatedTime
 		}
 
-		return la[i].CreatedTime < la[j].CreatedTime
+		return la.Data[i].CreatedTime < la.Data[j].CreatedTime
 	})
 
 	return la
@@ -25,16 +25,16 @@ func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
-	if len(la) < 2 {
+	if la.EntryCount < 2 {
 		return la
 	}
 
-	sort.Slice(la, func(i, j int) bool {
+	sort.Slice(la.Data, func(i, j int) bool {
 		if inverse {
-			return la[i].UpdatedTime > la[j].UpdatedTime
+			return la.Data[i].UpdatedTime > la.Data[j].UpdatedTime
 		}
 
-		return la[i].UpdatedTime < la[j].UpdatedTime
+		return la.Data[i].UpdatedTime < la.Data[j].UpdatedTime
 	})
 
 	return la
@@ -44,16 +44,16 @@ func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByDeletedTime(inverse bool) ListAccounts {
-	if len(la) < 2 {
+	if la.EntryCount < 2 {
 		return la
 	}
 
-	sort.Slice(la, func(i, j int) bool {
+	sort.Slice(la.Data, func(i, j int) bool {
 		if inverse {
-			return la[i].DeletedTime > la[j].DeletedTime
+			return la.Data[i].DeletedTime > la.Data[j].DeletedTime
 		}
 
-		return la[i].DeletedTime < la[j].DeletedTime
+		return la.Data[i].DeletedTime < la.Data[j].DeletedTime
 	})
 
 	return la

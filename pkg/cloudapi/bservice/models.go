@@ -373,4 +373,8 @@ type ItemBasicService struct {
 }
 
 // List of BasicServices
-type ListBasicServices []ItemBasicService
+type ListBasicServices struct {
+	Data []ItemBasicService `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}

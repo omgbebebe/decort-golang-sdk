@@ -18,7 +18,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list all deleted accounts the user has access to
-func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListAccounts, error) {
+func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListDeleted, error) {
 	url := "/cloudbroker/account/listDeleted"
 
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -26,7 +26,7 @@ func (a Account) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListA
 		return nil, err
 	}
 
-	list := ListAccounts{}
+	list := ListDeleted{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

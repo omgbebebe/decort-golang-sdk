@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lfg ListFLIPGroups) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lfg) == 0 {
+	if len(lfg.Data) == 0 {
 		return []byte{}, nil
 	}
 

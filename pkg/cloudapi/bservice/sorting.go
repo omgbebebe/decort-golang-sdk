@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (lbs ListBasicServices) SortByCreatedTime(inverse bool) ListBasicServices {
-	if len(lbs) < 2 {
+	if lbs.EntryCount < 2 {
 		return lbs
 	}
 
-	sort.Slice(lbs, func(i, j int) bool {
+	sort.Slice(lbs.Data, func(i, j int) bool {
 		if inverse {
-			return lbs[i].CreatedTime > lbs[j].CreatedTime
+			return lbs.Data[i].CreatedTime > lbs.Data[j].CreatedTime
 		}
 
-		return lbs[i].CreatedTime < lbs[j].CreatedTime
+		return lbs.Data[i].CreatedTime < lbs.Data[j].CreatedTime
 	})
 
 	return lbs
@@ -25,16 +25,16 @@ func (lbs ListBasicServices) SortByCreatedTime(inverse bool) ListBasicServices {
 //
 // If inverse param is set to true, the order is reversed.
 func (lbs ListBasicServices) SortByUpdatedTime(inverse bool) ListBasicServices {
-	if len(lbs) < 2 {
+	if lbs.EntryCount < 2 {
 		return lbs
 	}
 
-	sort.Slice(lbs, func(i, j int) bool {
+	sort.Slice(lbs.Data, func(i, j int) bool {
 		if inverse {
-			return lbs[i].UpdatedTime > lbs[j].UpdatedTime
+			return lbs.Data[i].UpdatedTime > lbs.Data[j].UpdatedTime
 		}
 
-		return lbs[i].UpdatedTime < lbs[j].UpdatedTime
+		return lbs.Data[i].UpdatedTime < lbs.Data[j].UpdatedTime
 	})
 
 	return lbs
@@ -44,16 +44,16 @@ func (lbs ListBasicServices) SortByUpdatedTime(inverse bool) ListBasicServices {
 //
 // If inverse param is set to true, the order is reversed.
 func (lbs ListBasicServices) SortByDeletedTime(inverse bool) ListBasicServices {
-	if len(lbs) < 2 {
+	if lbs.EntryCount < 2 {
 		return lbs
 	}
 
-	sort.Slice(lbs, func(i, j int) bool {
+	sort.Slice(lbs.Data, func(i, j int) bool {
 		if inverse {
-			return lbs[i].DeletedTime > lbs[j].DeletedTime
+			return lbs.Data[i].DeletedTime > lbs.Data[j].DeletedTime
 		}
 
-		return lbs[i].DeletedTime < lbs[j].DeletedTime
+		return lbs.Data[i].DeletedTime < lbs.Data[j].DeletedTime
 	})
 
 	return lbs

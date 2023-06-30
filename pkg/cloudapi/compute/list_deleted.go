@@ -18,7 +18,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list all deleted computes
-func (c Compute) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListComputes, error) {
+func (c Compute) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListComputes, error) {
 	url := "/cloudapi/compute/listDeleted"
 
 	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +33,5 @@ func (c Compute) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListC
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

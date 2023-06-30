@@ -48,11 +48,13 @@ func (la ListAccounts) FilterByUserGroupID(userGroupID string) ListAccounts {
 func (la ListAccounts) FilterFunc(predicate func(ItemAccount) bool) ListAccounts {
 	var result ListAccounts
 
-	for _, acc := range la {
+	for _, acc := range la.Data {
 		if predicate(acc) {
-			result = append(result, acc)
+			result.Data = append(result.Data, acc)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -60,9 +62,9 @@ func (la ListAccounts) FilterFunc(predicate func(ItemAccount) bool) ListAccounts
 // FindOne returns first found ItemAccount.
 // If none was found, returns an empty struct.
 func (la ListAccounts) FindOne() ItemAccount {
-	if len(la) == 0 {
+	if la.EntryCount == 0 {
 		return ItemAccount{}
 	}
 
-	return la[0]
+	return la.Data[0]
 }

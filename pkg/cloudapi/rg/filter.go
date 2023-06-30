@@ -58,11 +58,13 @@ func (lrg ListResourceGroups) FilterByDefNetType(defNetType string) ListResource
 func (lrg ListResourceGroups) FilterFunc(predicate func(irg ItemResourceGroup) bool) ListResourceGroups {
 	var result ListResourceGroups
 
-	for _, rgItem := range lrg {
+	for _, rgItem := range lrg.Data {
 		if predicate(rgItem) {
-			result = append(result, rgItem)
+			result.Data = append(result.Data, rgItem)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -70,9 +72,9 @@ func (lrg ListResourceGroups) FilterFunc(predicate func(irg ItemResourceGroup) b
 // FindOne returns first found ItemResourceGroup.
 // If none was found, returns an empty struct.
 func (lrg ListResourceGroups) FindOne() ItemResourceGroup {
-	if len(lrg) == 0 {
+	if len(lrg.Data) == 0 {
 		return ItemResourceGroup{}
 	}
 
-	return lrg[0]
+	return lrg.Data[0]
 }

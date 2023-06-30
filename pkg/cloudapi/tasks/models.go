@@ -69,9 +69,46 @@ type RecordAsyncTask struct {
 	// Update time
 	UpdateTime uint64 `json:"updateTime"`
 
+	// Updated by
+	UpdatedBy string `json:"updatedBy"`
+
+	// Updated time
+	UpdatedTime uint64 `json:"updatedTime"`
+}
+
+// Detailed information about task
+type ItemAsyncTask struct {
+	// Audit ID
+	AuditID string `json:"auditId"`
+
+	// Completed
+	Completed bool `json:"completed"`
+
+	// Error
+	Error string `json:"error"`
+
+	// List of logs
+	Log []string `json:"log"`
+
+	// Final result
+	Result TaskResult `json:"result"`
+
+	// Stage
+	Stage string `json:"stage"`
+
+	// Status
+	Status string `json:"status"`
+
+	// Update time
+	UpdateTime uint64 `json:"updateTime"`
+
 	// Updated time
 	UpdatedTime uint64 `json:"updatedTime"`
 }
 
 // List of tasks
-type ListTasks []RecordAsyncTask
+type ListTasks struct {
+	Data []ItemAsyncTask `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}

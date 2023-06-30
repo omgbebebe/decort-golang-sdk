@@ -18,7 +18,7 @@ type ListRequest struct {
 }
 
 // List gets list user API tasks with status PROCESSING
-func (t Tasks) List(ctx context.Context, req ListRequest) (ListTasks, error) {
+func (t Tasks) List(ctx context.Context, req ListRequest) (*ListTasks, error) {
 	url := "/cloudapi/tasks/list"
 
 	res, err := t.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,6 +33,5 @@ func (t Tasks) List(ctx context.Context, req ListRequest) (ListTasks, error) {
 		return nil, err
 	}
 
-	return list, nil
-
+	return &list, nil
 }

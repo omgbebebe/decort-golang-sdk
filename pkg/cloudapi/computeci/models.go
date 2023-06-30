@@ -28,4 +28,8 @@ type ItemComputeCI struct {
 }
 
 // List of computeci instances
-type ListComputeCI []ItemComputeCI
+type ListComputeCI struct {
+	Data []ItemComputeCI `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
+}

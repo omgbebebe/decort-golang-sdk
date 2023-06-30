@@ -28,4 +28,10 @@ type ItemLocation struct {
 }
 
 // List of locations
-type ListLocations []ItemLocation
+type ListLocations struct {
+	// Data
+	Data []ItemLocation `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

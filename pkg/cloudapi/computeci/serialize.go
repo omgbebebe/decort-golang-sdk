@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lci ListComputeCI) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lci) == 0 {
+	if lci.EntryCount == 0 {
 		return []byte{}, nil
 	}
 
