@@ -112,7 +112,7 @@ type DiskUsage struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 }
 
 // Information about resources
@@ -299,7 +299,13 @@ type ItemCompute struct {
 }
 
 // List of computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	// Data
+	Data []ItemCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about disk
 type ItemDisk struct {
@@ -326,7 +332,13 @@ type ItemDisk struct {
 }
 
 // List of disks
-type ListDisks []ItemDisk
+type ListDisks struct {
+	// Data
+	Data []ItemDisk `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about VINS
 type ItemVINS struct {
@@ -383,7 +395,13 @@ type ItemVINS struct {
 }
 
 // List of VINS
-type ListVINS []ItemVINS
+type ListVINS struct {
+	// Data
+	Data []ItemVINS `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main info about audit
 type ItemAudit struct {
@@ -497,7 +515,13 @@ type ItemRG struct {
 }
 
 // List of Resource groups
-type ListRG []ItemRG
+type ListRG struct {
+	// Data
+	Data []ItemRG `json:"data"`
+
+	// Enrtry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about template
 type ItemTemplate struct {
@@ -602,4 +626,10 @@ type ItemFLIPGroup struct {
 }
 
 // List of FLIPGroups
-type ListFLIPGroups []ItemFLIPGroup
+type ListFLIPGroups struct {
+	// Data
+	Data []ItemFLIPGroup `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

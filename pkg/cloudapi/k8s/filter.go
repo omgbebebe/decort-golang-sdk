@@ -76,11 +76,13 @@ func (lkc ListK8SClusters) FilterByDeletedBy(deletedBy string) ListK8SClusters {
 func (lkc ListK8SClusters) FilterFunc(predicate func(ItemK8SCluster) bool) ListK8SClusters {
 	var result ListK8SClusters
 
-	for _, item := range lkc {
+	for _, item := range lkc.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -88,9 +90,9 @@ func (lkc ListK8SClusters) FilterFunc(predicate func(ItemK8SCluster) bool) ListK
 // FindOne returns first found ItemK8SCluster
 // If none was found, returns an empty struct.
 func (lkc ListK8SClusters) FindOne() ItemK8SCluster {
-	if len(lkc) == 0 {
+	if len(lkc.Data) == 0 {
 		return ItemK8SCluster{}
 	}
 
-	return lkc[0]
+	return lkc.Data[0]
 }

@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (la ListAccounts) Serialize(params ...string) (serialization.Serialized, error) {
-	if la.EntryCount == 0 {
+	if len(la.Data) == 0 {
 		return []byte{}, nil
 	}
 

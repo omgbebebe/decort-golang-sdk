@@ -8,6 +8,30 @@ import (
 
 // Request struct for get list unattached disk
 type ListUnattachedRequest struct {
+	// Find by id
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by account name
+	// Required: false
+	AccountName string `url:"accountName,omitempty" json:"accountName,omitempty"`
+
+	// Find by max size disk
+	// Required: false
+	DiskMaxSize int64 `url:"diskMaxSize,omitempty" json:"diskMaxSize,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by shared, true or false
+	// Required: false
+	Shared bool `url:"shared,omitempty" json:"shared,omitempty"`
+
+	// Type of the disks
+	// Required: false
+	Type string `url:"type,omitempty" json:"type,omitempty"`
+
 	// ID of the account
 	// Required: false
 	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
@@ -22,7 +46,7 @@ type ListUnattachedRequest struct {
 }
 
 // ListUnattached gets list of unattached disks
-func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (ListUnattachedDisks, error) {
+func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (*ListUnattachedDisks, error) {
 	url := "/cloudbroker/disks/listUnattached"
 
 	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -37,5 +61,5 @@ func (d Disks) ListUnattached(ctx context.Context, req ListUnattachedRequest) (L
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

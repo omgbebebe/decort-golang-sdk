@@ -14,13 +14,33 @@ type ListVINSRequest struct {
 	// Required: true
 	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
-	// Reason for action
+	// Find by name
 	// Required: false
-	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// ID an account
+	// Required: false
+	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// Find by ip extnet address
+	// Required: false
+	ExtIP string `url:"extIp,omitempty" json:"extIp,omitempty"`
+
+	// Find by vins id
+	// Required: false
+	VINSID uint64 `url:"vinsId,omitempty" json:"vinsId,omitempty"`
+
+	// Page number
+	// Required: false
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
+
+	// Page size
+	// Required: false
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
 // ListVINS gets list all ViNSes under specified resource group, accessible by the user
-func (r RG) ListVINS(ctx context.Context, req ListVINSRequest) (ListVINS, error) {
+func (r RG) ListVINS(ctx context.Context, req ListVINSRequest) (*ListVINS, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -42,5 +62,5 @@ func (r RG) ListVINS(ctx context.Context, req ListVINSRequest) (ListVINS, error)
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

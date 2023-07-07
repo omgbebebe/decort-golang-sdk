@@ -449,7 +449,13 @@ type ItemCompute struct {
 }
 
 // List of computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	//Data
+	Data []ItemCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about load balancer
 type RecordLoadBalancer struct {
@@ -563,7 +569,13 @@ type ItemBackend struct {
 type ListBackends []ItemBackend
 
 // List of load balancers
-type ListLB []ItemLoadBalancer
+type ListLB struct {
+	// Data
+	Data []ItemLoadBalancer `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Server settings
 type RecordServerSettings struct {
@@ -704,7 +716,13 @@ type ItemPortForward struct {
 }
 
 // List of port forwards
-type ListPortForwards []ItemPortForward
+type ListPortForwards struct {
+	//Data
+	Data []ItemPortForward `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about VINS
 type ItemVINS struct {
@@ -761,7 +779,13 @@ type ItemVINS struct {
 }
 
 // List of VINSes
-type ListVINS []ItemVINS
+type ListVINS struct {
+	// Data
+	Data []ItemVINS `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about usage of resource
 type RecordResourceUsage struct {

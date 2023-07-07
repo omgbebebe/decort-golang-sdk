@@ -14,7 +14,7 @@ type ListRequest struct {
 
 	// Find by name
 	// Required: false
-	Name string `urL:"name,omitempty" json:"name,omitempty"`
+	Name string `url:"name,omitempty" json:"name,omitempty"`
 
 	// Find by access control list
 	// Required: false

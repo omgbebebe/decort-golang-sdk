@@ -199,28 +199,16 @@ type ItemDisk struct {
 }
 
 // List disks
-type ListDisks []ItemDisk
+type ListDisks struct {
+	// Data
+	Data []ItemDisk `json:"data"`
 
-// Main information about deleted disk
-type ItemDeletedDisk struct {
-	// Machine ID
-	MachineID uint64 `json:"machineId"`
-
-	// Machine name
-	MachineName string `json:"machineName"`
-
-	// Detailed information about disk
-	RecordDisk
-
-	// Updated by
-	UpdatedBy uint64 `json:"updatedBy"`
-
-	// Updated time
-	UpdatedTime uint64 `json:"updatedTime"`
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
 }
 
-// List deleted disks
-type ListDeletedDisks []ItemDeletedDisk
+// ListSearchDisks
+type SearchListDisks []ItemDisk
 
 // Main information about unattached disk
 type ItemUnattachedDisk struct {
@@ -241,7 +229,13 @@ type ItemUnattachedDisk struct {
 }
 
 // List unattached disks
-type ListUnattachedDisks []ItemUnattachedDisk
+type ListUnattachedDisks struct {
+	// Data
+	Data []ItemUnattachedDisk `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about snapshot
 type ItemSnapshot struct {
@@ -269,3 +263,11 @@ type ItemSnapshot struct {
 
 // List snapshots
 type ListSnapshots []ItemSnapshot
+
+type ListTypes struct {
+	// Data
+	Data []interface{} `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

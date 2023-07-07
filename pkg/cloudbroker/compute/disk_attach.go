@@ -18,6 +18,10 @@ type DiskAttachRequest struct {
 	// Required: true
 	DiskID uint64 `url:"diskId" json:"diskId" validate:"required"`
 
+	// Type of the disk B;D
+	// Required: false
+	DiskType string `url:"diskType,omitempty" json:"diskType,omitempty"`
+
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`

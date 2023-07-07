@@ -139,11 +139,8 @@ type RecordExtNet struct {
 	// Meta
 	Meta []interface{} `json:"_meta"`
 
-	// CheckIPs
-	CheckIPs []string `json:"checkIPs"`
-
 	// CheckIps
-	CheckIps []string `json:"checkIps"`
+	CheckIPs []string `json:"checkIps"`
 
 	// Default
 	Default bool `json:"default"`

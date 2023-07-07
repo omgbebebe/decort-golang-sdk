@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (ld ListDisks) SortByCreatedTime(inverse bool) ListDisks {
-	if len(ld) < 2 {
+	if len(ld.Data) < 2 {
 		return ld
 	}
 
-	sort.Slice(ld, func(i, j int) bool {
+	sort.Slice(ld.Data, func(i, j int) bool {
 		if inverse {
-			return ld[i].CreatedTime > ld[j].CreatedTime
+			return ld.Data[i].CreatedTime > ld.Data[j].CreatedTime
 		}
 
-		return ld[i].CreatedTime < ld[j].CreatedTime
+		return ld.Data[i].CreatedTime < ld.Data[j].CreatedTime
 	})
 
 	return ld
@@ -25,16 +25,16 @@ func (ld ListDisks) SortByCreatedTime(inverse bool) ListDisks {
 //
 // If inverse param is set to true, the order is reversed.
 func (ld ListDisks) SortByDestructionTime(inverse bool) ListDisks {
-	if len(ld) < 2 {
+	if len(ld.Data) < 2 {
 		return ld
 	}
 
-	sort.Slice(ld, func(i, j int) bool {
+	sort.Slice(ld.Data, func(i, j int) bool {
 		if inverse {
-			return ld[i].DestructionTime > ld[j].DestructionTime
+			return ld.Data[i].DestructionTime > ld.Data[j].DestructionTime
 		}
 
-		return ld[i].DestructionTime < ld[j].DestructionTime
+		return ld.Data[i].DestructionTime < ld.Data[j].DestructionTime
 	})
 
 	return ld
@@ -44,16 +44,16 @@ func (ld ListDisks) SortByDestructionTime(inverse bool) ListDisks {
 //
 // If inverse param is set to true, the order is reversed.
 func (ld ListDisks) SortByDeletedTime(inverse bool) ListDisks {
-	if len(ld) < 2 {
+	if len(ld.Data) < 2 {
 		return ld
 	}
 
-	sort.Slice(ld, func(i, j int) bool {
+	sort.Slice(ld.Data, func(i, j int) bool {
 		if inverse {
-			return ld[i].DeletedTime > ld[j].DeletedTime
+			return ld.Data[i].DeletedTime > ld.Data[j].DeletedTime
 		}
 
-		return ld[i].DeletedTime < ld[j].DeletedTime
+		return ld.Data[i].DeletedTime < ld.Data[j].DeletedTime
 	})
 
 	return ld

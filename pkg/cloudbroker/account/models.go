@@ -98,7 +98,7 @@ type ACL struct {
 
 // Resource limits
 type ResourceLimits struct {
-	// CuC 
+	// CuC
 	CuC float64 `json:"CU_C"`
 
 	// CuD
@@ -211,17 +211,22 @@ type ItemAccount struct {
 }
 
 // List of accounts
-type ListDeleted []ItemAccount
-
-// List of accounts
 type ListAccounts struct {
+	// Data
 	Data []ItemAccount `json:"data"`
 
+	// Entry count
 	EntryCount uint64 `json:"entryCount"`
 }
 
 // List of computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	// Data
+	Data []ItemCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about compute
 type ItemCompute struct {
@@ -287,7 +292,13 @@ type ItemCompute struct {
 }
 
 // List of disks
-type ListDisks []ItemDisk
+type ListDisks struct {
+	// Data
+	Data []ItemDisk `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about disks
 type ItemDisk struct {
@@ -314,7 +325,13 @@ type ItemDisk struct {
 }
 
 // List of FLIPGroups
-type ListFLIPGroups []ItemFLIPGroup
+type ListFLIPGroups struct {
+	// Data
+	Data []ItemFLIPGroup `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about FLIPGroup
 type ItemFLIPGroup struct {
@@ -500,7 +517,13 @@ type ItemRG struct {
 }
 
 // List of resource groups
-type ListRG []ItemRG
+type ListRG struct {
+	// Data
+	Data []ItemRG `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about VINS
 type ItemVINS struct {
@@ -557,4 +580,10 @@ type ItemVINS struct {
 }
 
 // List of VINSes
-type ListVINS []ItemVINS
+type ListVINS struct {
+	//Data
+	Data []ItemVINS `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

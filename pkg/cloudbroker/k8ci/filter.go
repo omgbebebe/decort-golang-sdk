@@ -58,11 +58,13 @@ func (lkc ListK8CI) FilterByMasterImageID(masterImageID uint64) ListK8CI {
 func (lkc ListK8CI) FilterFunc(predicate func(ItemK8CI) bool) ListK8CI {
 	var result ListK8CI
 
-	for _, item := range lkc {
+	for _, item := range lkc.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -70,9 +72,9 @@ func (lkc ListK8CI) FilterFunc(predicate func(ItemK8CI) bool) ListK8CI {
 // FindOne returns first found ItemK8CI
 // If none was found, returns an empty struct.
 func (lkc ListK8CI) FindOne() ItemK8CI {
-	if len(lkc) == 0 {
+	if len(lkc.Data) == 0 {
 		return ItemK8CI{}
 	}
 
-	return lkc[0]
+	return lkc.Data[0]
 }

@@ -6,7 +6,7 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 
@@ -25,7 +25,7 @@ func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 
@@ -44,7 +44,7 @@ func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByDeletedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 

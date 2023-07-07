@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (li ListImages) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(li) == 0 {
+	if len(li.Data) == 0 {
 		return []byte{}, nil
 	}
 

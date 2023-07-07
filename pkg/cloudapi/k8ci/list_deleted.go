@@ -8,6 +8,26 @@ import (
 
 // Request struct for get list information about deleted images
 type ListDeletedRequest struct {
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"k8cId,omitempty" json:"k8cId,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by worker driver
+	// Required: false
+	WorkerDriver string `url:"workerDriver,omitempty" json:"workerDriver,omitempty"`
+
+	// Find by master driver
+	// Required: false
+	MasterDriver string `url:"masterDriver,omitempty" json:"masterDriver,omitempty"`
+
+	// Find by network plugin
+	// Required: false
+	NetworkPlugins string `url:"netPlugins,omitempty" json:"netPlugins,omitempty"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`

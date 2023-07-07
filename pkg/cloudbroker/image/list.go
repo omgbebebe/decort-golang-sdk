@@ -12,9 +12,49 @@ type ListRequest struct {
 	// Required: false
 	SepID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
 
-	// Filter images by account ID availability
+	// Find by ID
 	// Required: false
-	SharedWith uint64 `url:"sharedWith,omitempty" json:"sharedWith,omitempty"`
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by architecture
+	// Required: false
+	Architecture string `url:"architecture,omitempty" json:"architecture,omitempty"`
+
+	// Find by type
+	// Required: false
+	TypeImage string `url:"typeImage,omitempty" json:"typeImage,omitempty"`
+
+	// Find by image size
+	// Required: false
+	ImageSize uint64 `url:"imageSize,omitempty" json:"imageSize,omitempty"`
+
+	// Find by SEP name
+	// Required: false
+	SEPName string `url:"sepName,omitempty" json:"sepName,omitempty"`
+
+	// Find by pool
+	// Required: false
+	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
+
+	// Find by public True or False
+	// Required: false
+	Public bool `url:"public,omitempty" json:"public,omitempty"`
+
+	// Find by hot resize True or False
+	// Required: false
+	HotResize bool `url:"hotResize,omitempty" json:"hotResize,omitempty"`
+
+	// Find by bootable True or False
+	// Required: false
+	Bootable bool `url:"bootable,omitempty" json:"bootable,omitempty"`
 
 	// Page number
 	// Required: false
@@ -26,7 +66,7 @@ type ListRequest struct {
 }
 
 // List gets list of information about images
-func (i Image) List(ctx context.Context, req ListRequest) (ListImages, error) {
+func (i Image) List(ctx context.Context, req ListRequest) (*ListImages, error) {
 	url := "/cloudbroker/image/list"
 
 	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -41,5 +81,5 @@ func (i Image) List(ctx context.Context, req ListRequest) (ListImages, error) {
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

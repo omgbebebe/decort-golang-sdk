@@ -442,3 +442,11 @@ type RecordDisk struct {
 	// Virtual machine ID
 	VMID uint64 `json:"vmid"`
 }
+
+type ListTypes struct {
+	// Data
+	Data []interface{} `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

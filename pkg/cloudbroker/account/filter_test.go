@@ -4,78 +4,81 @@ import (
 	"testing"
 )
 
-var accounts = ListDeleted{
-	ItemAccount{
-		Meta: []interface{}{},
-		InfoAccount: InfoAccount{
-			ACL: []ACL{
-				{
-					Explicit:    true,
-					GUID:        "",
-					Right:       "CXDRAU",
-					Status:      "CONFIRMED",
-					Type:        "U",
-					UserGroupID: "not_really_timofey_tkachev_1@decs3o",
+var accounts = ListAccounts{
+	Data: []ItemAccount{
+		{
+			Meta: []interface{}{},
+			InfoAccount: InfoAccount{
+				ACL: []ACL{
+					{
+						Explicit:    true,
+						GUID:        "",
+						Right:       "CXDRAU",
+						Status:      "CONFIRMED",
+						Type:        "U",
+						UserGroupID: "not_really_timofey_tkachev_1@decs3o",
+					},
 				},
+				CreatedTime: 1676878820,
+				DeletedTime: 0,
+				ID:          132847,
+				Name:        "std_2",
+				Status:      "CONFIRMED",
+				UpdatedTime: 1676645275,
 			},
-			CreatedTime: 1676878820,
-			DeletedTime: 0,
-			ID:          132847,
-			Name:        "std_2",
-			Status:      "CONFIRMED",
-			UpdatedTime: 1676645275,
+		},
+		{
+			Meta: []interface{}{},
+			InfoAccount: InfoAccount{
+				ACL: []ACL{
+					{
+						Explicit:    true,
+						GUID:        "",
+						Right:       "CXDRAU",
+						Status:      "CONFIRMED",
+						Type:        "U",
+						UserGroupID: "timofey_tkachev_1@decs3o",
+					},
+				},
+				CreatedTime: 1676645275,
+				DeletedTime: 1677723401,
+				ID:          132846,
+				Name:        "std",
+				Status:      "DELETED",
+				UpdatedTime: 1676645275,
+			},
+		},
+		{
+			Meta: []interface{}{},
+			InfoAccount: InfoAccount{
+				ACL: []ACL{
+					{
+						Explicit:    true,
+						GUID:        "",
+						Right:       "CXDRAU",
+						Status:      "CONFIRMED",
+						Type:        "U",
+						UserGroupID: "timofey_tkachev_1@decs3o",
+					},
+					{
+						Explicit:    true,
+						GUID:        "",
+						Right:       "CXDRAU",
+						Status:      "CONFIRMED",
+						Type:        "U",
+						UserGroupID: "second_account@decs3o",
+					},
+				},
+				CreatedTime: 1676883850,
+				DeletedTime: 1676883899,
+				ID:          132848,
+				Name:        "std_broker",
+				Status:      "DELETED",
+				UpdatedTime: 1676878820,
+			},
 		},
 	},
-	ItemAccount{
-		Meta: []interface{}{},
-		InfoAccount: InfoAccount{
-			ACL: []ACL{
-				{
-					Explicit:    true,
-					GUID:        "",
-					Right:       "CXDRAU",
-					Status:      "CONFIRMED",
-					Type:        "U",
-					UserGroupID: "timofey_tkachev_1@decs3o",
-				},
-			},
-			CreatedTime: 1676645275,
-			DeletedTime: 1677723401,
-			ID:          132846,
-			Name:        "std",
-			Status:      "DELETED",
-			UpdatedTime: 1676645275,
-		},
-	},
-	ItemAccount{
-		Meta: []interface{}{},
-		InfoAccount: InfoAccount{
-			ACL: []ACL{
-				{
-					Explicit:    true,
-					GUID:        "",
-					Right:       "CXDRAU",
-					Status:      "CONFIRMED",
-					Type:        "U",
-					UserGroupID: "timofey_tkachev_1@decs3o",
-				},
-				{
-					Explicit:    true,
-					GUID:        "",
-					Right:       "CXDRAU",
-					Status:      "CONFIRMED",
-					Type:        "U",
-					UserGroupID: "second_account@decs3o",
-				},
-			},
-			CreatedTime: 1676883850,
-			DeletedTime: 1676883899,
-			ID:          132848,
-			Name:        "std_broker",
-			Status:      "DELETED",
-			UpdatedTime: 1676878820,
-		},
-	},
+	EntryCount: 3,
 }
 
 func TestFilterByID(t *testing.T) {
@@ -109,11 +112,11 @@ func TestFilterByName(t *testing.T) {
 func TestFilterByStatus(t *testing.T) {
 	actual := accounts.FilterByStatus("DELETED")
 
-	if len(actual) != 2 {
-		t.Fatal("Expected 2 elements in slice, found: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("Expected 2 elements in slice, found: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.Status != "DELETED" {
 			t.Fatal("expected DELETED, found: ", item.Status)
 		}
@@ -125,7 +128,7 @@ func TestFilterFunc(t *testing.T) {
 		return ia.DeletedTime == 0
 	})
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.DeletedTime != 0 {
 			t.Fatal("Expected DeletedTime = 0, found: ", item.DeletedTime)
 		}
@@ -135,21 +138,21 @@ func TestFilterFunc(t *testing.T) {
 func TestSortingByCreatedTime(t *testing.T) {
 	actual := accounts.SortByCreatedTime(false)
 
-	if actual[0].Name != "std" {
-		t.Fatal("Expected account std as earliest, found: ", actual[0].Name)
+	if actual.Data[0].Name != "std" {
+		t.Fatal("Expected account std as earliest, found: ", actual.Data[0].Name)
 	}
 
 	actual = accounts.SortByCreatedTime(true)
 
-	if actual[0].Name != "std_broker" {
-		t.Fatal("Expected account std_broker as latest, found: ", actual[0].Name)
+	if actual.Data[0].Name != "std_broker" {
+		t.Fatal("Expected account std_broker as latest, found: ", actual.Data[0].Name)
 	}
 }
 
 func TestFilterEmpty(t *testing.T) {
 	actual := accounts.FilterByID(0)
 
-	if len(actual) != 0 {
-		t.Fatal("Expected 0 found, actual: ", len(actual))
+	if len(actual.Data) != 0 {
+		t.Fatal("Expected 0 found, actual: ", len(actual.Data))
 	}
 }

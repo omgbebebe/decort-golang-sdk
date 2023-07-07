@@ -31,11 +31,13 @@ func (lenet ListExtNet) FilterByStatus(status string) ListExtNet {
 func (lenet ListExtNet) FilterFunc(predicate func(ItemExtNet) bool) ListExtNet {
 	var result ListExtNet
 
-	for _, item := range lenet {
+	for _, item := range lenet.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(lenet.Data))
 
 	return result
 }
@@ -43,9 +45,9 @@ func (lenet ListExtNet) FilterFunc(predicate func(ItemExtNet) bool) ListExtNet {
 // FindOne returns first found ItemExtNet
 // If none was found, returns an empty struct.
 func (lenet ListExtNet) FindOne() ItemExtNet {
-	if len(lenet) == 0 {
+	if len(lenet.Data) == 0 {
 		return ItemExtNet{}
 	}
 
-	return lenet[0]
+	return lenet.Data[0]
 }

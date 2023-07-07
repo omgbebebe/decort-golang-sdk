@@ -6,21 +6,33 @@ import (
 	"net/http"
 )
 
+// Request struct for getting list of email addresses of users
+type ListEmailsRequest struct {
+	// Page number
+	// Required: false
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
+
+	// Page size
+	// Required: false
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
+}
+
 // ListEmails returns list of email addresses of users
-func (g Grid) ListEmails(ctx context.Context) ([]string, error) {
+func (g Grid) ListEmails(ctx context.Context, req ListEmailsRequest) (*ListEmails, error) {
+
 	url := "/cloudbroker/grid/listEmails"
 
-	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, nil)
+	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return nil, err
 	}
 
-	list := make([]string, 0)
+	list := ListEmails{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

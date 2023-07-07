@@ -119,6 +119,9 @@ type RecordNetAttach struct {
 	// Default GW
 	DefGW string `json:"defGw"`
 
+	// Enabled
+	Enabled bool `json:"enabled"`
+
 	// FLIPGroup ID
 	FLIPGroupID uint64 `json:"flipgroupId"`
 
@@ -742,7 +745,13 @@ type InfoDisk struct {
 }
 
 // List computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	// Data
+	Data []ItemCompute `json:"data"`
+
+	// Entru Count
+	EntryCount uint64 `json:"entrycount"`
+}
 
 // Short information about audir
 type ItemAudit struct {
@@ -796,4 +805,19 @@ type ItemPCIDevice struct {
 }
 
 // List PCI devices
-type ListPCIDevices []ItemPCIDevice
+type ListPCIDevices struct {
+	// Data
+	Data []ItemPCIDevice `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
+// List VGPUs
+type ListVGPUs struct {
+	// Data
+	Data []interface{} `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

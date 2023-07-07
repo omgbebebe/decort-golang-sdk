@@ -70,7 +70,7 @@ func (ld ListDisks) FilterByComputeID(computeID uint64) ListDisks {
 }
 
 // FilterByK8SID is used to filter ListDisks by specified K8S cluster.
-func (ld ListDisks) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (ListDisks, error) {
+func (ld ListDisks) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (*ListDisks, error) {
 	caller := k8s.New(decortClient)
 
 	req := k8s.GetRequest{
@@ -85,20 +85,20 @@ func (ld ListDisks) FilterByK8SID(ctx context.Context, k8sID uint64, decortClien
 	var result ListDisks
 
 	for _, masterCompute := range cluster.K8SGroups.Masters.DetailedInfo {
-		result = append(result, ld.FilterByComputeID(masterCompute.ID)...)
+		result.Data = append(result.Data, ld.FilterByComputeID(masterCompute.ID).Data...)
 	}
 
 	for _, workerGroup := range cluster.K8SGroups.Workers {
 		for _, workerCompute := range workerGroup.DetailedInfo {
-			result = append(result, ld.FilterByComputeID(workerCompute.ID)...)
+			result.Data = append(result.Data, ld.FilterByComputeID(workerCompute.ID).Data...)
 		}
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // FilterByLBID is used to filter ListDisks used by computes inside specified Load Balancer.
-func (ld ListDisks) FilterByLBID(ctx context.Context, lbID uint64, decortClient interfaces.Caller) (ListDisks, error) {
+func (ld ListDisks) FilterByLBID(ctx context.Context, lbID uint64, decortClient interfaces.Caller) (*ListDisks, error) {
 	caller := lb.New(decortClient)
 
 	req := lb.GetRequest{
@@ -111,21 +111,23 @@ func (ld ListDisks) FilterByLBID(ctx context.Context, lbID uint64, decortClient 
 	}
 
 	var result ListDisks
-	result = append(result, ld.FilterByComputeID(foundLB.PrimaryNode.ComputeID)...)
-	result = append(result, ld.FilterByComputeID(foundLB.SecondaryNode.ComputeID)...)
+	result.Data = append(result.Data, ld.FilterByComputeID(foundLB.PrimaryNode.ComputeID).Data...)
+	result.Data = append(result.Data, ld.FilterByComputeID(foundLB.SecondaryNode.ComputeID).Data...)
 
-	return result, nil
+	return &result, nil
 }
 
 // FilterFunc allows filtering ListDisks based on a user-specified predicate.
 func (ld ListDisks) FilterFunc(predicate func(ItemDisk) bool) ListDisks {
 	var result ListDisks
 
-	for _, item := range ld {
+	for _, item := range ld.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(ld.Data))
 
 	return result
 }
@@ -133,9 +135,9 @@ func (ld ListDisks) FilterFunc(predicate func(ItemDisk) bool) ListDisks {
 // FindOne returns first found ItemDisk
 // If none was found, returns an empty struct.
 func (ld ListDisks) FindOne() ItemDisk {
-	if len(ld) == 0 {
+	if len(ld.Data) == 0 {
 		return ItemDisk{}
 	}
 
-	return ld[0]
+	return ld.Data[0]
 }

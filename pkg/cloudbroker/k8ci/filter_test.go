@@ -3,66 +3,69 @@ package k8ci
 import "testing"
 
 var k8ciItems = ListK8CI{
-	ItemK8CI{
-		CreatedTime: 123902139,
-		RecordK8CI: RecordK8CI{
-			Description:    "",
-			GID:            0,
-			GUID:           1,
-			ID:             1,
-			LBImageID:      5,
-			MasterDriver:   "KVM_X86",
-			MasterImageID:  120,
-			MaxMasterCount: 2,
-			MaxWorkerCount: 3,
-			Name:           "purple_snake",
-			SharedWith:     []interface{}{},
-			Status:         "ENABLED",
-			Version:        "1",
-			WorkerDriver:   "KVM_X86",
-			WorkerImageID:  120,
+	Data: []ItemK8CI{
+		{
+			CreatedTime: 123902139,
+			RecordK8CI: RecordK8CI{
+				Description:    "",
+				GID:            0,
+				GUID:           1,
+				ID:             1,
+				LBImageID:      5,
+				MasterDriver:   "KVM_X86",
+				MasterImageID:  120,
+				MaxMasterCount: 2,
+				MaxWorkerCount: 3,
+				Name:           "purple_snake",
+				SharedWith:     []interface{}{},
+				Status:         "ENABLED",
+				Version:        "1",
+				WorkerDriver:   "KVM_X86",
+				WorkerImageID:  120,
+			},
+		},
+		{
+			CreatedTime: 123902232,
+			RecordK8CI: RecordK8CI{
+				Description:    "",
+				GID:            0,
+				GUID:           2,
+				ID:             2,
+				LBImageID:      10,
+				MasterDriver:   "KVM_X86",
+				MasterImageID:  121,
+				MaxMasterCount: 3,
+				MaxWorkerCount: 5,
+				Name:           "green_giant",
+				SharedWith:     []interface{}{},
+				Status:         "DISABLED",
+				Version:        "2",
+				WorkerDriver:   "KVM_X86",
+				WorkerImageID:  121,
+			},
+		},
+		{
+			CreatedTime: 123902335,
+			RecordK8CI: RecordK8CI{
+				Description:    "",
+				GID:            0,
+				GUID:           3,
+				ID:             3,
+				LBImageID:      12,
+				MasterDriver:   "KVM_X86",
+				MasterImageID:  98,
+				MaxMasterCount: 5,
+				MaxWorkerCount: 9,
+				Name:           "magenta_cloud",
+				SharedWith:     []interface{}{},
+				Status:         "ENABLED",
+				Version:        "3",
+				WorkerDriver:   "KVM_X86",
+				WorkerImageID:  98,
+			},
 		},
 	},
-	ItemK8CI{
-		CreatedTime: 123902232,
-		RecordK8CI: RecordK8CI{
-			Description:    "",
-			GID:            0,
-			GUID:           2,
-			ID:             2,
-			LBImageID:      10,
-			MasterDriver:   "KVM_X86",
-			MasterImageID:  121,
-			MaxMasterCount: 3,
-			MaxWorkerCount: 5,
-			Name:           "green_giant",
-			SharedWith:     []interface{}{},
-			Status:         "DISABLED",
-			Version:        "2",
-			WorkerDriver:   "KVM_X86",
-			WorkerImageID:  121,
-		},
-	},
-	ItemK8CI{
-		CreatedTime: 123902335,
-		RecordK8CI: RecordK8CI{
-			Description:    "",
-			GID:            0,
-			GUID:           3,
-			ID:             3,
-			LBImageID:      12,
-			MasterDriver:   "KVM_X86",
-			MasterImageID:  98,
-			MaxMasterCount: 5,
-			MaxWorkerCount: 9,
-			Name:           "magenta_cloud",
-			SharedWith:     []interface{}{},
-			Status:         "ENABLED",
-			Version:        "3",
-			WorkerDriver:   "KVM_X86",
-			WorkerImageID:  98,
-		},
-	},
+	EntryCount: 3,
 }
 
 func TestFilterByID(t *testing.T) {
@@ -84,11 +87,11 @@ func TestFilterByName(t *testing.T) {
 func TestFilterByStatus(t *testing.T) {
 	actual := k8ciItems.FilterByStatus("ENABLED")
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.Status != "ENABLED" {
 			t.Fatal("expected Status 'ENABLED', found: ", item.Status)
 		}
@@ -124,11 +127,11 @@ func TestFilterFunc(t *testing.T) {
 		return ikc.CreatedTime > 123902139
 	})
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.CreatedTime < 123902139 {
 			t.Fatal("expected CreatedTime greater than 123902139, found: ", item.CreatedTime)
 		}
@@ -138,7 +141,7 @@ func TestFilterFunc(t *testing.T) {
 func TestSortingByCreatedTime(t *testing.T) {
 	actual := k8ciItems.SortByCreatedTime(true)
 
-	if actual[0].CreatedTime != 123902335 && actual[2].CreatedTime != 123902139 {
+	if actual.Data[0].CreatedTime != 123902335 && actual.Data[2].CreatedTime != 123902139 {
 		t.Fatal("expected inverse sort, found normal")
 	}
 }

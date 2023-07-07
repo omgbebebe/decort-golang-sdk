@@ -117,18 +117,21 @@ type ItemExtNet struct {
 }
 
 // List external networks
-type ListExtNet []ItemExtNet
+type ListExtNet struct {
+	// Data
+	Data []ItemExtNet `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Detailed information about external network
 type RecordExtNet struct {
 	// Main information about external network
 	ItemExtNet
 
-	// CheckIPs
-	CheckIPs []string `json:"checkIPs"`
-
 	// CheckIps
-	CheckIps []string `json:"checkIps"`
+	CheckIPs []string `json:"checkIps"`
 
 	// List DNS
 	DNS []string `json:"dns"`

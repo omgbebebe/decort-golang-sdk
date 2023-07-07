@@ -21,6 +21,10 @@ type DiskQOSRequest struct {
 	// Limit IO for a certain disk total and read/write options are not allowed to be combined
 	// Required: true
 	Limits string `url:"limits" json:"limits" validate:"required"`
+
+	// Reason for action
+	// Required: false
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 // DiskQOS change QOS of the disk

@@ -44,7 +44,7 @@ func (ll ListLB) FilterByImageID(imageID uint64) ListLB {
 }
 
 // FilterByK8SID returns ListLB used by specified K8S cluster.
-func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (ListLB, error) {
+func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (*ListLB, error) {
 	caller := k8s.New(decortClient)
 
 	req := k8s.GetRequest{
@@ -60,18 +60,22 @@ func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient i
 		return cluster.LBID == ill.ID
 	}
 
-	return ll.FilterFunc(predicate), nil
+	result := ll.FilterFunc(predicate)
+
+	return &result, nil
 }
 
 // FilterFunc allows filtering ListLB based on a user-specified predicate.
 func (ll ListLB) FilterFunc(predicate func(ItemLoadBalancer) bool) ListLB {
 	var result ListLB
 
-	for _, item := range ll {
+	for _, item := range ll.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(ll.Data))
 
 	return result
 }
@@ -79,9 +83,9 @@ func (ll ListLB) FilterFunc(predicate func(ItemLoadBalancer) bool) ListLB {
 // FindOne returns first found ItemLoadBalancer
 // If none was found, returns an empty struct.
 func (ll ListLB) FindOne() ItemLoadBalancer {
-	if len(ll) == 0 {
+	if len(ll.Data) == 0 {
 		return ItemLoadBalancer{}
 	}
 
-	return ll[0]
+	return ll.Data[0]
 }

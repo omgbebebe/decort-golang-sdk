@@ -8,6 +8,26 @@ import (
 
 // Request struct for get list of deleted disks
 type ListDeletedRequest struct {
+	// Find by id
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by account name
+	// Required: false
+	AccountName string `url:"accountName,omitempty" json:"accountName,omitempty"`
+
+	// Find by max size disk
+	// Required: false
+	DiskMaxSize int64 `url:"diskMaxSize,omitempty" json:"diskMaxSize,omitempty"`
+
+	// Find by shared, true or false
+	// Required: false
+	Shared bool `url:"shared,omitempty" json:"shared,omitempty"`
+
 	// ID of the account the disks belong to
 	// Required: false
 	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`

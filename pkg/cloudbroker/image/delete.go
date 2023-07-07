@@ -16,7 +16,7 @@ type DeleteRequest struct {
 
 	// Reason for action
 	// Required: true
-	Reason string `url:"reason" json:"reason" validate:"required"`
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 
 	// Whether to completely delete the image
 	// Required: false

@@ -59,7 +59,7 @@ func (lc ListComputes) FilterByDiskID(diskID uint64) ListComputes {
 }
 
 // FilterByK8SID returns master and worker nodes (ListComputes) inside specified K8S cluster.
-func (lc ListComputes) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (ListComputes, error) {
+func (lc ListComputes) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient interfaces.Caller) (*ListComputes, error) {
 	caller := k8s.New(decortClient)
 
 	req := k8s.GetRequest{
@@ -89,7 +89,9 @@ func (lc ListComputes) FilterByK8SID(ctx context.Context, k8sID uint64, decortCl
 		return false
 	}
 
-	return lc.FilterFunc(predicate), nil
+	result := lc.FilterFunc(predicate)
+
+	return &result, nil
 }
 
 // K8SMasters is used to filter master nodes. Best used after FilterByK8SID function.
@@ -121,7 +123,7 @@ func (lc ListComputes) FilterByK8SWorkers() ListComputes {
 }
 
 // FilterByLBID is used to filter ListComputes used by specified Load Balancer.
-func (lc ListComputes) FilterByLBID(ctx context.Context, lbID uint64, decortClient interfaces.Caller) (ListComputes, error) {
+func (lc ListComputes) FilterByLBID(ctx context.Context, lbID uint64, decortClient interfaces.Caller) (*ListComputes, error) {
 	caller := lb.New(decortClient)
 
 	req := lb.GetRequest{
@@ -137,18 +139,22 @@ func (lc ListComputes) FilterByLBID(ctx context.Context, lbID uint64, decortClie
 		return ic.ID == foundLB.PrimaryNode.ComputeID || ic.ID == foundLB.SecondaryNode.ComputeID
 	}
 
-	return lc.FilterFunc(predicate), nil
+	result := lc.FilterFunc(predicate)
+
+	return &result, nil
 }
 
 // FilterFunc allows filtering ListComputes based on a user-specified predicate.
 func (lc ListComputes) FilterFunc(predicate func(ItemCompute) bool) ListComputes {
 	var result ListComputes
 
-	for _, item := range lc {
+	for _, item := range lc.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -156,9 +162,9 @@ func (lc ListComputes) FilterFunc(predicate func(ItemCompute) bool) ListComputes
 // FindOne returns first found ItemCompute
 // If none was found, returns an empty struct.
 func (lc ListComputes) FindOne() ItemCompute {
-	if len(lc) == 0 {
+	if len(lc.Data) == 0 {
 		return ItemCompute{}
 	}
 
-	return lc[0]
+	return lc.Data[0]
 }

@@ -31,11 +31,13 @@ func (lg ListGrids) FilterByLocationCode(locationCode string) ListGrids {
 func (lg ListGrids) FilterFunc(predicate func(RecordGrid) bool) ListGrids {
 	var result ListGrids
 
-	for _, item := range lg {
+	for _, item := range lg.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -43,9 +45,9 @@ func (lg ListGrids) FilterFunc(predicate func(RecordGrid) bool) ListGrids {
 // FindOne returns first found RecordGrid.
 // If none was found, returns an empty struct.
 func (lg ListGrids) FindOne() RecordGrid {
-	if len(lg) == 0 {
+	if len(lg.Data) == 0 {
 		return RecordGrid{}
 	}
 
-	return lg[0]
+	return lg.Data[0]
 }

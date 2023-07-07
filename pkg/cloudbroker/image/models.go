@@ -127,7 +127,13 @@ type RecordImage struct {
 }
 
 // List images
-type ListImages []RecordImage
+type ListImages struct {
+	// Data
+	Data []RecordImage `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Access Control List
 type ACL struct {
@@ -156,7 +162,7 @@ type ListACL []ACL
 // History information
 type History struct {
 	// GUID
-	GUID string `json:"guid"`
+	GUID uint64 `json:"guid"`
 
 	// ID
 	ID uint64 `json:"id"`
@@ -169,61 +175,75 @@ type History struct {
 type ListHistory []History
 
 // List stacks
-type ListStacks []struct {
-	// CKey
-	CKey string `json:"_ckey"`
+type ListStacks struct {
+	Data []struct {
+		// CKey
+		CKey string `json:"_ckey"`
 
-	// Meta
-	Meta []interface{} `json:"_meta"`
+		// Meta
+		Meta []interface{} `json:"_meta"`
 
-	// API URL
-	APIURL string `json:"apiUrl"`
+		// API URL
+		APIURL string `json:"apiUrl"`
 
-	// API key
-	APIKey string `json:"apikey"`
+		// API key
+		APIKey string `json:"apikey"`
 
-	// App ID
-	AppID string `json:"appId"`
+		// App ID
+		AppID string `json:"appId"`
 
-	// Description
-	Description string `json:"desc"`
+		// CPU allocation ratio
+		CPUAllocationRatio float64 `json:"cpu_allocation_ratio"`
 
-	// Drivers
-	Drivers []string `json:"drivers"`
+		// Description
+		Description string `json:"desc"`
 
-	// Eco
-	Eco interface{} `json:"eco"`
+		// Descr
+		Descr string `json:"descr"`
 
-	// Error
-	Error uint64 `json:"error"`
+		// Drivers
+		Drivers []string `json:"drivers"`
 
-	// Grid ID
-	GID uint64 `json:"gid"`
+		// Eco
+		Eco interface{} `json:"eco"`
 
-	// GID
-	GUID uint64 `json:"guid"`
+		// Error
+		Error uint64 `json:"error"`
 
-	// ID
-	ID uint64 `json:"id"`
+		// Grid ID
+		GID uint64 `json:"gid"`
 
-	// List image IDs
-	Images []uint64 `json:"images"`
+		// GID
+		GUID uint64 `json:"guid"`
 
-	// Login
-	Login string `json:"login"`
+		// ID
+		ID uint64 `json:"id"`
 
-	// Name
-	Name string `json:"name"`
+		// List image IDs
+		Images []uint64 `json:"images"`
 
-	// Password
-	Password string `json:"passwd"`
+		// Login
+		Login string `json:"login"`
 
-	// Reference ID
-	ReferenceID string `json:"referenceId"`
+		// Mem allocation ratio
+		// Required: false
+		MemAllocationRatio float64 `json:"mem_allocation_ratio"`
 
-	// Status
-	Status string `json:"status"`
+		// Name
+		Name string `json:"name"`
 
-	// Type
-	Type string `json:"type"`
+		// Password
+		Password string `json:"passwd"`
+
+		// Reference ID
+		ReferenceID string `json:"referenceId"`
+
+		// Status
+		Status string `json:"status"`
+
+		// Type
+		Type string `json:"type"`
+	} `json:"data"`
+
+	EntryCount uint64 `json:"entryCount"`
 }

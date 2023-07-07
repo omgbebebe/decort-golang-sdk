@@ -8,6 +8,14 @@ import (
 
 // Request struct for get list locations
 type ListRequest struct {
+	// Find by id grid
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name grid
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
@@ -18,7 +26,7 @@ type ListRequest struct {
 }
 
 // List gets list all locations
-func (g Grid) List(ctx context.Context, req ListRequest) (ListGrids, error) {
+func (g Grid) List(ctx context.Context, req ListRequest) (*ListGrids, error) {
 	url := "/cloudbroker/grid/list"
 
 	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +41,5 @@ func (g Grid) List(ctx context.Context, req ListRequest) (ListGrids, error) {
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

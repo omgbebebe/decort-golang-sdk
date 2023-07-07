@@ -915,3 +915,21 @@ type ListComputes struct {
 	// Entry count
 	EntryCount uint64 `json:"entryCount"`
 }
+
+// List VGPUs
+type ListVGPUs struct {
+	// Data
+	Data []interface{} `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
+// List PCI devices
+type ListPCIDevices struct {
+	// Data
+	Data []interface{} `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

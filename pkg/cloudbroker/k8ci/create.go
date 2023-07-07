@@ -34,11 +34,6 @@ type CreateRequest struct {
 	// Required: true
 	MasterDriver string `url:"masterDriver" json:"masterDriver" validate:"driver"`
 
-	// Network plugins
-	// Values of slice must be flannel, weawenet or calico
-	//Required: true
-	NetworkPlugins []string `url:"networkPlugins" json:"networkPlugins" validate:"required,networkPlugins"`
-
 	// Image ID for worker K8S node
 	// Required: true
 	WorkerImageID uint64 `url:"workerImageId" json:"workerImageId" validate:"required"`
@@ -51,10 +46,6 @@ type CreateRequest struct {
 	// Required: true
 	WorkerDriver string `url:"workerDriver" json:"workerDriver" validate:"driver"`
 
-	// Image ID for load balancer node
-	// Required: true
-	LBImageID uint64 `url:"lbImageId" json:"lbImageId" validate:"required"`
-
 	// List of account IDs, which have access to this item.
 	// If empty, any account has access
 	// Required: false
@@ -62,11 +53,16 @@ type CreateRequest struct {
 
 	// Policy limit on maximum number of master nodes
 	// Required: true
-	MaxMasterCount uint64 `url:"maxMasterCount" json:"maxMasterCount"`
+	MaxMasterCount uint64 `url:"maxMasterCount" json:"maxMasterCount" validate:"required"`
 
 	// Policy limit on maximum number of worker nodes
 	// Required: true
-	MaxWorkerCount uint64 `url:"maxWorkerCount" json:"maxWorkerCount"`
+	MaxWorkerCount uint64 `url:"maxWorkerCount" json:"maxWorkerCount" validate:"required"`
+
+	// Network plugins
+	// Values of slice must be flannel, weawenet or calico
+	//Required: true
+	NetworkPlugins []string `url:"networkPlugins" json:"networkPlugins" validate:"required,networkPlugins"`
 }
 
 // Create creates a new K8CI instance

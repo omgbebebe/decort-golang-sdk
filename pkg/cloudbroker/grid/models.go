@@ -9,6 +9,26 @@ type Resources struct {
 	Reserved RecordResource `json:"Reserved"`
 }
 
+// Resource consumption information
+type RecordResourcesConsumption struct {
+	// Current resources
+	Consumed RecordResource `json:"Consumed"`
+
+	// Reserved resources
+	Reserved RecordResource `json:"Reserved"`
+
+	// GID
+	GID uint64 `json:"gid"`
+}
+
+type ListResourceConsumption struct {
+	// Data
+	Data []RecordResourcesConsumption `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
 // Resource details
 type RecordResource struct {
 	// Number of CPU
@@ -70,4 +90,19 @@ type RecordGrid struct {
 }
 
 // List Grids
-type ListGrids []RecordGrid
+type ListGrids struct {
+	//Data
+	Data []RecordGrid `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
+// List emails
+type ListEmails struct {
+	//Data
+	Data []string `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

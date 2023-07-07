@@ -17,16 +17,16 @@ type ResizeRequest struct {
 	// New CPU count.
 	// Pass 0 if no change to CPU count is required
 	// Required: false
-	Force bool `url:"force,omitempty" json:"force,omitempty"`
+	CPU uint64 `url:"cpu,omitempty" json:"cpu,omitempty"`
 
 	// New RAM volume in MB.
 	// Pass 0 if no change to RAM volume is required
 	// Required: false
-	CPU uint64 `url:"cpu,omitempty" json:"cpu,omitempty"`
+	RAM uint64 `url:"ram,omitempty" json:"ram,omitempty"`
 
 	// Force compute resize
 	// Required: false
-	RAM uint64 `url:"ram,omitempty" json:"ram,omitempty"`
+	Force bool `url:"force,omitempty" json:"force,omitempty"`
 
 	// Reason for action
 	// Required: false

@@ -8,6 +8,26 @@ import (
 
 // Request struct for get list of deleted VINSes
 type ListDeletedRequest struct {
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by account ID
+	// Required: false
+	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// Find by resource group id
+	// Required: false
+	RGID uint64 `url:"rgId,omitempty" json:"rgId,omitempty"`
+
+	// Find by external network IP
+	// Required: false
+	ExtIP string `url:"extIp,omitempty" json:"extIp,omitempty"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`

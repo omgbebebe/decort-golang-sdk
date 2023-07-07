@@ -29,7 +29,7 @@ type SearchRequest struct {
 }
 
 // Search search disks
-func (d Disks) Search(ctx context.Context, req SearchRequest) (ListDisks, error) {
+func (d Disks) Search(ctx context.Context, req SearchRequest) (SearchListDisks, error) {
 	url := "/cloudbroker/disks/search"
 
 	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -37,7 +37,7 @@ func (d Disks) Search(ctx context.Context, req SearchRequest) (ListDisks, error)
 		return nil, err
 	}
 
-	list := ListDisks{}
+	list := SearchListDisks{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

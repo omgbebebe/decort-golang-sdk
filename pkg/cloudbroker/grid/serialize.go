@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lg ListGrids) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lg) == 0 {
+	if len(lg.Data) == 0 {
 		return []byte{}, nil
 	}
 

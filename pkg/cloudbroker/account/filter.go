@@ -1,34 +1,34 @@
 package account
 
-// FilterByID returns ListDeleted with specified ID.
-func (ld ListDeleted) FilterByID(id uint64) ListDeleted {
+// FilterByID returns ListAccounts with specified ID.
+func (la ListAccounts) FilterByID(id uint64) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		return ia.ID == id
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterByName returns ListDeleted with specified Name.
-func (ld ListDeleted) FilterByName(name string) ListDeleted {
+// FilterByName returns ListAccounts with specified Name.
+func (la ListAccounts) FilterByName(name string) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		return ia.Name == name
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterByStatus returns ListDeleted with specified Status.
-func (ld ListDeleted) FilterByStatus(status string) ListDeleted {
+// FilterByStatus returns ListAccounts with specified Status.
+func (la ListAccounts) FilterByStatus(status string) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		return ia.Status == status
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterByUserGroupID returns ListDeleted with specified UserGroupID.
-func (ld ListDeleted) FilterByUserGroupID(userGroupID string) ListDeleted {
+// FilterByUserGroupID returns ListAccounts with specified UserGroupID.
+func (la ListAccounts) FilterByUserGroupID(userGroupID string) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		acl := ia.ACL
 
@@ -41,46 +41,48 @@ func (ld ListDeleted) FilterByUserGroupID(userGroupID string) ListDeleted {
 		return false
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterByCompany returns ListDeleted with specified Company.
-func (ld ListDeleted) FilterByCompany(company string) ListDeleted {
+// FilterByCompany returns ListAccounts with specified Company.
+func (la ListAccounts) FilterByCompany(company string) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		return ia.Company == company
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterByCreatedBy returns ListDeleted created by specified user.
-func (ld ListDeleted) FilterByCreatedBy(createdBy string) ListDeleted {
+// FilterByCreatedBy returns ListAccounts created by specified user.
+func (la ListAccounts) FilterByCreatedBy(createdBy string) ListAccounts {
 	predicate := func(ia ItemAccount) bool {
 		return ia.CreatedBy == createdBy
 	}
 
-	return ld.FilterFunc(predicate)
+	return la.FilterFunc(predicate)
 }
 
-// FilterFunc allows filtering ListDeleted based on a user-specified predicate.
-func (ld ListDeleted) FilterFunc(predicate func(ItemAccount) bool) ListDeleted {
-	var result ListDeleted
+// FilterFunc allows filtering ListAccounts based on a user-specified predicate.
+func (la ListAccounts) FilterFunc(predicate func(ItemAccount) bool) ListAccounts {
+	var result ListAccounts
 
-	for _, item := range ld {
+	for _, item := range la.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
 
 // FindOne returns first found ItemAccount.
 // If none was found, returns an empty struct.
-func (ld ListDeleted) FindOne() ItemAccount {
-	if len(ld) == 0 {
+func (la ListAccounts) FindOne() ItemAccount {
+	if len(la.Data) == 0 {
 		return ItemAccount{}
 	}
 
-	return ld[0]
+	return la.Data[0]
 }

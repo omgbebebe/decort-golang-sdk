@@ -15,6 +15,18 @@ type ListDeletedRequest struct {
 	// Page size
 	// Required: false
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
+
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by access control list
+	// Required: false
+	ACL string `url:"acl,omitempty" json:"acl,omitempty"`
 }
 
 // ListDeleted gets list all deleted accounts the user has access to

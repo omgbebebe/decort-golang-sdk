@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
@@ -18,8 +19,8 @@ type WorkerAddRequest struct {
 	WorkersGroupID uint64 `url:"workersGroupId" json:"workersGroupId" validate:"required"`
 
 	// How many worker nodes to add
-	// Required: true
-	Num uint64 `url:"num" json:"num" validate:"required"`
+	// Required: false
+	Num uint64 `url:"num,omitempty" json:"num,omitempty"`
 }
 
 // WorkerAdd add worker nodes to a Kubernetes cluster

@@ -90,7 +90,13 @@ type ItemLoadBalancer struct {
 }
 
 // List of load balancers
-type ListLB []ItemLoadBalancer
+type ListLB struct {
+	// Data
+	Data []ItemLoadBalancer `json:"data"`
+
+	// EntryCount
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about backend
 type ItemBackend struct {

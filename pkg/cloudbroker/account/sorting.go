@@ -2,68 +2,11 @@ package account
 
 import "sort"
 
-// SortByCreatedTime sorts ListDeleted by the CreatedTime field in ascending order.
-//
-// If inverse param is set to true, the order is reversed.
-func (ld ListDeleted) SortByCreatedTime(inverse bool) ListDeleted {
-	if len(ld) < 2 {
-		return ld
-	}
-
-	sort.Slice(ld, func(i, j int) bool {
-		if inverse {
-			return ld[i].CreatedTime > ld[j].CreatedTime
-		}
-
-		return ld[i].CreatedTime < ld[j].CreatedTime
-	})
-
-	return ld
-}
-
-// SortByUpdatedTime sorts ListDeleted by the UpdatedTime field in ascending order.
-//
-// If inverse param is set to true, the order is reversed.
-func (ld ListDeleted) SortByUpdatedTime(inverse bool) ListDeleted {
-	if len(ld) < 2 {
-		return ld
-	}
-
-	sort.Slice(ld, func(i, j int) bool {
-		if inverse {
-			return ld[i].UpdatedTime > ld[j].UpdatedTime
-		}
-
-		return ld[i].UpdatedTime < ld[j].UpdatedTime
-	})
-
-	return ld
-}
-
-// SortByDeletedTime sorts ListDeleted by the DeletedTime field in ascending order.
-//
-// If inverse param is set to true, the order is reversed.
-func (ld ListDeleted) SortByDeletedTime(inverse bool) ListDeleted {
-	if len(ld) < 2 {
-		return ld
-	}
-
-	sort.Slice(ld, func(i, j int) bool {
-		if inverse {
-			return ld[i].DeletedTime > ld[j].DeletedTime
-		}
-
-		return ld[i].DeletedTime < ld[j].DeletedTime
-	})
-
-	return ld
-}
-
 // SortByCreatedTime sorts ListAccounts by the CreatedTime field in ascending order.
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 
@@ -82,7 +25,7 @@ func (la ListAccounts) SortByCreatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 
@@ -101,7 +44,7 @@ func (la ListAccounts) SortByUpdatedTime(inverse bool) ListAccounts {
 //
 // If inverse param is set to true, the order is reversed.
 func (la ListAccounts) SortByDeletedTime(inverse bool) ListAccounts {
-	if la.EntryCount < 2 {
+	if len(la.Data) < 2 {
 		return la
 	}
 

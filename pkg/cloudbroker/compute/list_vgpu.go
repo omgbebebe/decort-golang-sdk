@@ -8,19 +8,15 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get list PCI devices
-type ListPCIDeviceRequest struct {
-	// Identifier compute
+// Request struct for get list GPU for compute
+type ListVGPURequest struct {
+	// ID of compute instance
 	// Required: true
 	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 
-	// Find by resource group ID
+	// Find by GPU id
 	// Required: false
-	RGID uint64 `url:"rgId,omitempty" json:"rgId,omitempty"`
-
-	// Find by device id
-	// Required: false
-	DevID uint64 `url:"devId,omitempty" json:"devId,omitempty"`
+	GPUID uint64 `url:"gpuId,omitempty" json:"gpuId,omitempty"`
 
 	// Find by type
 	// Required: false
@@ -37,10 +33,14 @@ type ListPCIDeviceRequest struct {
 	// Page size
 	// Required: false
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
+
+	// Include deleted computes. If using field 'status', then includedeleted will be ignored
+	// Required: false
+	IncludeDeleted bool `url:"includedeleted,omitempty" json:"includedeleted,omitempty"`
 }
 
-// ListPCIDevice gets list PCI device
-func (c Compute) ListPCIDevice(ctx context.Context, req ListPCIDeviceRequest) (*ListPCIDevices, error) {
+// ListVGPU gets list GPU for compute
+func (c Compute) ListVGPU(ctx context.Context, req ListVGPURequest) (*ListVGPUs, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -48,14 +48,14 @@ func (c Compute) ListPCIDevice(ctx context.Context, req ListPCIDeviceRequest) (*
 		}
 	}
 
-	url := "/cloudbroker/compute/listPciDevice"
+	url := "/cloudbroker/compute/listVGpu"
 
 	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return nil, err
 	}
 
-	list := ListPCIDevices{}
+	list := ListVGPUs{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

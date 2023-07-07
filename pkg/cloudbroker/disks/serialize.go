@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (ld ListDisks) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(ld) == 0 {
+	if len(ld.Data) == 0 {
 		return []byte{}, nil
 	}
 

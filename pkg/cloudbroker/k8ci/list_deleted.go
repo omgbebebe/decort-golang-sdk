@@ -8,6 +8,26 @@ import (
 
 // Request struct for get list information about deleted images
 type ListDeletedRequest struct {
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by worker driver
+	// Required: false
+	WorkerDriver string `url:"workerDriver,omitempty" json:"workerDriver,omitempty"`
+
+	// Find by master driver
+	// Required: false
+	MasterDriver string `url:"masterDriver,omitempty" json:"masterDriver,omitempty"`
+
+	// Find by network plugin
+	// Required: false
+	NetworkPlugins string `url:"netPlugins,omitempty" json:"masterDrnetPluginsiver,omitempty"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
@@ -18,7 +38,7 @@ type ListDeletedRequest struct {
 }
 
 // ListDeleted gets list all deleted k8ci catalog items available to the current user
-func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListK8CI, error) {
+func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (*ListK8CI, error) {
 	url := "/cloudbroker/k8ci/listDeleted"
 
 	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -33,5 +53,5 @@ func (k K8CI) ListDeleted(ctx context.Context, req ListDeletedRequest) (ListK8CI
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

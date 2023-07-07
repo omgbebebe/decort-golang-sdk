@@ -62,7 +62,7 @@ func (la ListAccounts) FilterFunc(predicate func(ItemAccount) bool) ListAccounts
 // FindOne returns first found ItemAccount.
 // If none was found, returns an empty struct.
 func (la ListAccounts) FindOne() ItemAccount {
-	if la.EntryCount == 0 {
+	if len(la.Data) == 0 {
 		return ItemAccount{}
 	}
 

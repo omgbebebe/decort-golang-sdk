@@ -49,9 +49,9 @@ func (li ListImages) FilterByBootType(bootType string) ListImages {
 func (li ListImages) FilterFunc(predicate func(RecordImage) bool) ListImages {
 	var result ListImages
 
-	for _, item := range li {
+	for _, item := range li.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
 
@@ -61,9 +61,9 @@ func (li ListImages) FilterFunc(predicate func(RecordImage) bool) ListImages {
 // FindOne returns first found RecordImage
 // If none was found, returns an empty struct.
 func (li ListImages) FindOne() RecordImage {
-	if len(li) == 0 {
+	if len(li.Data) == 0 {
 		return RecordImage{}
 	}
 
-	return li[0]
+	return li.Data[0]
 }

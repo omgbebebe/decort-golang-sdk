@@ -14,13 +14,49 @@ type ListComputesRequest struct {
 	// Required: true
 	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 
-	// Reason for action
+	// Find by compute id
 	// Required: false
-	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
+	ComputeID uint64 `url:"computeId,omitempty" json:"computeId,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// ID an account
+	// Required: false
+	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// Find by tech status
+	// Required: false
+	TechStatus string `url:"techStatus,omitempty" json:"techStatus,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by ip address
+	// Required: false
+	IPAddress string `url:"ipAddress,omitempty" json:"ipAddress,omitempty"`
+
+	// Find by external network name
+	// Required: false
+	ExtNetName string `url:"extNetName,omitempty" json:"extNetName,omitempty"`
+
+	// Find by external network id
+	// Required: false
+	ExtNetID uint64 `url:"extNetId,omitempty" json:"extNetId,omitempty"`
+
+	// Page number
+	// Required: false
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
+
+	// Page size
+	// Required: false
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
 // ListComputes gets list of all compute instances under specified resource group, accessible by the user
-func (r RG) ListComputes(ctx context.Context, req ListComputesRequest) (ListComputes, error) {
+func (r RG) ListComputes(ctx context.Context, req ListComputesRequest) (*ListComputes, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -42,5 +78,5 @@ func (r RG) ListComputes(ctx context.Context, req ListComputesRequest) (ListComp
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

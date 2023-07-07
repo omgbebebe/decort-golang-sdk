@@ -58,7 +58,13 @@ type ItemImage struct {
 }
 
 // List of information about images
-type ListImages []ItemImage
+type ListImages struct {
+	// Data
+	Data []ItemImage `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // History
 type History struct {

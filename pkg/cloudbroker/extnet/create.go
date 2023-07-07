@@ -23,13 +23,13 @@ type CreateRequest struct {
 	// Required: true
 	IPCIDR string `url:"ipcidr" json:"ipcidr" validate:"required"`
 
-	// External network gateway IP address
-	// Required: true
-	Gateway string `url:"gateway" json:"gateway" validate:"required"`
-
 	// VLAN ID
 	// Required: true
 	VLANID uint64 `url:"vlanId" json:"vlanId" validate:"required"`
+
+	// External network gateway IP address
+	// Required: false
+	Gateway string `url:"gateway,omitempty" json:"gateway,omitempty"`
 
 	// List of DNS addresses
 	// Required: false

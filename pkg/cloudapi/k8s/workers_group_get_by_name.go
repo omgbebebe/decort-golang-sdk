@@ -20,7 +20,7 @@ type WorkersGroupGetByNameRequest struct {
 }
 
 // WorkersGroupGetByName gets worker group metadata by name
-func (k8s K8S) WorkersGroupGetByName(ctx context.Context, req WorkersGroupGetByNameRequest) (*RecordK8SGroups, error) {
+func (k8s K8S) WorkersGroupGetByName(ctx context.Context, req WorkersGroupGetByNameRequest) (*ItemK8SGroup, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -35,7 +35,7 @@ func (k8s K8S) WorkersGroupGetByName(ctx context.Context, req WorkersGroupGetByN
 		return nil, err
 	}
 
-	info := RecordK8SGroups{}
+	info := ItemK8SGroup{}
 
 	err = json.Unmarshal(res, &info)
 	if err != nil {

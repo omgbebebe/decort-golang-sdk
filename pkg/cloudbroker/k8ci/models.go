@@ -9,7 +9,13 @@ type ItemK8CI struct {
 }
 
 // List K8CI
-type ListK8CI []ItemK8CI
+type ListK8CI struct {
+	//Data
+	Data []ItemK8CI `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Detailed information about K8CI
 type RecordK8CI struct {

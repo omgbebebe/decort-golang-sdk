@@ -21,10 +21,22 @@ type ListStacksRequest struct {
 	// Page size
 	// Required: false
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by type
+	// Required: false
+	Type string `url:"type,omitempty" json:"type,omitempty"`
 }
 
 // ListStacks gets list stack by image ID
-func (i Image) ListStacks(ctx context.Context, req ListStacksRequest) (ListStacks, error) {
+func (i Image) ListStacks(ctx context.Context, req ListStacksRequest) (*ListStacks, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -46,5 +58,5 @@ func (i Image) ListStacks(ctx context.Context, req ListStacksRequest) (ListStack
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

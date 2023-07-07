@@ -3,66 +3,69 @@ package image
 import "testing"
 
 var images = ListImages{
-	ItemImage{
-		AccountID:    0,
-		Architecture: "X86_64",
-		BootType:     "bios",
-		Bootable:     true,
-		Description:  "",
-		Drivers: []string{
-			"KVM_X86",
+	Data: []ItemImage{
+		{
+			AccountID:    0,
+			Architecture: "X86_64",
+			BootType:     "bios",
+			Bootable:     true,
+			Description:  "",
+			Drivers: []string{
+				"KVM_X86",
+			},
+			HotResize: true,
+			ID:        9882,
+			LinkTo:    0,
+			Name:      "u16",
+			Pool:      "vmstor",
+			Size:      5,
+			Status:    "CREATED",
+			Type:      "linux",
+			Username:  "",
+			Virtual:   false,
 		},
-		HotResize: true,
-		ID:        9882,
-		LinkTo:    0,
-		Name:      "u16",
-		Pool:      "vmstor",
-		Size:      5,
-		Status:    "CREATED",
-		Type:      "linux",
-		Username:  "",
-		Virtual:   false,
-	},
-	ItemImage{
-		AccountID:    0,
-		Architecture: "X86_64",
-		BootType:     "bois",
-		Bootable:     true,
-		Description:  "",
-		Drivers: []string{
-			"KVM_X86",
+		{
+			AccountID:    0,
+			Architecture: "X86_64",
+			BootType:     "bois",
+			Bootable:     true,
+			Description:  "",
+			Drivers: []string{
+				"KVM_X86",
+			},
+			HotResize: false,
+			ID:        9884,
+			LinkTo:    0,
+			Name:      "alpine-virt-3.17",
+			Pool:      "vmstor",
+			Size:      1,
+			Status:    "CREATED",
+			Type:      "linux",
+			Username:  "",
+			Virtual:   true,
 		},
-		HotResize: false,
-		ID:        9884,
-		LinkTo:    0,
-		Name:      "alpine-virt-3.17",
-		Pool:      "vmstor",
-		Size:      1,
-		Status:    "CREATED",
-		Type:      "linux",
-		Username:  "",
-		Virtual:   true,
-	},
-	ItemImage{
-		AccountID:    1,
-		Architecture: "X86_64",
-		BootType:     "bios",
-		Bootable:     true,
-		Description:  "",
-		Drivers: []string{
-			"KVM_X86",
+		{
+			AccountID:    1,
+			Architecture: "X86_64",
+			BootType:     "bios",
+			Bootable:     true,
+			Description:  "",
+			Drivers: []string{
+				"KVM_X86",
+			},
+			HotResize: true,
+			ID:        9885,
+			LinkTo:    0,
+			Name:      "test",
+			Pool:      "vmstor",
+			Size:      4,
+			Status:    "DESTROYED",
+			Type:      "linux",
+			Username:  "",
+			Virtual:   false,
 		},
-		HotResize: true,
-		ID:        9885,
-		LinkTo:    0,
-		Name:      "test",
-		Pool:      "vmstor",
-		Size:      4,
-		Status:    "DESTROYED",
-		Type:      "linux",
-		Username:  "",
-		Virtual:   false,
 	},
+	EntryCount: 3,
 }
 
 func TestFilterByID(t *testing.T) {
@@ -84,11 +87,11 @@ func TestFilterByName(t *testing.T) {
 func TestFilterByStatus(t *testing.T) {
 	actual := images.FilterByStatus("CREATED")
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.Status != "CREATED" {
 			t.Fatal("expected Status 'CREATED', found: ", item.Status)
 		}
@@ -98,11 +101,11 @@ func TestFilterByStatus(t *testing.T) {
 func TestFilterByBootType(t *testing.T) {
 	actual := images.FilterByBootType("bios")
 
-	if len(actual) != 2 {
-		t.Fatal("expected 2 found, actual: ", len(actual))
+	if len(actual.Data) != 2 {
+		t.Fatal("expected 2 found, actual: ", len(actual.Data))
 	}
 
-	for _, item := range actual {
+	for _, item := range actual.Data {
 		if item.BootType != "bios" {
 			t.Fatal("expected BootType 'bios', found: ", item.BootType)
 		}
@@ -110,15 +113,15 @@ func TestFilterByBootType(t *testing.T) {
 }
 
 func TestFilterFunc(t *testing.T) {
-    actual := images.FilterFunc(func(ii ItemImage) bool {
-        return ii.Virtual == true
-    })
+	actual := images.FilterFunc(func(ii ItemImage) bool {
+		return ii.Virtual == true
+	})
 
-	if len(actual) != 1 {
-		t.Fatal("expected 1 found, actual: ", len(actual))
+	if len(actual.Data) != 1 {
+		t.Fatal("expected 1 found, actual: ", len(actual.Data))
 	}
 
-	if actual[0].Virtual != true {
+	if actual.Data[0].Virtual != true {
 		t.Fatal("expected Virtual true, found false")
 	}
 }

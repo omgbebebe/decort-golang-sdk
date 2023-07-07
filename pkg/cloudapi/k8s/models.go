@@ -293,4 +293,10 @@ type RecordServiceAccount struct {
 }
 
 // List of kubernetes clusters
-type ListK8SClusters []ItemK8SCluster
+type ListK8SClusters struct {
+	// Data
+	Data []ItemK8SCluster `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
