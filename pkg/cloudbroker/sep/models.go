@@ -124,4 +124,10 @@ type RecordSEP struct {
 }
 
 // List SEPs
-type ListSEP []RecordSEP
+type ListSEP struct {
+	// Data
+	Data []RecordSEP `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

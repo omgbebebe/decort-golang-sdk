@@ -15,8 +15,8 @@ type ExtNetConnectRequest struct {
 	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// External network ID
-	// Required: true
-	NetID uint64 `url:"netId" json:"netId" validate:"required"`
+	// Required: false
+	NetID uint64 `url:"netId,omitempty" json:"netId,omitempty"`
 
 	// Directly set IP address
 	// Required: false

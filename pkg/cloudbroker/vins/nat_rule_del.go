@@ -17,7 +17,7 @@ type NATRuleDelRequest struct {
 	// ID of the rule to delete.
 	// Pass -1 to clear all rules at once
 	// Required: true
-	RuleID uint64 `url:"ruleId" json:"ruleId" validate:"required"`
+	RuleID int64 `url:"ruleId" json:"ruleId" validate:"required"`
 
 	// Reason for action
 	// Required: false

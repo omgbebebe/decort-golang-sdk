@@ -67,11 +67,13 @@ func (lrg ListRG) FilterByDefNetID(defNetID int64) ListRG {
 func (lrg ListRG) FilterFunc(predicate func(ItemRG) bool) ListRG {
 	var result ListRG
 
-	for _, item := range lrg {
+	for _, item := range lrg.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -79,9 +81,9 @@ func (lrg ListRG) FilterFunc(predicate func(ItemRG) bool) ListRG {
 // FindOne returns first found ItemRG.
 // If none was found, returns an empty struct.
 func (lrg ListRG) FindOne() ItemRG {
-	if len(lrg) == 0 {
+	if len(lrg.Data) == 0 {
 		return ItemRG{}
 	}
 
-	return lrg[0]
+	return lrg.Data[0]
 }

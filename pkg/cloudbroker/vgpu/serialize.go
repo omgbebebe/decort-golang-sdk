@@ -2,6 +2,7 @@ package vgpu
 
 import (
 	"encoding/json"
+
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/serialization"
 )
 
@@ -11,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (l ListVGPU) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(l) == 0 {
+	if len(l.Data) == 0 {
 		return []byte{}, nil
 	}
 

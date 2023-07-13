@@ -8,15 +8,15 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get list of affinity groups from resource group
-type AffinityGroupsListRequest struct {
+// Request struct for get detailed information about resource consumption for ResGroup
+type GetResourceConsumptionRequest struct {
 	// Resource group ID
 	// Required: true
 	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
 }
 
-// AffinityGroupsList gets all currently defined affinity groups in this resource group with compute IDs
-func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListRequest) (*ListAffinityGroup, error) {
+// GetResourceConsumption gets resource consumption of the resource group
+func (r RG) GetResourceConsumption(ctx context.Context, req GetResourceConsumptionRequest) (*ItemResourceConsumption, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -24,19 +24,19 @@ func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListReques
 		}
 	}
 
-	url := "/cloudbroker/rg/affinityGroupsList"
+	url := "/cloudbroker/rg/getResourceConsumption"
 
 	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return nil, err
 	}
 
-	list := ListAffinityGroup{}
+	info := ItemResourceConsumption{}
 
-	err = json.Unmarshal(res, &list)
+	err = json.Unmarshal(res, &info)
 	if err != nil {
 		return nil, err
 	}
 
-	return &list, nil
+	return &info, nil
 }

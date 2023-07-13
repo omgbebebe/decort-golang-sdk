@@ -67,7 +67,7 @@ type BackendCreateRequest struct {
 	Weight uint64 `url:"weight,omitempty" json:"weight,omitempty"`
 }
 
-// BackendCreate creates new backend on the specified load balancer
+// BackendCreate creates new backend on the specified load balancer  
 func (lb LB) BackendCreate(ctx context.Context, req BackendCreateRequest) (bool, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {

@@ -49,11 +49,13 @@ func (lsep ListSEP) FilterByType(sepType string) ListSEP {
 func (lsep ListSEP) FilterFunc(predicate func(RecordSEP) bool) ListSEP {
 	var result ListSEP
 
-	for _, item := range lsep {
+	for _, item := range lsep.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -61,9 +63,9 @@ func (lsep ListSEP) FilterFunc(predicate func(RecordSEP) bool) ListSEP {
 // FindOne returns first found RecordSEP
 // If none was found, returns an empty struct.
 func (lsep ListSEP) FindOne() RecordSEP {
-	if len(lsep) == 0 {
+	if len(lsep.Data) == 0 {
 		return RecordSEP{}
 	}
 
-	return lsep[0]
+	return lsep.Data[0]
 }

@@ -295,4 +295,10 @@ type ServiceAccount struct {
 }
 
 // List K8S
-type ListK8S []ItemK8S
+type ListK8S struct {
+	// Data
+	Data []ItemK8S `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

@@ -6,16 +6,16 @@ import "sort"
 //
 // If inverse param is set to true, the order is reversed.
 func (lv ListVINS) SortByCreatedTime(inverse bool) ListVINS {
-	if len(lv) < 2 {
+	if len(lv.Data) < 2 {
 		return lv
 	}
 
-	sort.Slice(lv, func(i, j int) bool {
+	sort.Slice(lv.Data, func(i, j int) bool {
 		if inverse {
-			return lv[i].CreatedTime > lv[j].CreatedTime
+			return lv.Data[i].CreatedTime > lv.Data[j].CreatedTime
 		}
 
-		return lv[i].CreatedTime < lv[j].CreatedTime
+		return lv.Data[i].CreatedTime < lv.Data[j].CreatedTime
 	})
 
 	return lv
@@ -25,16 +25,16 @@ func (lv ListVINS) SortByCreatedTime(inverse bool) ListVINS {
 //
 // If inverse param is set to true, the order is reversed.
 func (lv ListVINS) SortByUpdatedTime(inverse bool) ListVINS {
-	if len(lv) < 2 {
+	if len(lv.Data) < 2 {
 		return lv
 	}
 
-	sort.Slice(lv, func(i, j int) bool {
+	sort.Slice(lv.Data, func(i, j int) bool {
 		if inverse {
-			return lv[i].UpdatedTime > lv[j].UpdatedTime
+			return lv.Data[i].UpdatedTime > lv.Data[j].UpdatedTime
 		}
 
-		return lv[i].UpdatedTime < lv[j].UpdatedTime
+		return lv.Data[i].UpdatedTime < lv.Data[j].UpdatedTime
 	})
 
 	return lv
@@ -44,16 +44,16 @@ func (lv ListVINS) SortByUpdatedTime(inverse bool) ListVINS {
 //
 // If inverse param is set to true, the order is reversed.
 func (lv ListVINS) SortByDeletedTime(inverse bool) ListVINS {
-	if len(lv) < 2 {
+	if len(lv.Data) < 2 {
 		return lv
 	}
 
-	sort.Slice(lv, func(i, j int) bool {
+	sort.Slice(lv.Data, func(i, j int) bool {
 		if inverse {
-			return lv[i].DeletedTime > lv[j].DeletedTime
+			return lv.Data[i].DeletedTime > lv.Data[j].DeletedTime
 		}
 
-		return lv[i].DeletedTime < lv[j].DeletedTime
+		return lv.Data[i].DeletedTime < lv.Data[j].DeletedTime
 	})
 
 	return lv

@@ -16,7 +16,7 @@ type ListPFWRequest struct {
 }
 
 // ListPFW gets list port forward rules for the specified resource group
-func (r RG) ListPFW(ctx context.Context, req ListPFWRequest) (ListPFW, error) {
+func (r RG) ListPFW(ctx context.Context, req ListPFWRequest) (*ListPFW, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -38,5 +38,5 @@ func (r RG) ListPFW(ctx context.Context, req ListPFWRequest) (ListPFW, error) {
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

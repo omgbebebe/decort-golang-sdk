@@ -13,14 +13,10 @@ type ExtNetListRequest struct {
 	// VINS ID
 	// Required: true
 	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
-
-	// Reason for action
-	// Required: false
-	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 // ExtNetList show list of VINS external network connections
-func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (ListExtNets, error) {
+func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (*ListExtNets, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -42,5 +38,5 @@ func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (ListExtNet
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

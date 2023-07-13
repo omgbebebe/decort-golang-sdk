@@ -30,7 +30,7 @@ type SearchRequest struct {
 }
 
 // Search  search VINSes
-func (v VINS) Search(ctx context.Context, req SearchRequest) (ListVINS, error) {
+func (v VINS) Search(ctx context.Context, req SearchRequest) (SearchVINS, error) {
 	url := "/cloudbroker/vins/search"
 
 	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -38,7 +38,7 @@ func (v VINS) Search(ctx context.Context, req SearchRequest) (ListVINS, error) {
 		return nil, err
 	}
 
-	list := ListVINS{}
+	list := SearchVINS{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

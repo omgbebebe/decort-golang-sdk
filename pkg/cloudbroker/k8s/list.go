@@ -8,6 +8,38 @@ import (
 
 // Request struct for get list information K8S
 type ListRequest struct {
+	// Find by ID
+	// Required: false
+	ByID uint64 `url:"by_id,omitempty" json:"by_id,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by IP address
+	// Required: false
+	IPAddress string `url:"ipAddress,omitempty" json:"ipAddress,omitempty"`
+
+	// Find by resource group ID
+	// Required: false
+	RGID uint64 `url:"rgId,omitempty" json:"rgId,omitempty"`
+
+	// Find by lbId
+	// Required: false
+	LBID uint64 `url:"lbId,omitempty" json:"lbId,omitempty"`
+
+	// Find by basicServiceId
+	// Required: false
+	BasicServiceID uint64 `url:"basicServiceId,omitempty" json:"basicServiceId,omitempty"`
+
+	// Find by status
+	// Required: false
+	Status string `url:"status,omitempty" json:"status,omitempty"`
+
+	// Find by techStatus
+	// Required: false
+	TechStatus string `url:"techStatus,omitempty" json:"techStatus,omitempty"`
+
 	// Include deleted clusters in result
 	// Required: false
 	IncludeDeleted bool `url:"includedeleted,omitempty" json:"includedeleted,omitempty"`
@@ -22,7 +54,7 @@ type ListRequest struct {
 }
 
 // List gets list all kubernetes clusters
-func (k K8S) List(ctx context.Context, req ListRequest) (ListK8S, error) {
+func (k K8S) List(ctx context.Context, req ListRequest) (*ListK8S, error) {
 
 	url := "/cloudbroker/k8s/list"
 
@@ -38,5 +70,5 @@ func (k K8S) List(ctx context.Context, req ListRequest) (ListK8S, error) {
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

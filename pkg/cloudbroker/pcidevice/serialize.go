@@ -11,7 +11,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (l ListPCIDevices) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(l) == 0 {
+	if len(l.Data) == 0 {
 		return []byte{}, nil
 	}
 

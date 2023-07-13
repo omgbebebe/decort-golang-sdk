@@ -43,7 +43,13 @@ type ItemExtNet struct {
 }
 
 // List of external networks
-type ListExtNets []ItemExtNet
+type ListExtNets struct {
+	// Data
+	Data []ItemExtNet `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // MGMT
 type MGMT struct {
@@ -109,6 +115,9 @@ type ItemInterface struct {
 
 	// Default GW
 	DefGW string `json:"defGw"`
+
+	// Enabled
+	Enabled bool `json:"enabled"`
 
 	// FLIPGroup ID
 	FLIPGroupID uint64 `json:"flipgroupId"`
@@ -428,11 +437,26 @@ type RecordVINS struct {
 	// Account ID
 	AccountID uint64 `json:"accountId"`
 
+	// Account name
+	AccountName string `json:"accountName"`
+
+	// Created by
+	CreatedBy string `json:"createdBy"`
+
+	// Created time
+	CreatedTime uint64 `json:"createdTime"`
+
 	// Default GW
 	DefaultGW string `json:"defaultGW"`
 
 	// Default QOS
 	DefaultQOS QOS `json:"defaultQos"`
+
+	// Deleted by
+	DeletedBy string `json:"deletedBy"`
+
+	// Deleted time
+	DeletedTime uint64 `json:"deletedTime"`
 
 	// Description
 	Description string `json:"desc"`
@@ -476,11 +500,20 @@ type RecordVINS struct {
 	// Resource group ID
 	RGID uint64 `json:"rgId"`
 
+	// Resource group name
+	RGName string `json:"rgName"`
+
 	// SecVNFDevID
 	SecVNFDevID uint64 `json:"secVnfDevId"`
 
 	// Status
 	Status string `json:"status"`
+
+	// Updated by
+	UpdatedBy string `json:"updatedBy"`
+
+	// Updated time
+	UpdatedTime uint64 `json:"updatedTime"`
 
 	// User managed
 	UserManaged bool `json:"userManaged"`
@@ -517,7 +550,13 @@ type ItemIP struct {
 }
 
 // List of information about IPs
-type ListIPs []ItemIP
+type ListIPs struct {
+	// Data
+	Data []ItemIP `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about NAT rule
 type ItemNATRule struct {
@@ -547,7 +586,13 @@ type ItemNATRule struct {
 }
 
 // List NAT rules
-type ListNATRules []ItemNATRule
+type ListNATRules struct {
+	// Data
+	Data []ItemNATRule `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Shorted information about VNF
 type ItemVNFs struct {
@@ -670,4 +715,12 @@ type ItemVINS struct {
 }
 
 // List of VINS
-type ListVINS []ItemVINS
+type ListVINS struct {
+	// Data
+	Data []ItemVINS `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
+type SearchVINS []ItemVINS

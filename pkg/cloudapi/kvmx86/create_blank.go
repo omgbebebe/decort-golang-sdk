@@ -41,7 +41,9 @@ type CreateBlankRequest struct {
 	Pool string `url:"pool" json:"pool" validate:"required"`
 
 	// Slice of structs with net interface description.
+	// Required: false
 	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+
 	// Text description of this VM
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`

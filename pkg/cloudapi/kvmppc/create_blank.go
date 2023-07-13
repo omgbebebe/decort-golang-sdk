@@ -31,7 +31,7 @@ type CreateBlankRequest struct {
 	// Required: true
 	BootDisk uint64 `url:"bootDisk" json:"bootDisk" validate:"required"`
 
-	// ID of SEP to create boot disk on.
+	// ID of SEP to create boot disk on
 	// Uses images SEP ID if not set
 	// Required: true
 	SEPID uint64 `url:"sepId" json:"sepId" validate:"required"`
@@ -40,24 +40,9 @@ type CreateBlankRequest struct {
 	// Required: true
 	Pool string `url:"pool" json:"pool" validate:"required"`
 
-	// Network type
-	// Should be one of:
-	//	- VINS
-	//	- EXTNET
-	//	- NONE
+	// Slice of structs with net interface description
 	// Required: false
-	NetType string `url:"netType,omitempty" json:"netType,omitempty" validate:"omitempty,kvmNetType"`
-
-	// Network ID for connect to,
-	// for EXTNET - external network ID,
-	// for VINS - VINS ID,
-	// when network type is not "NONE"
-	// Required: false
-	NetID uint64 `url:"netId,omitempty" json:"netId,omitempty"`
-
-	// IP address to assign to this VM when connecting to the specified network
-	// Required: false
-	IPAddr string `url:"ipAddr,omitempty" json:"ipAddr,omitempty"`
+	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
 	// Text description of this VM
 	// Required: false

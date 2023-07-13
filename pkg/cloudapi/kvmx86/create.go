@@ -63,6 +63,7 @@ type CreateRequest struct {
 	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
 	// Slice of structs with net interface description.
+	// Required: false
 	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
 	// Input data for cloud-init facility

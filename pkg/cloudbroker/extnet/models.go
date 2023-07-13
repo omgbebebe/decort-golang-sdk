@@ -137,7 +137,7 @@ type RecordExtNet struct {
 	DNS []string `json:"dns"`
 
 	// List excludes
-	Excluded []string `json:"excluded"`
+	Excluded ListReservations `json:"excluded"`
 
 	// Gateway
 	Gateway string `json:"gateway"`

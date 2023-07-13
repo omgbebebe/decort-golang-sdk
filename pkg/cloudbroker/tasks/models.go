@@ -45,6 +45,13 @@ func (r *InfoResult) UnmarshalJSON(b []byte) error {
 
 // Detailed information about task
 type RecordTask struct {
+	// Updated by
+	UpdatedBy string `json:"updatedBy"`
+
+	ItemTask
+}
+
+type ItemTask struct {
 	// Audit ID
 	AuditID string `json:"auditId"`
 
@@ -74,4 +81,10 @@ type RecordTask struct {
 }
 
 // List of tasks
-type ListTasks []RecordTask
+type ListTasks struct {
+	// Data
+	Data []ItemTask `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

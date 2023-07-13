@@ -40,4 +40,11 @@ type ItemPCIDevice struct {
 }
 
 // List PCI devices
-type ListPCIDevices []ItemPCIDevice
+type ListPCIDevices struct {
+	// Data
+	Data []ItemPCIDevice `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+

@@ -30,7 +30,7 @@ type Reservation struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Max disk size
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 
 	// External IPs
 	ExtIPs int64 `json:"extips"`
@@ -54,16 +54,26 @@ type DiskUsage struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 }
 
 // Resources usage information
-type Resources struct {
+type ItemResourceConsumption struct {
 	// Current information
-	Current Reservation `json:"Current"`
+	Consumed Reservation `json:"Consumed"`
 
 	// Reserved information
 	Reserved Reservation `json:"Reserved"`
+
+	RGID uint64 `json:"rgid"`
+}
+
+type ListResourceConsumption struct {
+	// Data
+	Data []ItemResourceConsumption `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
 }
 
 // Access Control List
@@ -98,6 +108,9 @@ type ResourceLimits struct {
 	// CUD
 	CuD float64 `json:"CU_D"`
 
+	// CUDM
+	CUDM float64 `json:"CU_DM"`
+
 	// CUI
 	CUI float64 `json:"CU_I"`
 
@@ -113,9 +126,6 @@ type ResourceLimits struct {
 
 // Detailed information about resource group
 type RecordRG struct {
-	// Resource information
-	Resources Resources `json:"Resources"`
-
 	// Main information about resource group
 	ItemRG
 }
@@ -157,6 +167,9 @@ type ItemRG struct {
 
 	// Description
 	Description string `json:"desc"`
+
+	// Dirty
+	Dirty bool `json:"dirty"`
 
 	// Grid ID
 	GID uint64 `json:"gid"`
@@ -208,7 +221,13 @@ type ItemRG struct {
 }
 
 // List resource groups
-type ListRG []ItemRG
+type ListRG struct {
+	// Data
+	Data []ItemRG `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about affinity group
 type ItemAffinityGroupCompute struct {
@@ -337,7 +356,13 @@ type ItemCompute struct {
 }
 
 // List computes
-type ListComputes []ItemCompute
+type ListComputes struct {
+	// Data
+	Data []ItemCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about VINS
 type ItemVINS struct {
@@ -394,7 +419,13 @@ type ItemVINS struct {
 }
 
 // List VINSes
-type ListVINS []ItemVINS
+type ListVINS struct {
+	// Data
+	Data []ItemVINS `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about port forward
 type ItemPFW struct {
@@ -424,7 +455,13 @@ type ItemPFW struct {
 }
 
 // List PFWs
-type ListPFW []ItemPFW
+type ListPFW struct {
+	// Data
+	Data []ItemPFW `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Server settings
 type ServerSettings struct {
@@ -640,4 +677,18 @@ type ItemLB struct {
 }
 
 // List load balancers
-type ListLB []ItemLB
+type ListLB struct {
+	// Data
+	Data []ItemLB `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
+type ListAffinityGroup struct {
+	// Data
+	Data map[string][]uint64 `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

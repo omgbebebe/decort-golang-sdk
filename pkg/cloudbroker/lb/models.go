@@ -134,7 +134,13 @@ type Node struct {
 }
 
 // List of load balancers
-type ListLB []RecordLB
+type ListLB struct {
+	// Data
+	Data []RecordLB `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Detailed information about load balancer
 type RecordLB struct {

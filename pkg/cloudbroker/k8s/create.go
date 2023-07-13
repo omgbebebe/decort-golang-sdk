@@ -103,7 +103,7 @@ type CreateRequest struct {
 	// Create kubernetes cluster with masters nodes behind load balancer if true.
 	// Otherwise give all cluster nodes direct external addresses from selected external network
 	// Required: false
-	WithLB bool `url:"withLB,omitempty" json:"withLB,omitempty"`
+	WithLB bool `url:"withLB" json:"withLB"`
 
 	// Text description of this kubernetes cluster
 	// Required: false

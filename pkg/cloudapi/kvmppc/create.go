@@ -8,6 +8,23 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
+type Interface struct {
+	// Network type
+	// Should be one of:
+	//	- VINS
+	//	- EXTNET
+	NetType string `url:"netType" json:"netType" validate:"required,kvmNetType"`
+
+	// Network ID for connect to,
+	// for EXTNET - external network ID,
+	// for VINS - VINS ID,
+	NetID uint64 `url:"netId" json:"netId" validate:"required"`
+
+	// IP address to assign to this VM when connecting to the specified network
+	// Required: false
+	IPAddr string `url:"ipAddr,omitempty" json:"ipAddr,omitempty"`
+}
+
 // Request struct for create KVM PowerPC VM
 type CreateRequest struct {
 	// ID of the resource group, which will own this VM
@@ -45,24 +62,9 @@ type CreateRequest struct {
 	// Required: false
 	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
-	// Network type
-	// Should be one of:
-	//	- VINS
-	//	- EXTNET
-	//	- NONE
+	// Slice of structs with net interface description.
 	// Required: false
-	NetType string `url:"netType,omitempty" json:"netType,omitempty" validate:"omitempty,kvmNetType"`
-
-	// Network ID for connect to,
-	// for EXTNET - external network ID,
-	// for ViNS - ViNS ID,
-	// when netType is not "NONE"
-	// Required: false
-	NetID uint64 `url:"netId,omitempty" json:"netId,omitempty"`
-
-	// IP address to assign to this VM when connecting to the specified network
-	// Required: false
-	IPAddr string `url:"ipAddr,omitempty" json:"ipAddr,omitempty"`
+	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
 	// Input data for cloud-init facility
 	// Required: false

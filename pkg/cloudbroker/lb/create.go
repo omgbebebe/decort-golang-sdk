@@ -19,10 +19,6 @@ type CreateRequest struct {
 	// Required: true
 	Name string `url:"name" json:"name" validate:"required"`
 
-	// OS image ID to create load balancer from
-	// Required: false
-	ImageID uint64 `url:"imageId,omitempty" json:"imageId,omitempty"`
-
 	// External network to connect this load balancer to
 	// Required: true
 	ExtNetID uint64 `url:"extnetId" json:"extnetId" validate:"required"`

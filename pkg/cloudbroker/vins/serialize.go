@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (lv ListVINS) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(lv) == 0 {
+	if len(lv.Data) == 0 {
 		return []byte{}, nil
 	}
 

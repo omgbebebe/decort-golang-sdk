@@ -63,4 +63,10 @@ type ItemVGPU struct {
 }
 
 // List of VGPU
-type ListVGPU []ItemVGPU
+type ListVGPU struct {
+	// Data
+	Data []ItemVGPU `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
