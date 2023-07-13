@@ -2,6 +2,7 @@ package kvmppc
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -42,11 +43,16 @@ type CreateBlankRequest struct {
 
 	// Slice of structs with net interface description.
 	// Required: false
-	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
 	// Text description of this VM
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
+}
+
+type wrapperCreateBlankRequest struct {
+	CreateBlankRequest
+	Interfaces []string `url:"interfaces,omitempty"`
 }
 
 // CreateBlank creates KVM PowerPC VM from scratch
@@ -58,9 +64,25 @@ func (k KVMPPC) CreateBlank(ctx context.Context, req CreateBlankRequest) (uint64
 		}
 	}
 
+	interfaces := make([]string, 0, len(req.Interfaces))
+
+	for i := range req.Interfaces {
+		b, err := json.Marshal(req.Interfaces[i])
+		if err != nil {
+			return 0, err
+		}
+
+		interfaces = append(interfaces, string(b))
+	}
+
+	reqWrapped := wrapperCreateBlankRequest{
+		CreateBlankRequest: req,
+		Interfaces:         interfaces,
+	}
+
 	url := "/cloudbroker/kvmppc/createBlank"
 
-	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
 	}

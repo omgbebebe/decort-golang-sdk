@@ -2,6 +2,7 @@ package kvmx86
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -64,7 +65,7 @@ type CreateRequest struct {
 
 	// Slice of structs with net interface description.
 	// Required: false
-	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
 	// Input data for cloud-init facility
 	// Required: false
@@ -87,6 +88,11 @@ type CreateRequest struct {
 	IPAType string `url:"ipaType,omitempty" json:"ipaType,omitempty"`
 }
 
+type wrapperCreateRequest struct {
+	CreateRequest
+	Interfaces []string `url:"interfaces,omitempty"`
+}
+
 // Create creates KVM x86 VM based on specified OS image
 func (k KVMX86) Create(ctx context.Context, req CreateRequest) (uint64, error) {
 	err := validators.ValidateRequest(req)
@@ -96,9 +102,25 @@ func (k KVMX86) Create(ctx context.Context, req CreateRequest) (uint64, error) {
 		}
 	}
 
+	interfaces := make([]string, 0, len(req.Interfaces))
+
+	for i := range req.Interfaces {
+		b, err := json.Marshal(req.Interfaces[i])
+		if err != nil {
+			return 0, err
+		}
+
+		interfaces = append(interfaces, string(b))
+	}
+
+	reqWrapped := wrapperCreateRequest{
+		CreateRequest: req,
+		Interfaces:    interfaces,
+	}
+
 	url := "/cloudapi/kvmx86/create"
 
-	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
 	}
