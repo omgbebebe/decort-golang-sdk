@@ -16,7 +16,7 @@ type ExtNetListRequest struct {
 }
 
 // ExtNetList show list of VINS external network connections
-func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (ListExtNets, error) {
+func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (*ListExtNets, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -31,7 +31,7 @@ func (v VINS) ExtNetList(ctx context.Context, req ExtNetListRequest) (ListExtNet
 		return nil, err
 	}
 
-	list := ListExtNets{}
+	list := &ListExtNets{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

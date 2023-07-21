@@ -33,7 +33,7 @@ type ResourceLimits struct {
 	CUD float64 `json:"CU_D"`
 
 	// Max disk size, GB
-	CU_DM float64 `json:"CU_DM"`
+	CUDM float64 `json:"CU_DM"`
 
 	// Number of public IP addresses
 	CUI float64 `json:"CU_I"`
@@ -113,6 +113,14 @@ type DiskUsage struct {
 
 	// Disk size max
 	DiskSizeMax float64 `json:"disksizemax"`
+}
+
+// Information about resource consumption
+type RecordResourceConsumption struct {
+	ItemResourceConsumption
+
+	// Resource limits
+	ResourceLimits ResourceLimits `json:"resourceLimits"`
 }
 
 // Information about resources
@@ -557,7 +565,13 @@ type ItemTemplate struct {
 }
 
 // List of templates
-type ListTemplates []ItemTemplate
+type ListTemplates struct {
+	// Data
+	Data []ItemTemplate `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about FLIPGroup
 type ItemFLIPGroup struct {

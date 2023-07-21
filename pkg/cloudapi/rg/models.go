@@ -53,6 +53,9 @@ type ItemResourceConsumption struct {
 	// Reserved information about resources
 	Reserved Resource `json:"Reserved"`
 
+	// Resource limits
+	ResourceLimits ResourceLimits `json:"resourceLimits"`
+
 	// Resource group ID
 	RGID uint64 `json:"rgid"`
 }
@@ -302,7 +305,7 @@ type ResourceLimits struct {
 }
 
 // Main information about affinity group
-type ItemAffinityGroup struct {
+type ItemAffinityGroupComputes struct {
 	// Compute ID
 	ComputeID uint64 `json:"computeId"`
 
@@ -326,7 +329,15 @@ type ItemAffinityGroup struct {
 }
 
 // List of affinity groups
-type ListAffinityGroups []ItemAffinityGroup
+type ListAffinityGroupsComputes []ItemAffinityGroupComputes
+
+type ListAffinityGroups struct {
+	// Data
+	Data map[string][]uint64 `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about audit
 type ItemAudit struct {

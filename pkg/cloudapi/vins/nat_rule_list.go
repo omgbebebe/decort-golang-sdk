@@ -16,7 +16,7 @@ type NATRuleListRequest struct {
 }
 
 // NATRuleList gets list of NAT (port forwarding) rules
-func (v VINS) NATRuleList(ctx context.Context, req NATRuleListRequest) (ListNATRules, error) {
+func (v VINS) NATRuleList(ctx context.Context, req NATRuleListRequest) (*ListNATRules, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -31,7 +31,7 @@ func (v VINS) NATRuleList(ctx context.Context, req NATRuleListRequest) (ListNATR
 		return nil, err
 	}
 
-	list := ListNATRules{}
+	list := &ListNATRules{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

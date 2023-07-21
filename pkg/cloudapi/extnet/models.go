@@ -59,7 +59,13 @@ type ItemExtNetCompute struct {
 }
 
 // List of information about computes with external network
-type ListExtNetComputes []ItemExtNetCompute
+type ListExtNetComputes struct {
+	// Data
+	Data []ItemExtNetCompute `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // QOS
 type QOS struct {
@@ -117,6 +123,12 @@ type VNFs struct {
 type Excluded struct {
 	// ClientType
 	ClientType string `json:"clientType"`
+
+	// Domain name
+	DomainName string `json:"domainname"`
+
+	// Host name
+	HostName string `json:"hostname"`
 
 	// IP
 	IP string `json:"ip"`

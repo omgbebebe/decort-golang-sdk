@@ -45,7 +45,7 @@ type CreateRequest struct {
 }
 
 // Create method will create a new FLIPGorup in the specified Account
-func (f FLIPGroup) Create(ctx context.Context, req CreateRequest) (*RecordFLIPGroup, error) {
+func (f FLIPGroup) Create(ctx context.Context, req CreateRequest) (*RecordFLIPGroupCreated, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -60,7 +60,7 @@ func (f FLIPGroup) Create(ctx context.Context, req CreateRequest) (*RecordFLIPGr
 		return nil, err
 	}
 
-	info := RecordFLIPGroup{}
+	info := RecordFLIPGroupCreated{}
 
 	err = json.Unmarshal(res, &info)
 	if err != nil {

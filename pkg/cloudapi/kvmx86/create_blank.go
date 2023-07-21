@@ -45,6 +45,10 @@ type CreateBlankRequest struct {
 	// Required: false
 	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
 
+	// Type of compute Stateful (KVM_X86) or Stateless (SVA_KVM_X86)
+	// Required: false
+	Driver string `url:"driver,omitempty" json:"driver,omitempty" validate:"omitempty,computeDriver"`
+
 	// Text description of this VM
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`

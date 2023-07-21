@@ -26,7 +26,7 @@ type ListRequest struct {
 }
 
 // List gets list the available flavors, filtering can be based on the user which is doing the request
-func (s Sizes) List(ctx context.Context, req ListRequest) (ListSizes, error) {
+func (s Sizes) List(ctx context.Context, req ListRequest) (*ListSizes, error) {
 	url := "/cloudapi/sizes/list"
 
 	res, err := s.client.DecortApiCall(ctx, http.MethodPost, url, req)
@@ -34,7 +34,7 @@ func (s Sizes) List(ctx context.Context, req ListRequest) (ListSizes, error) {
 		return nil, err
 	}
 
-	list := ListSizes{}
+	list := &ListSizes{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

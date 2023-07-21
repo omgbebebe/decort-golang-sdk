@@ -17,6 +17,7 @@ var (
 	computeNetTypeValues   = []string{"EXTNET", "VINS"}
 	computeOrderValues     = []string{"cdrom", "network", "hd"}
 	computeDataDisksValues = []string{"KEEP", "DETACH", "DESTROY"}
+	computeDriverValues    = []string{"KVM_X86", "SVA_KVM_X86"}
 
 	diskTypeValues = []string{"B", "T", "D"}
 

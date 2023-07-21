@@ -104,7 +104,13 @@ type ItemExtNet struct {
 }
 
 // List of external networks
-type ListExtNets []ItemExtNet
+type ListExtNets struct {
+	// Data
+	Data []ItemExtNet `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about IP
 type ItemIP struct {
@@ -131,7 +137,13 @@ type ItemIP struct {
 }
 
 // List of IPs
-type ListIPs []ItemIP
+type ListIPs struct {
+	// Data
+	Data []ItemIP `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about VNF device
 type RecordVNFDev struct {
@@ -671,7 +683,13 @@ type ItemNATRule struct {
 }
 
 // List of NAT rules
-type ListNATRules []ItemNATRule
+type ListNATRules struct {
+	// Data
+	Data []ItemNATRule `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about reservation
 type ItemReservation struct {

@@ -22,4 +22,10 @@ type ItemSize struct {
 }
 
 // List of configured available flavors
-type ListSizes []ItemSize
+type ListSizes struct {
+	// Data
+	Data []ItemSize `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}

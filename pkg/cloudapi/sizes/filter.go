@@ -22,11 +22,13 @@ func (ls ListSizes) FilterByName(name string) ListSizes {
 func (ls ListSizes) FilterFunc(predicate func(ItemSize) bool) ListSizes {
 	var result ListSizes
 
-	for _, item := range ls {
+	for _, item := range ls.Data {
 		if predicate(item) {
-			result = append(result, item)
+			result.Data = append(result.Data, item)
 		}
 	}
+
+	result.EntryCount = uint64(len(result.Data))
 
 	return result
 }
@@ -34,9 +36,9 @@ func (ls ListSizes) FilterFunc(predicate func(ItemSize) bool) ListSizes {
 // FindOne returns first found ItemSize
 // If none was found, returns an empty struct.
 func (ls ListSizes) FindOne() ItemSize {
-	if len(ls) == 0 {
+	if len(ls.Data) == 0 {
 		return ItemSize{}
 	}
 
-	return ls[0]
+	return ls.Data[0]
 }

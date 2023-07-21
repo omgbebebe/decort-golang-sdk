@@ -37,6 +37,7 @@ func (r RG) Usage(ctx context.Context, req UsageRequest) (*RecordResourceUsage, 
 
 	info := RecordResourceUsage{}
 	err = json.Unmarshal(res, &info)
+
 	if err != nil {
 		return nil, err
 	}

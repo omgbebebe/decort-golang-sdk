@@ -16,7 +16,7 @@ type GetResourceConsumptionRequest struct {
 }
 
 // GetResourceConsumption show amount of consumed and reserved resources (cpu, ram, disk) by specific account
-func (a Account) GetResourceConsumption(ctx context.Context, req GetResourceConsumptionRequest) (*ItemResourceConsumption, error) {
+func (a Account) GetResourceConsumption(ctx context.Context, req GetResourceConsumptionRequest) (*RecordResourceConsumption, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -26,7 +26,7 @@ func (a Account) GetResourceConsumption(ctx context.Context, req GetResourceCons
 
 	url := "/cloudapi/account/getResourceConsumption"
 
-	info := ItemResourceConsumption{}
+	info := RecordResourceConsumption{}
 
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {

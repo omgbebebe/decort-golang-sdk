@@ -16,7 +16,7 @@ type GetRequest struct {
 }
 
 // Get gets details of the specified Floating IP group
-func (f FLIPGroup) Get(ctx context.Context, req GetRequest) (*ItemFLIPGroup, error) {
+func (f FLIPGroup) Get(ctx context.Context, req GetRequest) (*RecordFLIPGroup, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -31,7 +31,7 @@ func (f FLIPGroup) Get(ctx context.Context, req GetRequest) (*ItemFLIPGroup, err
 		return nil, err
 	}
 
-	info := ItemFLIPGroup{}
+	info := RecordFLIPGroup{}
 
 	err = json.Unmarshal(res, &info)
 	if err != nil {

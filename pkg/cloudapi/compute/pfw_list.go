@@ -16,7 +16,7 @@ type PFWListRequest struct {
 }
 
 // PFWList gets compute port forwards list
-func (c Compute) PFWList(ctx context.Context, req PFWListRequest) (ListPFWs, error) {
+func (c Compute) PFWList(ctx context.Context, req PFWListRequest) (*ListPFWs, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -38,5 +38,5 @@ func (c Compute) PFWList(ctx context.Context, req PFWListRequest) (ListPFWs, err
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

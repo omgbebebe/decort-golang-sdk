@@ -21,7 +21,13 @@ type ItemAudit struct {
 // List of audits
 type ListAudits []ItemAudit
 
-type RecordResources struct {
+type RecordResourceConsumption struct {
+	ItemResourceConsumption
+
+	ResourceLimits ResourceLimits `json:"resourceLimits"`
+}
+
+type ItemResourceConsumption struct {
 	// Current information about resources
 	Current Resource `json:"Current"`
 
@@ -34,7 +40,7 @@ type RecordResources struct {
 
 type ListResources struct {
 	// Data
-	Data []RecordResources `json:"data"`
+	Data []ItemResourceConsumption `json:"data"`
 
 	// Entry count
 	EntryCount uint64 `json:"entryCount"`

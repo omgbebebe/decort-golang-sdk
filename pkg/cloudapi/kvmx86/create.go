@@ -65,7 +65,7 @@ type CreateRequest struct {
 
 	// Slice of structs with net interface description.
 	// Required: false
-	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,dive"`
 
 	// Input data for cloud-init facility
 	// Required: false
@@ -86,6 +86,14 @@ type CreateRequest struct {
 	// Compute purpose
 	// Required: false
 	IPAType string `url:"ipaType,omitempty" json:"ipaType,omitempty"`
+
+	// Custom fields for compute. Must be a dict
+	// Required: false
+	CustomFields string `url:"customFields,omitempty" json:"customFields,omitempty"`
+
+	// Type of compute Stateful (KVM_X86) or Stateless (SVA_KVM_X86)
+	// Required: false
+	Driver string `url:"driver,omitempty" json:"driver,omitempty" validate:"omitempty,computeDriver"`
 }
 
 type wrapperCreateRequest struct {

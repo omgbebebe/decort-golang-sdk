@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+// computeDriverValidator is used to validate Driver field in kvmx86/kvmppc create.
+func computeDriverValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+
+	return StringInSlice(fieldValue, computeDriverValues)
+}
+
 // protoValidator is used to validate Proto fields.
 func protoValidator(fe validator.FieldLevel) bool {
 	fieldValue := fe.Field().String()

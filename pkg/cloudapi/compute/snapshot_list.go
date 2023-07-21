@@ -16,7 +16,7 @@ type SnapshotListRequest struct {
 }
 
 // SnapshotList gets list compute snapshots
-func (c Compute) SnapshotList(ctx context.Context, req SnapshotListRequest) (ListSnapShots, error) {
+func (c Compute) SnapshotList(ctx context.Context, req SnapshotListRequest) (*ListSnapShots, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -38,5 +38,5 @@ func (c Compute) SnapshotList(ctx context.Context, req SnapshotListRequest) (Lis
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

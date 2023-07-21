@@ -30,6 +30,11 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
+	err = validate.RegisterValidation("computeDriver", computeDriverValidator)
+	if err != nil {
+		return err
+	}
+
 	err = validate.RegisterValidation("accessType", accessTypeValidator)
 	if err != nil {
 		return err

@@ -107,6 +107,12 @@ func errorMessage(fe validator.FieldError) string {
 			fe.Field(),
 			joinValues(computeDataDisksValues))
 
+	case "computeDriver":
+		return fmt.Sprintf("%s %s must be one of the following: %s",
+			prefix,
+			fe.Field(),
+			joinValues(computeDriverValues))
+
 	// Disk Validators
 	case "diskType":
 		return fmt.Sprintf("%s %s must be one of the following: %s",

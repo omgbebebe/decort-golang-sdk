@@ -16,7 +16,7 @@ type AffinityGroupsListRequest struct {
 }
 
 // AffinityGroupsList gets all currently defined affinity groups in this resource group with compute IDs
-func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListRequest) (map[string][]uint64, error) {
+func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListRequest) (*ListAffinityGroups, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -31,7 +31,7 @@ func (r RG) AffinityGroupsList(ctx context.Context, req AffinityGroupsListReques
 		return nil, err
 	}
 
-	list := map[string][]uint64{}
+	list := &ListAffinityGroups{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

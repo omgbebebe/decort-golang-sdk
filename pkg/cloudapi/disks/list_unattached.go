@@ -24,10 +24,6 @@ type ListUnattachedRequest struct {
 	// Required: false
 	Status string `url:"status,omitempty" json:"status,omitempty"`
 
-	// Find by shared, true or false
-	// Required: false
-	Shared bool `url:"shared,omitempty" json:"shared,omitempty"`
-
 	// Type of the disks
 	// Required: false
 	Type string `url:"type,omitempty" json:"type,omitempty"`

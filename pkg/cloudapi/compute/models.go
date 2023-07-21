@@ -14,6 +14,14 @@ type RecordACL struct {
 	RGACL ListACL `json:"rgAcl"`
 }
 
+type ListUsers struct {
+	// Data
+	Data RecordACL `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
+
 type Explicit bool
 
 func (e *Explicit) UnmarshalJSON(b []byte) error {
@@ -89,7 +97,13 @@ type ItemSnapshot struct {
 }
 
 // List of snapshots
-type ListSnapShots []ItemSnapshot
+type ListSnapShots struct {
+	// Data
+	Data []ItemSnapshot `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about port forward
 type ItemPFW struct {
@@ -116,7 +130,13 @@ type ItemPFW struct {
 }
 
 // List port forwards
-type ListPFWs []ItemPFW
+type ListPFWs struct {
+	// Data
+	Data []ItemPFW `json:"data"`
+
+	// Entry count
+	EntryCount uint64 `json:"entryCount"`
+}
 
 // Main information about affinity relations
 type RecordAffinityRelations struct {

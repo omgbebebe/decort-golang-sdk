@@ -76,6 +76,16 @@
 - - cloudbroker/vins/extnetList
 - - cloudbroker/vins/IpList
 - - cloudbroker/vins/natRuleList
+- - cloudapi/account/listTemplates
+- - cloudapi/compute/pfwList
+- - cloudapi/compute/sanpshotList
+- - cloudapi/compute/userList
+- - cloudapi/vins/extnetList
+- - cloudapi/vins/ipList
+- - cloudapi/vins/natRuleList
+- - cloudapi/sizes/list
+- - cloudapi/rg/affinityGroupsList
+- - cloudapi/extnet/listComputes
 
 - Added new endpoints:
 - - cloudapi/rg/getResourceConsumption
@@ -88,6 +98,9 @@
 - - cloudbroker/account/listResourceConsumption
 - - cloudbroker/grid/getResourceConsumption
 - - cloudbroker/grid/listResourceConsumption
+- - cloudapi/compute/getCustomFields
+- - cloudapi/compute/deleteCustomFields
+- - cloudapi/compute/setCustomFields
 
 - Added field CU_DM to ResourceLimits model (account, rg)
 
@@ -138,6 +151,12 @@
 - Deleted field ImageID from cloudbroker/lb/create request
 
 - Deleted field Reason from cloudbroker/vins/extnetList request
+
+- Added field CustomFields to cloudapi/kvmx86/create request
+
+- Added field Driver to cloudapi/kvmx86/create request
+
+- Added field Driver to cloudapi/kvmx86/createBlank request
 
 ### Bugfix
 - Changed the Excluded field type in cloudbroker/extnet/get response model

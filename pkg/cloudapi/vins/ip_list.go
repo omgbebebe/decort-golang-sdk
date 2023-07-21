@@ -16,7 +16,7 @@ type IPListRequest struct {
 }
 
 // IPList show DHCP IP reservations on VINS
-func (v VINS) IPList(ctx context.Context, req IPListRequest) (ListIPs, error) {
+func (v VINS) IPList(ctx context.Context, req IPListRequest) (*ListIPs, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -31,7 +31,7 @@ func (v VINS) IPList(ctx context.Context, req IPListRequest) (ListIPs, error) {
 		return nil, err
 	}
 
-	list := ListIPs{}
+	list := &ListIPs{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

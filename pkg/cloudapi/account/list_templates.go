@@ -12,15 +12,35 @@ import (
 type ListTemplatesRequest struct {
 	// ID an account
 	// Required: true
-    AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 
 	// Include deleted images
 	// Required: false
-	IncludeDeleted bool `url:"includedeleted" json:"includedeleted"`
+	IncludeDeleted bool `url:"includedeleted,omitempty" json:"includedeleted,omitempty"`
+
+	// Find by image id
+	// Required: false
+	ImageID uint64 `url:"imageId,omitempty" json:"imageId,omitempty"`
+
+	// Find by name
+	// Required: false
+	Name string `url:"name,omitempty" json:"name,omitempty"`
+
+	// Find by type
+	// Required: false
+	Type string `url:"type,omitempty" json:"type,omitempty"`
+
+	// Page number
+	// Required: false
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
+
+	// Page size
+	// Required: false
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
 // ListTemplates gets list templates which can be managed by this account
-func (a Account) ListTemplates(ctx context.Context, req ListTemplatesRequest) (ListTemplates, error) {
+func (a Account) ListTemplates(ctx context.Context, req ListTemplatesRequest) (*ListTemplates, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -42,5 +62,5 @@ func (a Account) ListTemplates(ctx context.Context, req ListTemplatesRequest) (L
 		return nil, err
 	}
 
-	return list, nil
+	return &list, nil
 }

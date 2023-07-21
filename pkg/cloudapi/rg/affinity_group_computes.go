@@ -20,7 +20,7 @@ type AffinityGroupComputesRequest struct {
 }
 
 // AffinityGroupComputes gets list of all computes with their relationships to another computes
-func (r RG) AffinityGroupComputes(ctx context.Context, req AffinityGroupComputesRequest) (ListAffinityGroups, error) {
+func (r RG) AffinityGroupComputes(ctx context.Context, req AffinityGroupComputesRequest) (ListAffinityGroupsComputes, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -35,7 +35,7 @@ func (r RG) AffinityGroupComputes(ctx context.Context, req AffinityGroupComputes
 		return nil, err
 	}
 
-	list := ListAffinityGroups{}
+	list := ListAffinityGroupsComputes{}
 
 	err = json.Unmarshal(res, &list)
 	if err != nil {

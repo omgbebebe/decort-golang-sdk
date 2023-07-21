@@ -8,15 +8,15 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get list users for compute
-type UserListRequest struct {
-	// ID of the compute instance
+// Request struct for getting Compute's customFields
+type GetCustomFieldsRequest struct {
+	// Compute ID
 	// Required: true
 	ComputeID uint64 `url:"computeId" json:"computeId" validate:"required"`
 }
 
-// UserList gets users list for compute
-func (c Compute) UserList(ctx context.Context, req UserListRequest) (*ListUsers, error) {
+// GetCustomFields gets Compute's customFields
+func (c Compute) GetCustomFields(ctx context.Context, req GetCustomFieldsRequest) (interface{}, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -24,19 +24,19 @@ func (c Compute) UserList(ctx context.Context, req UserListRequest) (*ListUsers,
 		}
 	}
 
-	url := "/cloudapi/compute/userList"
+	url := "/cloudapi/compute/getCustomFields"
 
 	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return nil, err
 	}
 
-	list := ListUsers{}
+	var info interface{}
 
-	err = json.Unmarshal(res, &list)
+	err = json.Unmarshal(res, &info)
 	if err != nil {
 		return nil, err
 	}
 
-	return &list, nil
+	return &info, nil
 }

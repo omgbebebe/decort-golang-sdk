@@ -12,7 +12,7 @@ import (
 //   - First argument -> prefix
 //   - Second argument -> indent
 func (ls ListSizes) Serialize(params ...string) (serialization.Serialized, error) {
-	if len(ls) == 0 {
+	if len(ls.Data) == 0 {
 		return []byte{}, nil
 	}
 
