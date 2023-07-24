@@ -423,7 +423,7 @@ type RecordCompute struct {
 	SnapSets ListSnapSets `json:"snapSets"`
 
 	// Stateless SepID
-	StatelessSepID uint64 `json:"statelessSepId"`
+	StatelessSepID int64 `json:"statelessSepId"`
 
 	// Stateless SepType
 	StatelessSepType string `json:"statelessSepType"`
@@ -882,7 +882,7 @@ type ItemCompute struct {
 	SnapSets ListSnapSets `json:"snapSets"`
 
 	// Stateless SepID
-	StatelessSepID uint64 `json:"statelessSepId"`
+	StatelessSepID int64 `json:"statelessSepId"`
 
 	// Stateless SepType
 	StatelessSepType string `json:"statelessSepType"`
