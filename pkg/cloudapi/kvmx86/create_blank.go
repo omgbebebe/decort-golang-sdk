@@ -42,8 +42,10 @@ type CreateBlankRequest struct {
 	Pool string `url:"pool" json:"pool" validate:"required"`
 
 	// Slice of structs with net interface description.
+	// If not specified, compute will be created with default interface from RG.
+	// To create compute without interfaces, pass initialized empty slice .
 	// Required: false
-	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,dive"`
 
 	// Type of compute Stateful (KVM_X86) or Stateless (SVA_KVM_X86)
 	// Required: false
@@ -68,15 +70,21 @@ func (k KVMX86) CreateBlank(ctx context.Context, req CreateBlankRequest) (uint64
 		}
 	}
 
-	interfaces := make([]string, 0, len(req.Interfaces))
+	var interfaces []string
 
-	for i := range req.Interfaces {
-		b, err := json.Marshal(req.Interfaces[i])
-		if err != nil {
-			return 0, err
+	if req.Interfaces != nil && len(req.Interfaces) != 0 {
+		interfaces = make([]string, 0, len(req.Interfaces))
+
+		for i := range req.Interfaces {
+			b, err := json.Marshal(req.Interfaces[i])
+			if err != nil {
+				return 0, err
+			}
+
+			interfaces = append(interfaces, string(b))
 		}
-
-		interfaces = append(interfaces, string(b))
+	} else if req.Interfaces != nil && len(req.Interfaces) == 0 {
+		interfaces = []string{"[]"}
 	}
 
 	reqWrapped := wrapperCreateBlankRequest{

@@ -49,8 +49,10 @@ type MassCreateRequest struct {
 	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
 	// Slice of structs with net interface description.
+	// If not specified, compute will be created with default interface from RG.
+	// To create compute without interfaces, pass initialized empty slice.
 	// Required: false
-	Interfaces []Interface `url:"interfaces,omitempty" json:"interfaces,omitempty" validate:"omitempty,min=1,dive"`
+	Interfaces []Interface `url:"-" json:"interfaces,omitempty" validate:"omitempty,dive"`
 
 	// Input data for cloud-init facility
 	// Required: false
@@ -69,6 +71,11 @@ type MassCreateRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
+type wrapperMassCreateRequest struct {
+	MassCreateRequest
+	Interfaces []string `url:"interfaces,omitempty"`
+}
+
 // MassCreate creates KVM PPC computes based on specified OS image
 func (k KVMPPC) MassCreate(ctx context.Context, req MassCreateRequest) ([]uint64, error) {
 	err := validators.ValidateRequest(req)
@@ -78,9 +85,31 @@ func (k KVMPPC) MassCreate(ctx context.Context, req MassCreateRequest) ([]uint64
 		}
 	}
 
+	var interfaces []string
+
+	if req.Interfaces != nil && len(req.Interfaces) != 0 {
+		interfaces = make([]string, 0, len(req.Interfaces))
+
+		for i := range req.Interfaces {
+			b, err := json.Marshal(req.Interfaces[i])
+			if err != nil {
+				return nil, err
+			}
+
+			interfaces = append(interfaces, string(b))
+		}
+	} else if req.Interfaces != nil && len(req.Interfaces) == 0 {
+		interfaces = []string{"[]"}
+	}
+
+	reqWrapped := wrapperMassCreateRequest{
+		MassCreateRequest: req,
+		Interfaces:        interfaces,
+	}
+
 	url := "/cloudbroker/kvmppc/massCreate"
 
-	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return nil, err
 	}
