@@ -9,16 +9,17 @@ import (
 )
 
 type transportLegacy struct {
-	base      http.RoundTripper
-	username  string
-	password  string
-	retries   uint64
-	token     string
-	decortURL string
+	base       http.RoundTripper
+	username   string
+	password   string
+	retries    uint64
+	token      string
+	decortURL  string
+	expiryTime time.Time
 }
 
 func (t *transportLegacy) RoundTrip(request *http.Request) (*http.Response, error) {
-	if t.token == "" {
+	if t.token == "" || time.Now().After(t.expiryTime) {
 		body := fmt.Sprintf("username=%s&password=%s", t.username, t.password)
 		bodyReader := strings.NewReader(body)
 
@@ -39,6 +40,7 @@ func (t *transportLegacy) RoundTrip(request *http.Request) (*http.Response, erro
 
 		token := string(tokenBytes)
 		t.token = token
+		t.expiryTime = time.Now().AddDate(0, 0, 1)
 	}
 
 	tokenValue := fmt.Sprintf("&authkey=%s", t.token)
@@ -63,7 +65,9 @@ func (t *transportLegacy) RoundTrip(request *http.Request) (*http.Response, erro
 			err = fmt.Errorf("%s", respBytes)
 			resp.Body.Close()
 		}
-
+		if err != nil {
+			return nil, fmt.Errorf("could not execute request: %w", err)
+		}
 		time.Sleep(time.Second * 5)
 	}
 	return nil, fmt.Errorf("could not execute request: %w", err)

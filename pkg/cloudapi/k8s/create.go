@@ -24,7 +24,7 @@ type CreateRequest struct {
 
 	// Name for first worker group created with cluster
 	// Required: true
-	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required"`
+	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required,workerGroupName"`
 
 	// Network plugin
 	// Must be one of these values: flannel, weawenet, calico

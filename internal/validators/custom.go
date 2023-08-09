@@ -1,9 +1,10 @@
 package validators
 
 import (
-	"github.com/go-playground/validator/v10"
 	"regexp"
 	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 // computeDriverValidator is used to validate Driver field in kvmx86/kvmppc create.
@@ -262,4 +263,12 @@ func strictLooseValidator(fe validator.FieldLevel) bool {
 	fieldValue = strings.ToLower(fieldValue)
 
 	return StringInSlice(fieldValue, strictLooseValues)
+}
+
+// name workerGroup must be more 3 symbol
+func workerGroupNameValidator(fe validator.FieldLevel) bool {
+	fieldValue := fe.Field().String()
+	fieldValue = strings.Trim(fieldValue, " ")
+
+	return len(fieldValue) >= 3
 }

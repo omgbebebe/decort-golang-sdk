@@ -16,7 +16,7 @@ type ListVINSRequest struct {
 
 	// Find by VINS ID
 	// Required: false
-	VINSID uint64 `url:"vins,omitempty" json:"vinsId,omitempty"`
+	VINSID uint64 `url:"vinsId,omitempty" json:"vinsId,omitempty"`
 
 	// Find by name
 	// Required: false

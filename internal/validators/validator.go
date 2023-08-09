@@ -180,5 +180,10 @@ func registerAllValidators(validate *validator.Validate) error {
 		return err
 	}
 
+	err = validate.RegisterValidation("workerGroupName", workerGroupNameValidator)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

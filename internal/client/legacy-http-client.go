@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net/http"
 	"net/url"
+	"time"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
@@ -17,14 +18,21 @@ func NewLegacyHttpClient(cfg config.LegacyConfig) *http.Client {
 		},
 	}
 
+	var expiredTime time.Time
+
+	if cfg.Token != "" {
+		expiredTime = time.Now().AddDate(0, 0, 1)
+	}
+
 	return &http.Client{
 		Transport: &transportLegacy{
-			base:      transCfg,
-			username:  url.QueryEscape(cfg.Username),
-			password:  url.QueryEscape(cfg.Password),
-			retries:   cfg.Retries,
-			token:     cfg.Token,
-			decortURL: cfg.DecortURL,
+			base:       transCfg,
+			username:   url.QueryEscape(cfg.Username),
+			password:   url.QueryEscape(cfg.Password),
+			retries:    cfg.Retries,
+			token:      cfg.Token,
+			decortURL:  cfg.DecortURL,
+			expiryTime: expiredTime,
 		},
 
 		Timeout: cfg.Timeout.Get(),

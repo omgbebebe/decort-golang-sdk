@@ -40,6 +40,14 @@ type ListRequest struct {
 	// Required: false
 	Type string `url:"type,omitempty" json:"type,omitempty"`
 
+	// Find by sep ID
+	// Required: false
+	SEPID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
+
+	// Find by pool name
+	// Required: false
+	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
+
 	// Page number
 	// Required: false
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`

@@ -16,7 +16,7 @@ type DisableRequest struct {
 
 	// Reason to disable
 	// Required: true
-	Reason string `url:"reason" json:"reason" validate:"required"`
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 // Disable disables an account

@@ -127,6 +127,12 @@ func errorMessage(fe validator.FieldError) string {
 			fe.Field(),
 			joinValues(flipgroupClientTypeValues))
 
+		// k8s Validators
+	case "workerGroupName":
+		return fmt.Sprintf("%s %s must be more 3 symbol",
+			prefix,
+			fe.Field())
+
 	// KVM_X86/KVM_PPC Validators
 	case "kvmNetType":
 		return fmt.Sprintf("%s %s must be one of the following: %s",

@@ -20,7 +20,7 @@ type DeleteUserRequest struct {
 
 	// Recursively revoke access rights from owned cloudspaces and vmachines
 	// Required: false
-	RecursiveDelete bool `url:"recursivedelete,omitempty" json:"recursivedelete,omitempty"`
+	RecursiveDelete bool `url:"recursivedelete" json:"recursivedelete" validate:"required"`
 }
 
 // DeleteUser revokes user access from the account

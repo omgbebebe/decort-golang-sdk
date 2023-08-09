@@ -16,7 +16,7 @@ type EnableRequest struct {
 
 	// Reason to enable
 	// Required: true
-	Reason string `url:"reason" json:"reason" validate:"required"`
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 // Enable enables an account
