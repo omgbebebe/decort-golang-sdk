@@ -20,7 +20,7 @@ type DeleteRequest struct {
 
 	// Whether to completely delete the image
 	// Required: false
-	Permanently bool `url:"permanently,omitempty" json:"permanently,omitempty"`
+	Permanently bool `url:"permanently" json:"permanently"`
 }
 
 // Delete deletes image by ID

@@ -24,10 +24,6 @@ type ListUnattachedRequest struct {
 	// Required: false
 	Status string `url:"status,omitempty" json:"status,omitempty"`
 
-	// Find by shared, true or false
-	// Required: false
-	Shared bool `url:"shared,omitempty" json:"shared,omitempty"`
-
 	// Type of the disks
 	// Required: false
 	Type string `url:"type,omitempty" json:"type,omitempty"`
@@ -35,6 +31,14 @@ type ListUnattachedRequest struct {
 	// ID of the account
 	// Required: false
 	AccountID uint64 `url:"accountId,omitempty" json:"accountId,omitempty"`
+
+	// Find by sep ID
+	// Required: false
+	SEPID uint64 `url:"sepId,omitempty" json:"sepId,omitempty"`
+
+	// Find by pool name
+	// Required: false
+	Pool string `url:"pool,omitempty" json:"pool,omitempty"`
 
 	// Page number
 	// Required: false

@@ -20,7 +20,7 @@ type DiskDelRequest struct {
 
 	// False if disk is to be deleted to recycle bin
 	// Required: true
-	Permanently bool `url:"permanently" json:"permanently" validate:"required"`
+	Permanently bool `url:"permanently" json:"permanently"`
 
 	// Reason for action
 	// Required: false

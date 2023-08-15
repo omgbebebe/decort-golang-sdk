@@ -1,14 +1,10 @@
-## Version 1.5.2
+## Version 1.5.3
 
 ### Bugfix
-- Fix tag 'url' VINSID field in cloudbroker/account/list_vins
+- Add a fields SEPID and Pool in ListUnattachedRequest struct in cloudbroker/disks/listUnattached and cloudapi/disks/listUnattached
 
-- Made the field Reason not required in cloudbroker/account/enable and cloudbroker/account/disable 
+- Delete a field Shared in ListUnattachedRequest struct in cloudbroker/disks/listUnattached
 
-- Made the field RecursiveDelete required in cloudbroker/account/deleteUser 
+- Delete tag Required at field Permanently in DiskDelRequest struct in cloudbroker/compute/disk_del and cloudapi/compute/disk_del
 
-- Add a validator function to a workersGroupName field - must be 3 or more symbol 
-
-- Add a token actuality check, add an error handler in client/client-transport and client/http-client
-
-- Add a fields SEPID and Pool in ListRequest struct in cloudbroker/disks/list and cloudapi/disks/list
+- Delete tag omitempty at field Permanently in DeleteRequest struct in cloudbroker/image/delete
