@@ -162,13 +162,27 @@ type ListACL []ACL
 // History information
 type History struct {
 	// GUID
-	GUID uint64 `json:"guid"`
+	GUID GUID `json:"guid"`
 
 	// ID
 	ID uint64 `json:"id"`
 
 	// Timestamp
 	Timestamp uint64 `json:"timestamp"`
+}
+
+type GUID string
+
+func (r *GUID) UnmarshalJSON(b []byte) error {
+
+	if b[0] == '"' {
+		*r = GUID(string(b[1:len(b)-1]))
+		return nil
+	}
+	
+	*r = GUID(string(b))
+
+	return nil
 }
 
 // List history
