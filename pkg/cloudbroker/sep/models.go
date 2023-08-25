@@ -24,10 +24,31 @@ type Total struct {
 	UsageLimit uint64 `json:"usage_limit"`
 }
 
+type ByPool struct {
+	
+	// Disk count
+	DiskCount uint64 `json:"disk_count"`
+
+	// Disk usage
+	DiskUsage uint64 `json:"disk_usage"`
+
+	// Snapshot count
+	SnapshotCount uint64 `json:"snapshot_count"`
+
+	// Snapshot usage
+	SnapshotUsage uint64 `json:"snapshot_usage"`
+
+	// Usage
+	Usage uint64 `json:"usage"`
+
+	// Usage limit
+	UsageLimit uint64 `json:"usage_limit"`
+}
+
 // Main information about consumption
 type RecordConsumption struct {
 	// By pool
-	ByPool map[string]interface{} `json:"byPool"`
+	ByPool map[string]ByPool `json:"byPool"`
 
 	// Total resource information
 	Total Total `json:"total"`
@@ -70,6 +91,9 @@ type RecordPool struct {
 
 	// List URIs
 	URIs ListURIs `json:"uris"`
+
+	// Usage Limit
+	UsageLimit uint64 `json:"usage_limit"`
 }
 
 // SEP config
