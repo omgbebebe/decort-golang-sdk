@@ -3,11 +3,9 @@ package lb
 import "testing"
 
 var lbs = ListLB{
-	Data: []RecordLB{
+	Data: []ItemLBList{
 		{
 			HAMode:        true,
-			CKey:          "",
-			Meta:          []interface{}{},
 			ACL:           []interface{}{},
 			Backends:      []ItemBackend{},
 			CreatedBy:     "test_user_1",
@@ -22,7 +20,6 @@ var lbs = ListLB{
 			GID:           212,
 			GUID:          1,
 			ID:            1,
-			ImageID:       2121,
 			Milestones:    129000,
 			Name:          "k8s-lb-test-1",
 			PrimaryNode:   Node{},
@@ -37,8 +34,6 @@ var lbs = ListLB{
 		},
 		{
 			HAMode:        false,
-			CKey:          "",
-			Meta:          []interface{}{},
 			ACL:           []interface{}{},
 			Backends:      []ItemBackend{},
 			CreatedBy:     "test_user_2",
@@ -53,7 +48,6 @@ var lbs = ListLB{
 			GID:           212,
 			GUID:          2,
 			ID:            2,
-			ImageID:       2129,
 			Milestones:    129013,
 			Name:          "k8s-lb-test-2",
 			PrimaryNode:   Node{},
@@ -68,8 +62,6 @@ var lbs = ListLB{
 		},
 		{
 			HAMode:        true,
-			CKey:          "",
-			Meta:          []interface{}{},
 			ACL:           []interface{}{},
 			Backends:      []ItemBackend{},
 			CreatedBy:     "te2t_user_3",
@@ -84,7 +76,6 @@ var lbs = ListLB{
 			GID:           212,
 			GUID:          3,
 			ID:            3,
-			ImageID:       2139,
 			Milestones:    129025,
 			Name:          "k8s-lb-test-3",
 			PrimaryNode:   Node{},
@@ -125,16 +116,8 @@ func TestFilterByExtNetID(t *testing.T) {
 	}
 }
 
-func TestFilterByImageID(t *testing.T) {
-	actual := lbs.FilterByImageID(2139).FindOne()
-
-	if actual.ImageID != 2139 {
-		t.Fatal("expected ImageID 2139, found: ", actual.ImageID)
-	}
-}
-
 func TestFilterFunc(t *testing.T) {
-	actual := lbs.FilterFunc(func(rl RecordLB) bool {
+	actual := lbs.FilterFunc(func(rl ItemLBList) bool {
 		return rl.Status == "DISABLED"
 	})
 

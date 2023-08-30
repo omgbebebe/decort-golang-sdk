@@ -9,7 +9,7 @@ import (
 
 // FilterByID returns ListLB with specified ID.
 func (ll ListLB) FilterByID(id uint64) ListLB {
-	predicate := func(rlb RecordLB) bool {
+	predicate := func(rlb ItemLBList) bool {
 		return rlb.ID == id
 	}
 
@@ -18,7 +18,7 @@ func (ll ListLB) FilterByID(id uint64) ListLB {
 
 // FilterByName returns ListLB with specified Name.
 func (ll ListLB) FilterByName(name string) ListLB {
-	predicate := func(rlb RecordLB) bool {
+	predicate := func(rlb ItemLBList) bool {
 		return rlb.Name == name
 	}
 
@@ -27,17 +27,8 @@ func (ll ListLB) FilterByName(name string) ListLB {
 
 // FilterByExtNetID returns ListLB with specified ExtNetID.
 func (ll ListLB) FilterByExtNetID(extNetID uint64) ListLB {
-	predicate := func(rlb RecordLB) bool {
+	predicate := func(rlb ItemLBList) bool {
 		return rlb.ExtNetID == extNetID
-	}
-
-	return ll.FilterFunc(predicate)
-}
-
-// FilterByImageID returns ListLB with specified ImageID.
-func (ll ListLB) FilterByImageID(imageID uint64) ListLB {
-	predicate := func(rlb RecordLB) bool {
-		return rlb.ImageID == imageID
 	}
 
 	return ll.FilterFunc(predicate)
@@ -56,7 +47,7 @@ func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient i
 		return nil, err
 	}
 
-	predicate := func(rlb RecordLB) bool {
+	predicate := func(rlb ItemLBList) bool {
 		return cluster.LBID == rlb.ID
 	}
 
@@ -66,7 +57,7 @@ func (ll ListLB) FilterByK8SID(ctx context.Context, k8sID uint64, decortClient i
 }
 
 // FilterFunc allows filtering ListLB based on a user-specified predicate.
-func (ll ListLB) FilterFunc(predicate func(RecordLB) bool) ListLB {
+func (ll ListLB) FilterFunc(predicate func(ItemLBList) bool) ListLB {
 	var result ListLB
 
 	for _, item := range ll.Data {
@@ -82,9 +73,9 @@ func (ll ListLB) FilterFunc(predicate func(RecordLB) bool) ListLB {
 
 // FindOne returns first found RecordLB
 // If none was found, returns an empty struct.
-func (ll ListLB) FindOne() RecordLB {
+func (ll ListLB) FindOne() ItemLBList {
 	if len(ll.Data) == 0 {
-		return RecordLB{}
+		return ItemLBList{}
 	}
 
 	return ll.Data[0]

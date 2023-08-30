@@ -1,5 +1,4 @@
-## Version 1.5.5
+## Version 1.5.6
 
 ### Bugfix
-- Added missing field cloudbroker/sep/RecordPool/UsageLimit
-- Fixed the field cloudbroker/sep/RecordConsumption/ByPool
+- Fix the RecordLB field, add the RecordLBList field to cloudbroker/lb/models to correctly receive information on get and list requests

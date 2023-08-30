@@ -136,7 +136,7 @@ type Node struct {
 // List of load balancers
 type ListLB struct {
 	// Data
-	Data []RecordLB `json:"data"`
+	Data []ItemLBList `json:"data"`
 
 	// Entry count
 	EntryCount uint64 `json:"entryCount"`
@@ -152,6 +152,69 @@ type RecordLB struct {
 
 	// Meta
 	Meta []interface{} `json:"_meta"`
+
+	// Access Control List
+	ACL []interface{} `json:"acl"`
+
+	// List of load balancer backends
+	Backends ListBackends `json:"backends"`
+
+	// Description
+	Description string `json:"desc"`
+
+	// DPAPI password
+	DPAPIPassword string `json:"dpApiPassword"`
+
+	// DPAPI user
+	DPAPIUser string `json:"dpApiUser"`
+
+	// External network ID
+	ExtNetID uint64 `json:"extnetId"`
+
+	// List of load balancer frontends
+	Frontends ListFrontends `json:"frontends"`
+
+	// Grid ID
+	GID uint64 `json:"gid"`
+
+	// GUID
+	GUID uint64 `json:"guid"`
+
+	// ID
+	ID uint64 `json:"id"`
+
+	// Image ID
+	ImageID uint64 `json:"imageId"`
+
+	// Milestones
+	Milestones uint64 `json:"milestones"`
+
+	// Name
+	Name string `json:"name"`
+
+	// Primary node
+	PrimaryNode Node `json:"primaryNode"`
+
+	// Resource group ID
+	RGID uint64 `json:"rgId"`
+
+	// Secondary node
+	SecondaryNode Node `json:"secondaryNode"`
+
+	// Status
+	Status string `json:"status"`
+
+	// Tech status
+	TechStatus string `json:"techStatus"`
+
+	// VINS ID
+	VINSID uint64 `json:"vinsId"`
+}
+
+// Detailed information about load balancer in List
+type ItemLBList struct {
+	// HAMode
+	HAMode bool `json:"HAmode"`
 
 	// Access Control List
 	ACL []interface{} `json:"acl"`
@@ -194,9 +257,6 @@ type RecordLB struct {
 
 	// ID
 	ID uint64 `json:"id"`
-
-	// Image ID
-	ImageID uint64 `json:"imageId"`
 
 	// Milestones
 	Milestones uint64 `json:"milestones"`
