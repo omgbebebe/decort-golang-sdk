@@ -29,7 +29,7 @@ type CreateRequest struct {
 
 	// Start now Load balancer
 	// Required: false
-	Start bool `url:"start" json:"start" validate:"required"`
+	Start bool `url:"start" json:"start"`
 
 	// Text description of this load balancer
 	// Required: false

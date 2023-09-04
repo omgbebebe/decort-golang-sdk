@@ -3,7 +3,7 @@ package grid
 import "testing"
 
 var grids = ListGrids{
-	Data: []RecordGrid{
+	Data: []ItemGridList{
 		{
 			Resources: Resources{
 				Current: RecordResource{
@@ -123,7 +123,7 @@ func TestFilterByLocationCode(t *testing.T) {
 }
 
 func TestFilterFunc(t *testing.T) {
-	actual := grids.FilterFunc(func(rg RecordGrid) bool {
+	actual := grids.FilterFunc(func(rg ItemGridList) bool {
 		return rg.GID == 777
 	}).
 		FindOne()

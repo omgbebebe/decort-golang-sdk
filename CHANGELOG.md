@@ -1,4 +1,6 @@
-## Version 1.5.6
+## Version 1.5.7
 
 ### Bugfix
-- Fix the RecordLB field, add the RecordLBList field to cloudbroker/lb/models to correctly receive information on get and list requests
+- Remove the required tag of the start field in the CreateRequest model in cb/lb/create, since it is impossible to create an lb without starting it
+- Fix model the RecordGrid, add the ItemGridList model to cloudbroker/grid/models to correctly receive information on get and list requests
+- Fix tag json field GID in model RecordResourcesConsumption cb/grid/models

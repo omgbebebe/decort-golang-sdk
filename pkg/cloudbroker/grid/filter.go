@@ -2,7 +2,7 @@ package grid
 
 // FilterByID returns ListGrids with specified ID.
 func (lg ListGrids) FilterByID(id uint64) ListGrids {
-	predicate := func(rg RecordGrid) bool {
+	predicate := func(rg ItemGridList) bool {
 		return rg.ID == id
 	}
 
@@ -11,7 +11,7 @@ func (lg ListGrids) FilterByID(id uint64) ListGrids {
 
 // FilterByName returns ListGrids with specified Name.
 func (lg ListGrids) FilterByName(name string) ListGrids {
-	predicate := func(rg RecordGrid) bool {
+	predicate := func(rg ItemGridList) bool {
 		return rg.Name == name
 	}
 
@@ -20,7 +20,7 @@ func (lg ListGrids) FilterByName(name string) ListGrids {
 
 // FilterByLocationCode returns ListGrids with specified LocationCode.
 func (lg ListGrids) FilterByLocationCode(locationCode string) ListGrids {
-	predicate := func(rg RecordGrid) bool {
+	predicate := func(rg ItemGridList) bool {
 		return rg.LocationCode == locationCode
 	}
 
@@ -28,7 +28,7 @@ func (lg ListGrids) FilterByLocationCode(locationCode string) ListGrids {
 }
 
 // FilterFunc allows filtering ListGrids based on a user-specified predicate.
-func (lg ListGrids) FilterFunc(predicate func(RecordGrid) bool) ListGrids {
+func (lg ListGrids) FilterFunc(predicate func(ItemGridList) bool) ListGrids {
 	var result ListGrids
 
 	for _, item := range lg.Data {
@@ -44,9 +44,9 @@ func (lg ListGrids) FilterFunc(predicate func(RecordGrid) bool) ListGrids {
 
 // FindOne returns first found RecordGrid.
 // If none was found, returns an empty struct.
-func (lg ListGrids) FindOne() RecordGrid {
+func (lg ListGrids) FindOne() ItemGridList {
 	if len(lg.Data) == 0 {
-		return RecordGrid{}
+		return ItemGridList{}
 	}
 
 	return lg.Data[0]

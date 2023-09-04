@@ -18,7 +18,7 @@ type RecordResourcesConsumption struct {
 	Reserved RecordResource `json:"Reserved"`
 
 	// GID
-	GID uint64 `json:"gid"`
+	GID uint64 `json:"id"`
 }
 
 type ListResourceConsumption struct {
@@ -67,6 +67,27 @@ type DiskUsage struct {
 
 // Detailed information about grid
 type RecordGrid struct {
+	// Flag
+	Flag string `json:"flag"`
+
+	// Grid ID
+	GID uint64 `json:"gid"`
+
+	// GUID
+	GUID uint64 `json:"guid"`
+
+	// ID
+	ID uint64 `json:"id"`
+
+	// Location code
+	LocationCode string `json:"locationCode"`
+
+	// Name
+	Name string `json:"name"`
+}
+
+// Information about grid
+type ItemGridList struct {
 	// Resource information
 	Resources Resources `json:"Resources"`
 
@@ -92,7 +113,7 @@ type RecordGrid struct {
 // List Grids
 type ListGrids struct {
 	//Data
-	Data []RecordGrid `json:"data"`
+	Data []ItemGridList `json:"data"`
 
 	// Entry count
 	EntryCount uint64 `json:"entryCount"`
