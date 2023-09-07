@@ -106,6 +106,10 @@ type CreateRequest struct {
 	// Text description of this Kubernetes cluster
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
+
+	//Use only selected ExtNet for infrastructure connections
+	// Required: false
+	ExtNetOnly bool `url:"extnetOnly,omitempty" json:"extnetOnly,omitempty"`
 }
 
 // Create creates a new Kubernetes cluster in the specified Resource Group
