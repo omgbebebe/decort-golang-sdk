@@ -2,6 +2,7 @@ package lb
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -20,16 +21,16 @@ type CreateRequest struct {
 	Name string `url:"name" json:"name" validate:"required"`
 
 	// External network to connect this load balancer to
-	// Required: true
-	ExtNetID uint64 `url:"extnetId" json:"extnetId" validate:"required"`
+	// Required: false
+	ExtNetID uint64 `url:"extnetId" json:"extnetId"`
 
 	// Internal network (VINS) to connect this load balancer to
-	// Required: true
-	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
+	// Required: false
+	VINSID uint64 `url:"vinsId" json:"vinsId"`
 
 	// Start now Load balancer
-	// Required: true
-	Start bool `url:"start" json:"start" validate:"required"`
+	// Required: false
+	Start bool `url:"start" json:"start"`
 
 	// Text description of this load balancer
 	// Required: false
@@ -43,6 +44,10 @@ func (l LB) Create(ctx context.Context, req CreateRequest) (string, error) {
 		for _, validationError := range validators.GetErrors(err) {
 			return "", validators.ValidationError(validationError)
 		}
+	}
+
+	if req.ExtNetID == 0 && req.VINSID == 0 {
+		return "", errors.New ("vinsId and extNetId cannot be both in the value 0")
 	}
 
 	url := "/cloudapi/lb/create"
