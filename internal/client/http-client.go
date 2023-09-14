@@ -3,6 +3,7 @@ package client
 import (
 	"crypto/tls"
 	"net/http"
+	"sync"
 	"time"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
@@ -32,6 +33,7 @@ func NewHttpClient(cfg config.Config) *http.Client {
 			ssoURL:       cfg.SSOURL,
 			token:        cfg.Token,
 			expiryTime:   expiredTime,
+			mutex:        &sync.Mutex{},
 			//TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 

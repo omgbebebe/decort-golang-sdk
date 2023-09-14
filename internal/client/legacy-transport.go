@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -15,6 +16,7 @@ type transportLegacy struct {
 	retries    uint64
 	token      string
 	decortURL  string
+	mutex      *sync.Mutex
 	expiryTime time.Time
 }
 
@@ -56,7 +58,9 @@ func (t *transportLegacy) RoundTrip(request *http.Request) (*http.Response, erro
 	var resp *http.Response
 	var err error
 	for i := uint64(0); i < t.retries; i++ {
+		t.mutex.Lock()
 		resp, err = t.base.RoundTrip(req)
+		t.mutex.Unlock()
 		if err == nil {
 			if resp.StatusCode == 200 {
 				return resp, nil

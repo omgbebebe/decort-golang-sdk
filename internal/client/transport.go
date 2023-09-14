@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type transport struct {
 	token        string
 	ssoURL       string
 	expiryTime   time.Time
+	mutex        *sync.Mutex
 }
 
 func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -53,7 +55,9 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var resp *http.Response
 	var err error
 	for i := uint64(0); i < t.retries; i++ {
+		t.mutex.Lock()
 		resp, err = t.base.RoundTrip(req)
+		t.mutex.Unlock()
 		if err == nil {
 			if resp.StatusCode == 200 {
 				return resp, nil
@@ -65,5 +69,6 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		//logrus.Errorf("Could not execute request: %v. Retrying %d/%d", err, i+1, t.retries)
 		time.Sleep(time.Second * 5)
 	}
+
 	return nil, fmt.Errorf("could not execute request: %w", err)
 }

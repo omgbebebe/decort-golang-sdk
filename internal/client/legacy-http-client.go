@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
@@ -33,6 +34,7 @@ func NewLegacyHttpClient(cfg config.LegacyConfig) *http.Client {
 			token:      cfg.Token,
 			decortURL:  cfg.DecortURL,
 			expiryTime: expiredTime,
+			mutex:      &sync.Mutex{},
 		},
 
 		Timeout: cfg.Timeout.Get(),
