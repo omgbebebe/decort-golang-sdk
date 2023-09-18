@@ -3,7 +3,7 @@ package k8ci
 // FilterByID returns ListK8CI with specified ID.
 func (lkc ListK8CI) FilterByID(id uint64) ListK8CI {
 	predicate := func(ikc ItemK8CI) bool {
-		return ikc.RecordK8CI.ID == id
+		return ikc.RecordK8CIList.ID == id
 	}
 
 	return lkc.FilterFunc(predicate)
@@ -12,7 +12,7 @@ func (lkc ListK8CI) FilterByID(id uint64) ListK8CI {
 // FilterByName returns ListK8CI with specified Name.
 func (lkc ListK8CI) FilterByName(name string) ListK8CI {
 	predicate := func(ikc ItemK8CI) bool {
-		return ikc.RecordK8CI.Name == name
+		return ikc.RecordK8CIList.Name == name
 	}
 
 	return lkc.FilterFunc(predicate)

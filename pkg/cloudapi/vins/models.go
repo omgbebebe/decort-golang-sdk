@@ -397,8 +397,10 @@ type NATConfig struct {
 	Network string `json:"network"`
 
 	// List NAT rules
-	Rules ListNATRules `json:"rules"`
+	Rules ListNATRulesConfig `json:"rules"`
 }
+
+type ListNATRulesConfig []ItemNATRule
 
 // Main information about GW
 type RecordGW struct {
@@ -570,9 +572,6 @@ type RecordVINS struct {
 	// Main information about VNF device
 	VNFDev RecordVNFDev `json:"VNFDev"`
 
-	// CKey
-	CKey string `json:"_ckey"`
-
 	// Account ID
 	AccountID uint64 `json:"accountId"`
 
@@ -582,11 +581,23 @@ type RecordVINS struct {
 	// List of VINS computes
 	Computes ListVINSComputes `json:"computes"`
 
+	// Created by
+	CreatedBy string `json:"createdBy"`
+
+	// Created time
+	CreatedTime uint64 `json:"createdTime"`
+
 	// Default GW
 	DefaultGW string `json:"defaultGW"`
 
 	// Default QOS
 	DefaultQOS QOS `json:"defaultQos"`
+
+	// Deleted by
+	DeletedBy string `json:"deletedBy"`
+
+	// Deleted time
+	DeletedTime uint64 `json:"deletedTime"`
 
 	// Description
 	Description string `json:"desc"`

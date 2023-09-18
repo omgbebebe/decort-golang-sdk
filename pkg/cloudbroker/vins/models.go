@@ -345,7 +345,7 @@ type NATConfig struct {
 	Network string `json:"network"`
 
 	// Rules
-	Rules []interface{} `json:"rules"`
+	Rules []ItemNATRule `json:"rules"`
 }
 
 // Main information about NAT
@@ -357,7 +357,7 @@ type RecordNAT struct {
 	InfoVNF
 }
 
-// NAT/GW/NAT details
+// DHCP/GW/NAT details
 type InfoVNF struct {
 	// CKey
 	CKey string `json:"_ckey"`
@@ -367,9 +367,6 @@ type InfoVNF struct {
 
 	// Account ID
 	AccountID uint64 `json:"accountId"`
-
-	// Config
-	Config NATConfig `json:"config"`
 
 	// CreatedTime
 	CreatedTime uint64 `json:"createdTime"`
@@ -401,6 +398,9 @@ type InfoVNF struct {
 	// Pure virtual
 	PureVirtual bool `json:"pureVirtual"`
 
+	// Routes
+	Routes ListRoutes `json:"routes"`
+
 	// Status
 	Status string `json:"status"`
 
@@ -409,6 +409,28 @@ type InfoVNF struct {
 
 	// Type
 	Type string `json:"type"`
+}
+
+type ListRoutes []ItemRoutes
+
+type ItemRoutes struct {
+	//Compute Id
+	ComputeIds []uint64 `json:"computeIds"`
+
+	// Destination network
+	Destination string `json:"destination"`
+
+	//Next hop host, IP address from ViNS ID free IP pool
+	Gateway string `json:"gateway"`
+
+	// GUID
+	GUID uint64 `json:"guid"`
+
+	// ID
+	ID uint64 `json:"id"`
+
+	//Destination network mask in 255.255.255.255 format
+	Netmask string `json:"netmask"`
 }
 
 // main information about VNF
@@ -427,12 +449,6 @@ type RecordVNFs struct {
 type RecordVINS struct {
 	// VNF device
 	VNFDev VNFDev `json:"VNFDev"`
-
-	// CKey
-	CKey string `json:"_ckey"`
-
-	// Meta
-	Meta []interface{} `json:"_meta"`
 
 	// Account ID
 	AccountID uint64 `json:"accountId"`

@@ -62,12 +62,11 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 - `Account` - управление аккаунтами - внутренними учетными записями платформы, которые являются владельцами вычислительных ресурсов;
 - `BService` - управление группами виртуальных машин (computes);
 - `Compute` - управление виртуальными машинами (индивидуально);
-- `ComputeCI` - управление конвейром для создания виртуальных машин;
 - `Disks` - управление виртуальными дисками;
 - `ExtNet` - управление виртуальными сетями, отвечающими за внешний доступ;
 - `FLIPgroup` - управление группами "плавающими" ip - адресами;
 - `Image` - управление образами операционных систем;
-- `K8CI` - управление конвейром для создания кластера;
+- `K8CI` - получение информации о конвейере для создания кластера;
 - `K8S` - управление кластерами kubernetes;
 - `KVMPPC` - создание виртуальной машины Power PC (IBM);
 - `KVMx86` - создание виртуальной машины x86;
@@ -84,30 +83,39 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 Данная группа ручек позволяет выполнять следующие операции в платформе:
 
 - `Account` - управление аккаунтами - внутренними учетными записями платформы, которые являются владельцами вычислительных ресурсов;
+- `APIAccess` - управление доступом к API и его объектам;
+- `Backup` - управление резервным копированием;
 - `Compute` - управление виртуальными машинами (индивидуально);
 - `Disks` - управление виртуальными дисками;
 - `ExtNet` - управление виртуальными сетями, отвечающими за внешний доступ;
+- `FLIPGroup` - управление группами с «плавающими» ip адресами;
 - `Grid` - управление площадками;
+- `Group` - управление группами пользователей;
 - `Image` - управление образами операционных систем;
 - `K8CI` - управление конвейром для создания кластера;
 - `K8S` - управление кластерами kubernetes;
 - `KVMPPC` - создание виртуальной машины Power PC (IBM);
 - `KVMx86` - создание виртуальной машины x86;
 - `LB` - управление балансировщиками нагрузки;
+- `PCIDevice` - управление устройствами;
 - `RG` - управление ресурсными группами аккаунта;
 - `SEP` - управление storage endpoint (sep);
+- `Stack` - получение информации о стеках;
 - `Tasks` - получение информации о ходе выполнения асинхронных задач (например, создание кластера);
+- `User` - управление пользователями (индивидуально);
+- `VGPU` - управление виртуальными графическими процессорами;
 - `VINS` - управление виртуальными изолированными сетями.
 
 ## Работа с библиотекой
 
 Алгоритм работы с библиотекой выглядит следующим образом:
 
-1. Настройка конфигурации клиента.
-2. Парсинг конфигурации из файла.
-3. Создание клиента.
-4. Создание структуры запроса.
-5. Выполнение запроса.
+1. Выполнение одного из действий:
+ - настройка конфигурации клиента;
+ - парсинг конфигурации из файла.
+2. Создание клиента.
+3. Создание структуры запроса.
+4. Выполнение запроса.
 
 ### Настройка конфигурации клиента
 
@@ -120,7 +128,7 @@ go get -u repository.basistech.ru/BASIS/decort-golang-sdk
 | DecortURL | string | Да | URL адрес платформы, с которой будет осуществляться взаимодействие |
 | Retries | uint | Нет | Кол-во неудачных попыток выполнения запроса, по умолчанию - 5 |
 | Timeout | config.Duration | Нет | Таймаут HTTP клиента, по умолчанию - без ограничений |
-| SSLSkipVerify | bool | Нет | Пропуск проверки подлинности сертификата, по умолчанию - true |
+| SSLSkipVerify | bool | Нет | Пропуск проверки подлинности сертификата |
 | Token | string | Нет | JWT токен |
 
 #### Пример конфигурации клиента
@@ -231,7 +239,6 @@ func main() {
   - `pkg/cloudapi/account` - для `Account`
   - `pkg/cloudapi/bservice` - для `Basic Service`
   - `pkg/cloudapi/compute` - для `Compute`
-  - `pkg/cloudapi/computeci` - для `ComputeCI`
   - `pkg/cloudapi/disks` - для `Disks`
   - `pkg/cloudapi/extnet` - для `ExtNet`
   - `pkg/cloudapi/flipgroup` - для `FLIPGroup`
@@ -248,19 +255,27 @@ func main() {
   - `pkg/cloudapi/vins` - для `VINS`
 - **cloudbroker**:
   - `pkg/cloudbroker/account` - для `Account`
+  - `pkg/cloudbroker/apiaccess` - для `APIAccess`
+  - `pkg/cloudbroker/backup` - для `Backup`
   - `pkg/cloudbroker/compute` - для `Compute`
   - `pkg/cloudbroker/disks` - для `Disks`
   - `pkg/cloudbroker/extnet` - для `ExtNet`
+  - `pkg/cloudbroker/flipgroup` - для `FLIPGroup`
   - `pkg/cloudbroker/grid` - для `Grid`
+  - `pkg/cloudbroker/group` - для `Group`
   - `pkg/cloudbroker/image` - для `Image`
   - `pkg/cloudbroker/k8ci` - для `K8CI`
   - `pkg/cloudbroker/k8s` - для `K8S`
   - `pkg/cloudbroker/kvmppc` - для `KVMPPC`
   - `pkg/cloudbroker/kvmx86` - для `KVMX86`
   - `pkg/cloudbroker/lb` - для `LB`
+  - `pkg/cloudbroker/pcidevice` - для `PCIDevice`
   - `pkg/cloudbroker/rg` - для `RG`
   - `pkg/cloudbroker/sep` - для `SEP`
+  - `pkg/cloudbroker/stack` - для `Stack`
   - `pkg/cloudbroker/tasks` - для `Tasks`
+  - `pkg/cloudbroker/user` - для `User`
+  - `pkg/cloudbroker/vgpu` - для `VGPU`
   - `pkg/cloudbroker/vins` - для `VINS`
 
 Все поля структуры имеют описание, в которых содержится:
@@ -405,7 +420,6 @@ func main() {
    - `.Account()` - для работы с `Account`
    - `.BService()` - для работы с `BService`
    - `.Compute()` - для работы с `Compute`
-   - `.ComputeCI()` - для работы с `ComputeCI`
    - `.Disks()` - для работы с `Disks`
    - `.ExtNet()` - для работы с `ExtNet`
    - `.FLIPgroup()` - для работы с `FLIPGroup`
@@ -424,19 +438,27 @@ func main() {
    Доступные методы для `.CloudBroker()`:
 
    - `.Account()` - для работы с `Account`
+   - `.APIAccess()` - для работы с `APIAccess`
+   - `.Backup()` - для работы с `Backup`
    - `.Compute()` - для работы с `Compute`
    - `.Disks()` - для работы с `Disks`
    - `.ExtNet()` - для работы с `ExtNet`
+   - `.FLIPGroup()` - для работы с `FLIPGroup`
    - `.Grid()` - для работы с `Grid`
+   - `.Group()` - для работы с `Group`
    - `.Image()` - для работы с `Image`
    - `.K8CI()` - для работы с `K8CI`
    - `.K8S()` - для работы с `K8S`
    - `.KVMPPC()` - для работы с `KVMPPC`
    - `.KVMx86()` - для работы с `KVMX86`
    - `.LB()` - для работы с `LB`
+   - `.PCIDevice()` - для работы с `PCIDevice`
    - `.RG()` - для работы с `RG`
    - `.SEP()` - для работы с `SEP`
+   - `.Stack()` - для работы с `Stack`
    - `.Tasks()` - для работы с `Tasks`
+   - `.User()` - для работы с `User`
+   - `.VGPU()` - для работы с `VGPU`
    - `.VINS()` - для работы с `VINS`
 
 3. Вызвать метод, отвечающий за выполнение запроса и передать в него:
@@ -448,7 +470,7 @@ func main() {
 4. Обработать результат и ошибки.
 
 Т.к. все вызовы методов идут последовательно, можно их объеденить в конвейер:
-Общий вид вонвейра будет выглядеть так:
+Общий вид конвейера будет выглядеть так:
 
 ```go
   client.<API>.<группа>.<метод>
@@ -705,7 +727,7 @@ func main() {
 | DecortURL     | string | Да           | URL адрес платформы, с которой будет осуществляться взаимодействие |
 | Retries       | uint   | Нет          | Кол-во неудачных попыток выполнения запроса, по умолчанию - 5      |
 | Timeout       | config.Duration | Нет | Таймаут HTTP клиента, по умолчанию - без ограничений               |
-| SSLSkipVerify | bool   | Нет          | Пропуск проверки подлинности сертификата, по умолчанию - true      |
+| SSLSkipVerify | bool   | Нет          | Пропуск проверки подлинности сертификата     |
 | Token         | string | Нет          | JWT токен                                                          |
 
 #### Пример конфигурации legacy клиента

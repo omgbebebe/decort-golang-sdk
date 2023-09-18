@@ -2,11 +2,23 @@ package vins
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
+
+type Route struct {
+	// Destination network
+	Destination string `url:"destination" json:"destination" validate:"required"`
+
+	//Destination network mask in 255.255.255.255 format
+	Netmask string `url:"netmask" json:"netmask" validate:"required"`
+
+	//Next hop host, IP address from ViNS ID free IP pool
+	Gateway string `url:"gateway" json:"gateway" validate:"required"`
+}
 
 // Request struct for create VINS in account
 type CreateInAccountRequest struct {
@@ -34,9 +46,18 @@ type CreateInAccountRequest struct {
 	// Required: false
 	PreReservationsNum uint64 `url:"preReservationsNum,omitempty" json:"preReservationsNum,omitempty"`
 
+	// List of static routes, each item must have destination, netmask, and gateway fields
+	// Required: false
+	Routes []Route `url:"-" json:"routes,omitempty" validate:"omitempty,dive"`
+
 	// Reason for action
 	// Required: false
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
+}
+
+type wrapperCreateRequestInAcc struct {
+	CreateInAccountRequest
+	Routes []string `url:"routes,omitempty"`
 }
 
 // CreateInAccount creates VINS in account level
@@ -48,9 +69,31 @@ func (v VINS) CreateInAccount(ctx context.Context, req CreateInAccountRequest) (
 		}
 	}
 
+	var routes []string
+
+	if len(req.Routes) != 0 {
+		routes = make([]string, 0, len(req.Routes))
+
+		for r := range req.Routes {
+			b, err := json.Marshal(req.Routes[r])
+			if err != nil {
+				return 0, err
+			}
+
+			routes = append(routes, string(b))
+		}
+	}  else {
+		routes = []string{"[]"}
+	}
+
+	reqWrapped := wrapperCreateRequestInAcc{
+		CreateInAccountRequest: req,
+		Routes:    routes,
+	}
+
 	url := "/cloudbroker/vins/createInAccount"
 
-	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
 	}

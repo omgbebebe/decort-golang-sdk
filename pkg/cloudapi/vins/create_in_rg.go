@@ -36,7 +36,7 @@ type CreateInRGRequest struct {
 
 	// Number of pre created reservations
 	// Required: false
-	PreReservationsNum uint `url:"preReservationsNum,omitempty" json:"preReservationsNum,omitempty"`
+	PreReservationsNum uint64 `url:"preReservationsNum,omitempty" json:"preReservationsNum,omitempty"`
 }
 
 // CreateInRG creates VINS in resource group level

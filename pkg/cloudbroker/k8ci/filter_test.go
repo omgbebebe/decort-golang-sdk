@@ -6,7 +6,7 @@ var k8ciItems = ListK8CI{
 	Data: []ItemK8CI{
 		{
 			CreatedTime: 123902139,
-			RecordK8CI: RecordK8CI{
+			RecordK8CIList: RecordK8CIList{
 				Description:    "",
 				GID:            0,
 				GUID:           1,
@@ -17,7 +17,7 @@ var k8ciItems = ListK8CI{
 				MaxMasterCount: 2,
 				MaxWorkerCount: 3,
 				Name:           "purple_snake",
-				SharedWith:     []interface{}{},
+				SharedWith:     []uint64{},
 				Status:         "ENABLED",
 				Version:        "1",
 				WorkerDriver:   "KVM_X86",
@@ -26,7 +26,7 @@ var k8ciItems = ListK8CI{
 		},
 		{
 			CreatedTime: 123902232,
-			RecordK8CI: RecordK8CI{
+			RecordK8CIList: RecordK8CIList{
 				Description:    "",
 				GID:            0,
 				GUID:           2,
@@ -37,7 +37,7 @@ var k8ciItems = ListK8CI{
 				MaxMasterCount: 3,
 				MaxWorkerCount: 5,
 				Name:           "green_giant",
-				SharedWith:     []interface{}{},
+				SharedWith:     []uint64{},
 				Status:         "DISABLED",
 				Version:        "2",
 				WorkerDriver:   "KVM_X86",
@@ -46,7 +46,7 @@ var k8ciItems = ListK8CI{
 		},
 		{
 			CreatedTime: 123902335,
-			RecordK8CI: RecordK8CI{
+			RecordK8CIList: RecordK8CIList{
 				Description:    "",
 				GID:            0,
 				GUID:           3,
@@ -57,7 +57,7 @@ var k8ciItems = ListK8CI{
 				MaxMasterCount: 5,
 				MaxWorkerCount: 9,
 				Name:           "magenta_cloud",
-				SharedWith:     []interface{}{},
+				SharedWith:     []uint64{},
 				Status:         "ENABLED",
 				Version:        "3",
 				WorkerDriver:   "KVM_X86",
