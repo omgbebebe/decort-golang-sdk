@@ -160,6 +160,10 @@ type CreateRequest struct {
 	// Use only selected ExtNet for infrastructure connections
 	// Required: false
 	ExtNetOnly bool `url:"extnetOnly,omitempty" json:"extnetOnly,omitempty"`
+	
+	// Insert ssl certificate in x509 pem format
+	// Required: false
+	OidcCertificate []byte `url:"oidcCertificate,omitempty" json:"oidcCertificate,omitempty"`
 }
 
 // type wrapperCreateRequest struct {
