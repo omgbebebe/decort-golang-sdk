@@ -25,13 +25,13 @@ type FrontendBindUpdateRequest struct {
 	// If specified must be within the IP range of either Ext Net or ViNS,
 	// where this load balancer is connected - new IP address to use for this binding.
 	// If omitted, current IP address is retained
-	// Required: false
-	BindingAddress string `url:"bindingAddress,omitempty" json:"bindingAddress,omitempty"`
+	// Required: true
+	BindingAddress string `url:"bindingAddress" json:"bindingAddress" validate:"required"`
 
 	// New port number to use for this binding.
 	// If omitted, current port number is retained
-	// Required: false
-	BindingPort uint64 `url:"bindingPort,omitempty" json:"bindingPort,omitempty"`
+	// Required: true
+	BindingPort uint64 `url:"bindingPort" json:"bindingPort" validate:"required"`
 }
 
 // FrontendBindUpdate updates binding for the specified load balancer frontend

@@ -23,7 +23,7 @@ func (d *Duration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		*d = Duration(tmp)
 		return nil
 	default:
-		return fmt.Errorf("Invalid duration %v", value)
+		return fmt.Errorf("invalid duration %v", value)
 	}
 }
 
@@ -41,7 +41,7 @@ func (d *Duration) UnmarshalJSON(b []byte) error {
 		*d = Duration(tmp)
 		return nil
 	default:
-		return fmt.Errorf("Invalid duration %v", value)
+		return fmt.Errorf("invalid duration %v", value)
 	}
 }
 

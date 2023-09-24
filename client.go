@@ -140,24 +140,24 @@ func (dc *DecortClient) do(req *http.Request) (*http.Response, error) {
 	req.Header.Add("Authorization", "bearer "+dc.cfg.Token)
 	req.Header.Set("Accept", "application/json")
 
-	var resp *http.Response
-	var err error
+	// var resp *http.Response
+	// var err error
 	buf, _ := io.ReadAll(req.Body)
 
-	for i := uint64(0); i < dc.cfg.Retries; i++ {
-		req := req.Clone(req.Context())
+	// for i := uint64(0); i < dc.cfg.Retries; i++ {
+		req = req.Clone(req.Context())
 		req.Body = io.NopCloser(bytes.NewBuffer(buf))
-		resp, err = dc.client.Do(req)
+		resp, err := dc.client.Do(req)
 
-		if err == nil {
+		// if err == nil {
 			if resp.StatusCode == 200 {
 				return resp, err
 			}
 			respBytes, _ := io.ReadAll(resp.Body)
 			err = fmt.Errorf("%s", respBytes)
 			resp.Body.Close()
-		}
-	}
+		// }
+	// }
 
 	return nil, fmt.Errorf("could not execute request: %w", err)
 }

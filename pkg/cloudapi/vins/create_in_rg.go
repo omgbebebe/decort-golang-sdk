@@ -2,6 +2,7 @@ package vins
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -37,6 +38,15 @@ type CreateInRGRequest struct {
 	// Number of pre created reservations
 	// Required: false
 	PreReservationsNum uint64 `url:"preReservationsNum,omitempty" json:"preReservationsNum,omitempty"`
+
+	// List of static routes, each item must have destination, netmask, and gateway fields
+	// Required: false
+	Routes []Route `url:"-" json:"routes,omitempty" validate:"omitempty,dive"`
+}
+
+type wrapperCreateRequestInRG struct {
+	CreateInRGRequest
+	Routes []string `url:"routes,omitempty"`
 }
 
 // CreateInRG creates VINS in resource group level
@@ -48,9 +58,31 @@ func (v VINS) CreateInRG(ctx context.Context, req CreateInRGRequest) (uint64, er
 		}
 	}
 
+	var routes []string
+
+	if len(req.Routes) != 0 {
+		routes = make([]string, 0, len(req.Routes))
+
+		for r := range req.Routes {
+			b, err := json.Marshal(req.Routes[r])
+			if err != nil {
+				return 0, err
+			}
+
+			routes = append(routes, string(b))
+		}
+	} else {
+		routes = []string{}
+	}
+
+	reqWrapped := wrapperCreateRequestInRG{
+		CreateInRGRequest: req,
+		Routes:            routes,
+	}
+
 	url := "/cloudapi/vins/createInRG"
 
-	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
 	}

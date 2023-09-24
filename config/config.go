@@ -42,7 +42,7 @@ type Config struct {
 	// Required: false
 	Retries uint64 `json:"retries" yaml:"retries"`
 
-	// Skip verify, true by default
+	// Skip verify
 	// Required: false
 	SSLSkipVerify bool `json:"sslSkipVerify" yaml:"sslSkipVerify"`
 
