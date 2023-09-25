@@ -140,19 +140,20 @@ func (ldc *LegacyDecortClient) do(req *http.Request) (*http.Response, error) {
 	// var resp *http.Response
 	// var err error
 	buf, _ := io.ReadAll(req.Body)
+	req = req.Clone(req.Context())
 
 	// for i := uint64(0); i < ldc.cfg.Retries; i++ {
-		req = req.Clone(req.Context())
-		req.Body = io.NopCloser(bytes.NewBuffer(buf))
-		resp, err := ldc.client.Do(req)
+	req = req.Clone(req.Context())
+	req.Body = io.NopCloser(bytes.NewBuffer(buf))
+	resp, err := ldc.client.Do(req)
 
-		// if err == nil {
-			if resp.StatusCode == 200 {
-				return resp, err
-			}
-			respBytes, _ := io.ReadAll(resp.Body)
-			err = fmt.Errorf("%s", respBytes)
-			resp.Body.Close()
+	// if err == nil {
+	if resp.StatusCode == 200 {
+		return resp, err
+	}
+	respBytes, _ := io.ReadAll(resp.Body)
+	err = fmt.Errorf("%s", respBytes)
+	resp.Body.Close()
 	// 	}
 	// }
 

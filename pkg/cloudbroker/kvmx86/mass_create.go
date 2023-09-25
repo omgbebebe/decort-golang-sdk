@@ -64,7 +64,7 @@ type MassCreateRequest struct {
 
 	// Start after create of not
 	// Required: false
-	Start bool `url:"start,omitempty" json:"start,omitempty"`
+	Start bool `url:"start" json:"start"`
 
 	// Reason to action
 	// Required: false

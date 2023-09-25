@@ -79,7 +79,7 @@ type CreateRequest struct {
 
 	// Start VM upon success
 	// Required: false
-	Start bool `url:"start,omitempty" json:"start,omitempty"`
+	Start bool `url:"start" json:"start"`
 
 	// System name
 	// Required: false

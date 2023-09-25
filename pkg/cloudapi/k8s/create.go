@@ -160,10 +160,10 @@ type CreateRequest struct {
 	// Use only selected ExtNet for infrastructure connections
 	// Required: false
 	ExtNetOnly bool `url:"extnetOnly,omitempty" json:"extnetOnly,omitempty"`
-	
+
 	// Insert ssl certificate in x509 pem format
 	// Required: false
-	OidcCertificate []byte `url:"oidcCertificate,omitempty" json:"oidcCertificate,omitempty"`
+	OidcCertificate string `url:"oidcCertificate,omitempty" json:"oidcCertificate,omitempty"`
 }
 
 // type wrapperCreateRequest struct {
@@ -173,6 +173,7 @@ type CreateRequest struct {
 
 // Create creates a new Kubernetes cluster in the specified Resource Group
 func (k8s K8S) Create(ctx context.Context, req CreateRequest) (string, error) {
+
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {

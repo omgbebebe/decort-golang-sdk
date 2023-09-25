@@ -8,6 +8,8 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
+// type Params []string
+
 // Request struct for create K8S
 type CreateRequest struct {
 	// Name of kubernetes cluster
@@ -100,15 +102,76 @@ type CreateRequest struct {
 	// Required: false
 	ExtNetID uint64 `url:"extnetId,omitempty" json:"extnetId,omitempty"`
 
+	// ID of the ViNS to connect k8s cluster. If nothing is specified, ViNS will be created automatically
+	// Required: false
+	VinsId uint64 `url:"vinsId,omitempty" json:"vinsId,omitempty"`
+
 	// Create kubernetes cluster with masters nodes behind load balancer if true.
 	// Otherwise give all cluster nodes direct external addresses from selected external network
 	// Required: false
 	WithLB bool `url:"withLB" json:"withLB"`
 
+	// Custom sysctl values for Load Balancer instance. Applied on boot
+	// Required: false
+	LbSysctlParams string `url:"-" json:"lbSysctlParams,omitempty" validate:"omitempty,dive"`
+
+	// Use Highly Available schema for LB deploy
+	// Required: false
+	HighlyAvailable bool `url:"highlyAvailable,omitempty" json:"highlyAvailable,omitempty"`
+
+	// Optional extra Subject Alternative Names (SANs) to use for the API Server serving certificate. Can be both IP addresses and DNS names
+	// Required: false
+	AdditionalSANs []string `url:"additionalSANs,omitempty" json:"additionalSANs,omitempty"`
+
+	// Is used to define settings and actions that should be performed before any other component in the cluster starts.
+	// It allows you to configure things like node registration, network setup, and other initialization tasks. insert a valid JSON string with all levels of nesting
+	// Required: false
+	InitConfiguration string `url:"initConfiguration,omitempty" json:"initConfiguration,omitempty"`
+
+	// Is used to define global settings and configurations for the entire cluster.
+	// It includes parameters such as cluster name, DNS settings, authentication methods, and other cluster-wide configurations.
+	// Insert a valid JSON string with all levels of nesting
+	// Required: false
+	ClusterConfiguration string `url:"clusterConfiguration,omitempty" json:"clusterConfiguration,omitempty"`
+
+	// Is used to configure the behavior and settings of the Kubelet, which is the primary node agent that runs on each node in the cluster.
+	// It includes parameters such as node IP address, resource allocation, pod eviction policies, and other Kubelet-specific configurations.
+	// Insert a valid JSON string with all levels of nesting
+	// Required: false
+	KubeletConfiguration string `url:"kubeletConfiguration,omitempty" json:"kubeletConfiguration,omitempty"`
+
+	// Is used to configure the behavior and settings of the Kube-proxy, which is responsible for network proxying and load balancing within the cluster.
+	// It includes parameters such as proxy mode, cluster IP ranges, and other Kube-proxy specific configurations.
+	// Insert a valid JSON string with all levels of nesting
+	// Required: false
+	KubeProxyConfiguration string `url:"kubeProxyConfiguration,omitempty" json:"kubeProxyConfiguration,omitempty"`
+
+	// Is used to configure the behavior and settings for joining a node to a cluster.
+	// It includes parameters such as the cluster's control plane endpoint, token, and certificate key. insert a valid JSON string with all levels of nesting
+	// Required: false
+	JoinConfiguration string `url:"joinConfiguration,omitempty" json:"joinConfiguration,omitempty"`
+
 	// Text description of this kubernetes cluster
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
+
+	// Meta data for working group computes, format YAML "user_data": 1111
+	// Required: false
+	UserData string `url:"userData,omitempty" json:"userData,omitempty"`
+
+	// Use only selected ExtNet for infrastructure connections
+	// Required: false
+	ExtNetOnly bool `url:"extnetOnly,omitempty" json:"extnetOnly,omitempty"`
+
+	// Insert ssl certificate in x509 pem format
+	// Required: false
+	OidcCertificate string `url:"oidcCertificate,omitempty" json:"oidcCertificate,omitempty"`
 }
+
+// type wrapperCreateRequest struct {
+// 	CreateRequest
+// 	Params []string `url:"lbSysctlParams,omitempty"`
+// }
 
 // Create creates a new kubernetes cluster in the specified resource group
 func (k K8S) Create(ctx context.Context, req CreateRequest) (string, error) {
@@ -118,6 +181,28 @@ func (k K8S) Create(ctx context.Context, req CreateRequest) (string, error) {
 			return "", validators.ValidationError(validationError)
 		}
 	}
+
+	// var params []string
+
+	// if len(req.LbSysctlParams) != 0 {
+	// 	params = make([]string, 0, len(req.LbSysctlParams))
+
+	// 	for r := range req.LbSysctlParams {
+	// 		b, err := json.Marshal(req.LbSysctlParams[r])
+	// 		if err != nil {
+	// 			return "", err
+	// 		}
+
+	// 		params = append(params, string(b))
+	// 	}
+	// } else {
+	// 	params = []string{}
+	// }
+
+	// reqWrapped := wrapperCreateRequest{
+	// 	CreateRequest: req,
+	// 	Params:        params,
+	// }
 
 	url := "/cloudbroker/k8s/create"
 

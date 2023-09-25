@@ -79,7 +79,11 @@ type CreateRequest struct {
 
 	// Start VM upon success
 	// Required: false
-	Start bool `url:"start,omitempty" json:"start,omitempty"`
+	Start bool `url:"start" json:"start"`
+
+	// Stack ID
+	// Required: false
+	StackID uint64 `url:"stackId,omitempty" json:"stackId,omitempty"`
 
 	// System name
 	// Required: false
@@ -88,6 +92,10 @@ type CreateRequest struct {
 	// Compute purpose
 	// Required: false
 	IPAType string `url:"ipaType,omitempty" json:"ipaType,omitempty"`
+
+	// Reason for action
+	// Required: false
+	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
 type wrapperCreateRequest struct {
