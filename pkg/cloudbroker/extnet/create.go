@@ -2,23 +2,11 @@ package extnet
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
-
-type Route struct {
-	// Destination network
-	Destination string `url:"destination" json:"destination" validate:"required"`
-
-	//Destination network mask in 255.255.255.255 format
-	Netmask string `url:"netmask" json:"netmask" validate:"required"`
-
-	//Next hop host, IP address from ViNS ID free IP pool
-	Gateway string `url:"gateway" json:"gateway" validate:"required"`
-}
 
 // Request struct for create external network
 type CreateRequest struct {
@@ -82,15 +70,6 @@ type CreateRequest struct {
 	// OpenvSwith bridge name for ExtNet connection
 	// Required: false
 	OVSBridge string `url:"ovsBridge,omitempty" json:"ovsBridge,omitempty"`
-
-	// List of static routes, each item must have destination, netmask, and gateway fields
-	// Required: false
-	Routes []Route `url:"-" json:"routes,omitempty" validate:"omitempty,dive"`
-}
-
-type wrapperCreateRequest struct {
-	CreateRequest
-	Routes []string `url:"routes,omitempty"`
 }
 
 // Create creates new external network into platform
@@ -102,31 +81,9 @@ func (e ExtNet) Create(ctx context.Context, req CreateRequest) (uint64, error) {
 		}
 	}
 
-	var routes []string
-
-	if len(req.Routes) != 0 {
-		routes = make([]string, 0, len(req.Routes))
-
-		for r := range req.Routes {
-			b, err := json.Marshal(req.Routes[r])
-			if err != nil {
-				return 0, err
-			}
-
-			routes = append(routes, string(b))
-		}
-	} else {
-		routes = []string{}
-	}
-
-	reqWrapped := wrapperCreateRequest{
-		CreateRequest: req,
-		Routes:        routes,
-	}
-
 	url := "/cloudbroker/extnet/create"
 
-	res, err := e.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
+	res, err := e.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return 0, err
 	}

@@ -192,9 +192,6 @@ type RecordLB struct {
 	// Name
 	Name string `json:"name"`
 
-	// Part K8s
-	PartK8s bool `json:"partK8s"`
-
 	// Primary node
 	PrimaryNode Node `json:"primaryNode"`
 
@@ -206,9 +203,6 @@ type RecordLB struct {
 
 	// Status
 	Status string `json:"status"`
-
-	// Sysctl Params
-	SysctlParams []string `json:"sysctlParams"`
 
 	// Tech status
 	TechStatus string `json:"techStatus"`
@@ -284,9 +278,6 @@ type ItemLBList struct {
 
 	// Status
 	Status string `json:"status"`
-
-	// Sysctl Params
-	SysctlParams []string `json:"sysctlParams"`
 
 	// Tech status
 	TechStatus string `json:"techStatus"`

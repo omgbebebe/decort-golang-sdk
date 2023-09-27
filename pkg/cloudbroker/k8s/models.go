@@ -2,9 +2,6 @@ package k8s
 
 // Deteiled information
 type ItemDetailedInfo struct {
-	// External Ip
-	ExternalIp string `json:"externalip"`
-
 	// ID
 	ID uint64 `json:"id"`
 
@@ -14,7 +11,7 @@ type ItemDetailedInfo struct {
 	// Status
 	Status string `json:"status"`
 
-	// Tech status
+	// Status
 	TechStatus string `json:"techStatus"`
 }
 

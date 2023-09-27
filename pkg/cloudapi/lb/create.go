@@ -2,15 +2,11 @@ package lb
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"net/http"
-	"strconv"
+	"strings"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
-
-type Params []string
 
 // Request struct for create load balancer
 type CreateRequest struct {
@@ -24,81 +20,39 @@ type CreateRequest struct {
 	Name string `url:"name" json:"name" validate:"required"`
 
 	// External network to connect this load balancer to
-	// Required: false
-	ExtNetID uint64 `url:"extnetId" json:"extnetId"`
+	// Required: true
+	ExtNetID uint64 `url:"extnetId" json:"extnetId" validate:"required"`
 
 	// Internal network (VINS) to connect this load balancer to
-	// Required: false
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
-
-	// Custom  sysctl values for Load Balancer instance. Applied on boot
-	// Required: false
-	SysctlParams Params `url:"-" json:"sysctlParams,omitempty" validate:"omitempty,dive"`
-
-	// Use Highly Available schema for LB deploy
-	// Required: false
-	HighlyAvailable bool `url:"highlyAvailable,omitempty" json:"highlyAvailable,omitempty"`
+	// Required: true
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// Start now Load balancer
-	// Required: false
-	Start bool `url:"start" json:"start"`
+	// Required: true
+	Start bool `url:"start" json:"start" validate:"required"`
 
 	// Text description of this load balancer
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
 }
 
-type wrapperCreateRequest struct {
-	CreateRequest
-	Params []string `url:"sysctlParams,omitempty"`
-}
-
 // Create method will create a new load balancer instance
-func (l LB) Create(ctx context.Context, req CreateRequest) (uint64, error) {
+func (l LB) Create(ctx context.Context, req CreateRequest) (string, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
-			return 0, validators.ValidationError(validationError)
+			return "", validators.ValidationError(validationError)
 		}
-	}
-
-	if req.ExtNetID == 0 && req.VINSID == 0 {
-		return 0, errors.New("vinsId and extNetId cannot be both in the value 0")
-	}
-
-	var params []string
-
-	if len(req.SysctlParams) != 0 {
-		params = make([]string, 0, len(req.SysctlParams))
-
-		for r := range req.SysctlParams {
-			b, err := json.Marshal(req.SysctlParams[r])
-			if err != nil {
-				return 0, err
-			}
-
-			params = append(params, string(b))
-		}
-	} else {
-		params = []string{}
-	}
-
-	reqWrapped := wrapperCreateRequest{
-		CreateRequest: req,
-		Params:        params,
 	}
 
 	url := "/cloudapi/lb/create"
 
-	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
+	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	result, err := strconv.ParseUint(string(res), 10, 64)
-	if err != nil {
-		return 0, err
-	}
+	result := strings.ReplaceAll(string(res), "\"", "")
 
 	return result, nil
 }

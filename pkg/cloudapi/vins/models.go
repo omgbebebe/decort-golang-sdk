@@ -252,9 +252,6 @@ type ItemVNFInterface struct {
 	// Default GW
 	DefGW string `json:"defGw"`
 
-	// Enabled
-	Enabled bool `json:"enabled"`
-
 	// FLIPGroup ID
 	FLIPGroupID uint64 `json:"flipgroupId"`
 
@@ -381,9 +378,6 @@ type RecordNAT struct {
 	// Pure virtual
 	PureVirtual bool `json:"pureVirtual"`
 
-	// Routes
-	Routes ListRoutes `json:"routes"`
-
 	// Status
 	Status string `json:"status"`
 
@@ -448,9 +442,6 @@ type RecordGW struct {
 
 	// Pure virtual
 	PureVirtual bool `json:"pureVirtual"`
-
-	// Routes
-	Routes ListRoutes `json:"routes"`
 
 	// Status
 	Status string `json:"status"`
@@ -539,9 +530,6 @@ type RecordDHCP struct {
 	// Pure virtual
 	PureVirtual bool `json:"pureVirtual"`
 
-	// Routes
-	Routes ListRoutes `json:"routes"`
-
 	// Status
 	Status string `json:"status"`
 
@@ -577,39 +565,6 @@ type RecordDHCPConfig struct {
 
 	// List of reservations
 	Reservations ListReservations `json:"reservations"`
-}
-
-// List of static routes
-type ListStaticRoutes struct {
-	// Data
-	Data []ItemRoutes `json:"data"`
-
-	// Entry count
-	EntryCount uint64 `json:"entryCount"`
-}
-
-// List of Routes
-type ListRoutes []ItemRoutes
-
-// Detailed information about Routes
-type ItemRoutes struct {
-	//Compute Id
-	ComputeIds []uint64 `json:"computeIds"`
-
-	// Destination network
-	Destination string `json:"destination"`
-
-	//Next hop host, IP address from ViNS ID free IP pool
-	Gateway string `json:"gateway"`
-
-	// GUID
-	GUID string `json:"guid"`
-
-	// ID
-	ID uint64 `json:"id"`
-
-	//Destination network mask in 255.255.255.255 format
-	Netmask string `json:"netmask"`
 }
 
 // Detailed information about VINS

@@ -2,15 +2,11 @@ package lb
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"net/http"
 	"strconv"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
-
-type Params []string
 
 // Request struct for create load balancer
 type CreateRequest struct {
@@ -24,20 +20,12 @@ type CreateRequest struct {
 	Name string `url:"name" json:"name" validate:"required"`
 
 	// External network to connect this load balancer to
-	// Required: false
-	ExtNetID uint64 `url:"extnetId" json:"extnetId"`
+	// Required: true
+	ExtNetID uint64 `url:"extnetId" json:"extnetId" validate:"required"`
 
 	// Internal network (VINS) to connect this load balancer to
-	// Required: false
-	VINSID uint64 `url:"vinsId" json:"vinsId"`
-
-	// Custom  sysctl values for Load Balancer instance. Applied on boot
-	// Required: false
-	SysctlParams Params `url:"-" json:"sysctlParams,omitempty" validate:"omitempty,dive"`
-
-	// Use Highly Available schema for LB deploy
-	// Required: false
-	HighlyAvailable bool `url:"highlyAvailable,omitempty" json:"highlyAvailable,omitempty"`
+	// Required: true
+	VINSID uint64 `url:"vinsId" json:"vinsId" validate:"required"`
 
 	// Start now Load balancer
 	// Required: false
@@ -46,11 +34,6 @@ type CreateRequest struct {
 	// Text description of this load balancer
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
-}
-
-type wrapperCreateRequest struct {
-	CreateRequest
-	Params []string `url:"sysctlParams,omitempty"`
 }
 
 // Create method will create a new load balancer instance
@@ -62,35 +45,9 @@ func (lb LB) Create(ctx context.Context, req CreateRequest) (uint64, error) {
 		}
 	}
 
-	if req.ExtNetID == 0 && req.VINSID == 0 {
-		return 0, errors.New("vinsId and extNetId cannot be both in the value 0")
-	}
-
-	var params []string
-
-	if len(req.SysctlParams) != 0 {
-		params = make([]string, 0, len(req.SysctlParams))
-
-		for r := range req.SysctlParams {
-			b, err := json.Marshal(req.SysctlParams[r])
-			if err != nil {
-				return 0, err
-			}
-
-			params = append(params, string(b))
-		}
-	} else {
-		params = []string{}
-	}
-
-	reqWrapped := wrapperCreateRequest{
-		CreateRequest: req,
-		Params:        params,
-	}
-
 	url := "/cloudbroker/lb/create"
 
-	res, err := lb.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
+	res, err := lb.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
 		return 0, err
 	}

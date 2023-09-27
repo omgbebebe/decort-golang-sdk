@@ -36,7 +36,7 @@ type LegacyConfig struct {
 	// Required: false
 	Retries uint64 `json:"retries" yaml:"retries"`
 
-	// Skip verify
+	// Skip verify, true by default
 	// Required: false
 	SSLSkipVerify bool `json:"sslSkipVerify" yaml:"sslSkipVerify"`
 

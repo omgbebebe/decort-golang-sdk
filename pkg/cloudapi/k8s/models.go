@@ -41,9 +41,6 @@ type ListK8SGroups []ItemK8SGroup
 
 // Detailed information
 type ItemDetailedInfo struct {
-	// Externalip
-	Externalip string `json:"externalip"`
-
 	// ID
 	ID uint64 `json:"id"`
 

@@ -151,33 +151,3 @@ type RecordExtNet struct {
 	// List reservations
 	Reservations ListReservations `json:"reservations"`
 }
-
-// List of static routes
-type ListStaticRoutes struct {
-	// Data
-	Data []ItemRoutes `json:"data"`
-
-	// Entry count
-	EntryCount uint64 `json:"entryCount"`
-}
-
-// Detailed information about Routes
-type ItemRoutes struct {
-	//Compute Id
-	ComputeIds []uint64 `json:"computeIds"`
-
-	// Destination network
-	Destination string `json:"destination"`
-
-	//Next hop host, IP address from ViNS ID free IP pool
-	Gateway string `json:"gateway"`
-
-	// GUID
-	GUID string `json:"guid"`
-
-	// ID
-	ID uint64 `json:"id"`
-
-	//Destination network mask in 255.255.255.255 format
-	Netmask string `json:"netmask"`
-}

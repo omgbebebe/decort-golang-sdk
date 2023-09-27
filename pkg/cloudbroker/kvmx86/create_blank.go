@@ -50,10 +50,6 @@ type CreateBlankRequest struct {
 	// Text description of this VM
 	// Required: false
 	Description string `url:"desc,omitempty" json:"desc,omitempty"`
-
-	//Type of compute Stateful (KVM_X86) or Stateless (SVA_KVM_X86)
-	// Required: false
-	Driver string `url:"driver,omitempty" json:"driver,omitempty"` 
 }
 
 type wrapperCreateBlankRequest struct {

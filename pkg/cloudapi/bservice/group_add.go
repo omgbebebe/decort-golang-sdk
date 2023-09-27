@@ -68,10 +68,6 @@ type GroupAddRequest struct {
 	// Time of Compute Group readiness
 	// Required: false
 	TimeoutStart uint64 `url:"timeoutStart,omitempty" json:"timeoutStart,omitempty"`
-
-	// Meta data for working group computes, format YAML "user_data": 1111
-	// Required: false
-	UserData string `url:"userData,omitempty" json:"userData,omitempty"`
 }
 
 // GroupAdd creates new Compute Group within BasicService.

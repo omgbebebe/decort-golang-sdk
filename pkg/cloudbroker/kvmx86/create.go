@@ -79,7 +79,7 @@ type CreateRequest struct {
 
 	// Start VM upon success
 	// Required: false
-	Start bool `url:"start" json:"start"`
+	Start bool `url:"start,omitempty" json:"start,omitempty"`
 
 	// Stack ID
 	// Required: false
@@ -96,10 +96,6 @@ type CreateRequest struct {
 	// Custom fields for Compute. Must be dict
 	// Required: false
 	CustomField string `url:"customFields,omitempty" json:"customFields,omitempty"`
-
-	//Type of compute Stateful (KVM_X86) or Stateless (SVA_KVM_X86)
-	// Required: false
-	Driver string `url:"driver,omitempty" json:"driver,omitempty"` 
 
 	// Reason for action
 	// Required: false

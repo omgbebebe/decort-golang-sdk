@@ -411,19 +411,8 @@ type InfoVNF struct {
 	Type string `json:"type"`
 }
 
-// List of static routes
-type ListStaticRoutes struct {
-	// Data
-	Data []ItemRoutes `json:"data"`
-
-	// Entry count
-	EntryCount uint64 `json:"entryCount"`
-}
-
-// List of Routes
 type ListRoutes []ItemRoutes
 
-// Detailed information about Routes
 type ItemRoutes struct {
 	//Compute Id
 	ComputeIds []uint64 `json:"computeIds"`
@@ -435,7 +424,7 @@ type ItemRoutes struct {
 	Gateway string `json:"gateway"`
 
 	// GUID
-	GUID string `json:"guid"`
+	GUID uint64 `json:"guid"`
 
 	// ID
 	ID uint64 `json:"id"`
