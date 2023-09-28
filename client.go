@@ -151,7 +151,7 @@ func (dc *DecortClient) DecortApiCall(ctx context.Context, method, url string, p
 			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCaCreateReq.WithLB))
 		}
 
-		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCaCreateReq.HighlyAvailable))
+		_ = writer.WriteField("highlyAvailableLB", strconv.FormatBool(k8sCaCreateReq.HighlyAvailable))
 
 		if k8sCaCreateReq.AdditionalSANs != nil {
 			for _, v := range k8sCaCreateReq.AdditionalSANs {
@@ -287,7 +287,7 @@ func (dc *DecortClient) DecortApiCall(ctx context.Context, method, url string, p
 			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCbCreateReq.WithLB))
 		}
 
-		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCbCreateReq.HighlyAvailable))
+		_ = writer.WriteField("highlyAvailableLB", strconv.FormatBool(k8sCbCreateReq.HighlyAvailable))
 
 		if k8sCbCreateReq.AdditionalSANs != nil {
 			for _, v := range k8sCbCreateReq.AdditionalSANs {

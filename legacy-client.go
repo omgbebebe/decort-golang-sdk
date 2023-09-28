@@ -148,7 +148,7 @@ func (ldc *LegacyDecortClient) DecortApiCall(ctx context.Context, method, url st
 			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCreateReq.WithLB))
 		}
 
-		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCreateReq.HighlyAvailable))
+		_ = writer.WriteField("highlyAvailableLB", strconv.FormatBool(k8sCreateReq.HighlyAvailable))
 
 		if k8sCreateReq.AdditionalSANs != nil {
 			for _, v := range k8sCreateReq.AdditionalSANs {

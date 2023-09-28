@@ -115,7 +115,7 @@ type CreateRequest struct {
 
 	// Use Highly Available schema for LB deploy
 	// Required: false
-	HighlyAvailable bool `url:"highlyAvailable,omitempty" json:"highlyAvailable,omitempty"`
+	HighlyAvailable bool `url:"highlyAvailableLB,omitempty" json:"highlyAvailableLB,omitempty"`
 
 	// Optional extra Subject Alternative Names (SANs) to use for the API Server serving certificate. Can be both IP addresses and DNS names
 	// Required: false
