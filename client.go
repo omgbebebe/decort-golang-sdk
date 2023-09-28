@@ -15,9 +15,9 @@ import (
 	"time"
 
 	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi"
-	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/k8s"
+	k8s_ca "repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/k8s"
 	"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker"
-
+	k8s_cb"repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudbroker/k8s"
 	"github.com/google/go-querystring/query"
 	"repository.basistech.ru/BASIS/decort-golang-sdk/config"
 )
@@ -71,113 +71,252 @@ func (dc *DecortClient) CloudBroker() *cloudbroker.CloudBroker {
 
 // DecortApiCall method for sending requests to the platform
 func (dc *DecortClient) DecortApiCall(ctx context.Context, method, url string, params interface{}) ([]byte, error) {
-	if k8sCreateReq, ok := params.(k8s.CreateRequest); ok {
+	k8sCaCreateReq, okCa := params.(k8s_ca.CreateRequest)
+	k8sCbCreateReq, okCb := params.(k8s_cb.CreateRequest)
+
+	if okCa {
 		reqBody := &bytes.Buffer{}
 		writer := multipart.NewWriter(reqBody)
-		if k8sCreateReq.OidcCertificate != "" {
+		if k8sCaCreateReq.OidcCertificate != "" {
 			part, _ := writer.CreateFormFile("oidcCertificate", "ca.crt")
-			_, _ = io.Copy(part, strings.NewReader(k8sCreateReq.OidcCertificate))
+			_, _ = io.Copy(part, strings.NewReader(k8sCaCreateReq.OidcCertificate))
 		}
 
-		_ = writer.WriteField("name", k8sCreateReq.Name)
-		_ = writer.WriteField("rgId", strconv.FormatUint(k8sCreateReq.RGID, 10))
-		_ = writer.WriteField("k8ciId", strconv.FormatUint(k8sCreateReq.K8SCIID, 10))
-		_ = writer.WriteField("workerGroupName", k8sCreateReq.WorkerGroupName)
-		_ = writer.WriteField("networkPlugin", k8sCreateReq.NetworkPlugin)
+		_ = writer.WriteField("name", k8sCaCreateReq.Name)
+		_ = writer.WriteField("rgId", strconv.FormatUint(k8sCaCreateReq.RGID, 10))
+		_ = writer.WriteField("k8ciId", strconv.FormatUint(k8sCaCreateReq.K8SCIID, 10))
+		_ = writer.WriteField("workerGroupName", k8sCaCreateReq.WorkerGroupName)
+		_ = writer.WriteField("networkPlugin", k8sCaCreateReq.NetworkPlugin)
 
-		if k8sCreateReq.MasterSEPID != 0 {
-			_ = writer.WriteField("masterSepId", strconv.FormatUint(k8sCreateReq.MasterSEPID, 10))
+		if k8sCaCreateReq.MasterSEPID != 0 {
+			_ = writer.WriteField("masterSepId", strconv.FormatUint(k8sCaCreateReq.MasterSEPID, 10))
 		}
-		if k8sCreateReq.MasterSEPPool != "" {
-			_ = writer.WriteField("masterSepPool", k8sCreateReq.MasterSEPPool)
+		if k8sCaCreateReq.MasterSEPPool != "" {
+			_ = writer.WriteField("masterSepPool", k8sCaCreateReq.MasterSEPPool)
 		}
-		if k8sCreateReq.WorkerSEPID != 0 {
-			_ = writer.WriteField("workerSepId", strconv.FormatUint(k8sCreateReq.WorkerSEPID, 10))
+		if k8sCaCreateReq.WorkerSEPID != 0 {
+			_ = writer.WriteField("workerSepId", strconv.FormatUint(k8sCaCreateReq.WorkerSEPID, 10))
 		}
-		if k8sCreateReq.WorkerSEPPool != "" {
-			_ = writer.WriteField("workerSepPool", k8sCreateReq.WorkerSEPPool)
+		if k8sCaCreateReq.WorkerSEPPool != "" {
+			_ = writer.WriteField("workerSepPool", k8sCaCreateReq.WorkerSEPPool)
 		}
 
-		if k8sCreateReq.Labels != nil {
-			for _, v := range k8sCreateReq.Labels {
+		if k8sCaCreateReq.Labels != nil {
+			for _, v := range k8sCaCreateReq.Labels {
 				_ = writer.WriteField("labels", v)
 			}
 		}
-		if k8sCreateReq.Taints != nil {
-			for _, v := range k8sCreateReq.Taints {
+		if k8sCaCreateReq.Taints != nil {
+			for _, v := range k8sCaCreateReq.Taints {
 				_ = writer.WriteField("taints", v)
 			}
 		}
-		if k8sCreateReq.Annotations != nil {
-			for _, v := range k8sCreateReq.Annotations {
+		if k8sCaCreateReq.Annotations != nil {
+			for _, v := range k8sCaCreateReq.Annotations {
 				_ = writer.WriteField("annotations", v)
 			}
 		}
 
-		if k8sCreateReq.MasterCPU != 0 {
-			_ = writer.WriteField("masterCpu", strconv.FormatUint(uint64(k8sCreateReq.MasterCPU), 10))
+		if k8sCaCreateReq.MasterCPU != 0 {
+			_ = writer.WriteField("masterCpu", strconv.FormatUint(uint64(k8sCaCreateReq.MasterCPU), 10))
 		}
-		if k8sCreateReq.MasterNum != 0 {
-			_ = writer.WriteField("masterNum", strconv.FormatUint(uint64(k8sCreateReq.MasterNum), 10))
+		if k8sCaCreateReq.MasterNum != 0 {
+			_ = writer.WriteField("masterNum", strconv.FormatUint(uint64(k8sCaCreateReq.MasterNum), 10))
 		}
-		if k8sCreateReq.MasterRAM != 0 {
-			_ = writer.WriteField("masterRam", strconv.FormatUint(uint64(k8sCreateReq.MasterRAM), 10))
+		if k8sCaCreateReq.MasterRAM != 0 {
+			_ = writer.WriteField("masterRam", strconv.FormatUint(uint64(k8sCaCreateReq.MasterRAM), 10))
 		}
-		if k8sCreateReq.MasterDisk != 0 {
-			_ = writer.WriteField("masterDisk", strconv.FormatUint(uint64(k8sCreateReq.MasterDisk), 10))
+		if k8sCaCreateReq.MasterDisk != 0 {
+			_ = writer.WriteField("masterDisk", strconv.FormatUint(uint64(k8sCaCreateReq.MasterDisk), 10))
 		}
-		if k8sCreateReq.WorkerCPU != 0 {
-			_ = writer.WriteField("workerCpu", strconv.FormatUint(uint64(k8sCreateReq.WorkerCPU), 10))
+		if k8sCaCreateReq.WorkerCPU != 0 {
+			_ = writer.WriteField("workerCpu", strconv.FormatUint(uint64(k8sCaCreateReq.WorkerCPU), 10))
 		}
-		if k8sCreateReq.WorkerNum != 0 {
-			_ = writer.WriteField("workerNum", strconv.FormatUint(uint64(k8sCreateReq.WorkerNum), 10))
+		if k8sCaCreateReq.WorkerNum != 0 {
+			_ = writer.WriteField("workerNum", strconv.FormatUint(uint64(k8sCaCreateReq.WorkerNum), 10))
 		}
-		if k8sCreateReq.WorkerRAM != 0 {
-			_ = writer.WriteField("workerRam", strconv.FormatUint(uint64(k8sCreateReq.WorkerRAM), 10))
+		if k8sCaCreateReq.WorkerRAM != 0 {
+			_ = writer.WriteField("workerRam", strconv.FormatUint(uint64(k8sCaCreateReq.WorkerRAM), 10))
 		}
-		if k8sCreateReq.WorkerDisk != 0 {
-			_ = writer.WriteField("workerDisk", strconv.FormatUint(uint64(k8sCreateReq.WorkerDisk), 10))
+		if k8sCaCreateReq.WorkerDisk != 0 {
+			_ = writer.WriteField("workerDisk", strconv.FormatUint(uint64(k8sCaCreateReq.WorkerDisk), 10))
 		}
-		if k8sCreateReq.ExtNetID != 0 {
-			_ = writer.WriteField("extnetId", strconv.FormatUint(k8sCreateReq.ExtNetID, 10))
+		if k8sCaCreateReq.ExtNetID != 0 {
+			_ = writer.WriteField("extnetId", strconv.FormatUint(k8sCaCreateReq.ExtNetID, 10))
 		}
-		if k8sCreateReq.VinsId != 0 {
-			_ = writer.WriteField("vinsId", strconv.FormatUint(k8sCreateReq.VinsId, 10))
+		if k8sCaCreateReq.VinsId != 0 {
+			_ = writer.WriteField("vinsId", strconv.FormatUint(k8sCaCreateReq.VinsId, 10))
 		}
-		if !k8sCreateReq.WithLB {
-			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCreateReq.WithLB))
+		if !k8sCaCreateReq.WithLB {
+			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCaCreateReq.WithLB))
 		}
 
-		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCreateReq.HighlyAvailable))
+		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCaCreateReq.HighlyAvailable))
 
-		if k8sCreateReq.AdditionalSANs != nil {
-			for _, v := range k8sCreateReq.AdditionalSANs {
+		if k8sCaCreateReq.AdditionalSANs != nil {
+			for _, v := range k8sCaCreateReq.AdditionalSANs {
 				_ = writer.WriteField("additionalSANs", v)
 			}
 		}
-		if k8sCreateReq.InitConfiguration != "" {
-			_ = writer.WriteField("initConfiguration", k8sCreateReq.InitConfiguration)
+		if k8sCaCreateReq.InitConfiguration != "" {
+			_ = writer.WriteField("initConfiguration", k8sCaCreateReq.InitConfiguration)
 		}
-		if k8sCreateReq.ClusterConfiguration != "" {
-			_ = writer.WriteField("clusterConfiguration", k8sCreateReq.ClusterConfiguration)
+		if k8sCaCreateReq.ClusterConfiguration != "" {
+			_ = writer.WriteField("clusterConfiguration", k8sCaCreateReq.ClusterConfiguration)
 		}
-		if k8sCreateReq.KubeletConfiguration != "" {
-			_ = writer.WriteField("kubeletConfiguration", k8sCreateReq.KubeletConfiguration)
+		if k8sCaCreateReq.KubeletConfiguration != "" {
+			_ = writer.WriteField("kubeletConfiguration", k8sCaCreateReq.KubeletConfiguration)
 		}
-		if k8sCreateReq.KubeProxyConfiguration != "" {
-			_ = writer.WriteField("kubeProxyConfiguration", k8sCreateReq.KubeProxyConfiguration)
+		if k8sCaCreateReq.KubeProxyConfiguration != "" {
+			_ = writer.WriteField("kubeProxyConfiguration", k8sCaCreateReq.KubeProxyConfiguration)
 		}
-		if k8sCreateReq.JoinConfiguration != "" {
-			_ = writer.WriteField("joinConfiguration", k8sCreateReq.JoinConfiguration)
+		if k8sCaCreateReq.JoinConfiguration != "" {
+			_ = writer.WriteField("joinConfiguration", k8sCaCreateReq.JoinConfiguration)
 		}
-		if k8sCreateReq.Description != "" {
-			_ = writer.WriteField("desc", k8sCreateReq.Description)
+		if k8sCaCreateReq.Description != "" {
+			_ = writer.WriteField("desc", k8sCaCreateReq.Description)
 		}
-		if k8sCreateReq.UserData != "" {
-			_ = writer.WriteField("userData", k8sCreateReq.UserData)
+		if k8sCaCreateReq.UserData != "" {
+			_ = writer.WriteField("userData", k8sCaCreateReq.UserData)
 		}
 
-		_ = writer.WriteField("extnetOnly", strconv.FormatBool(k8sCreateReq.ExtNetOnly))
+		_ = writer.WriteField("extnetOnly", strconv.FormatBool(k8sCaCreateReq.ExtNetOnly))
+		_ = writer.FormDataContentType()
+
+		ct := writer.FormDataContentType()
+
+		writer.Close()
+		req, err := http.NewRequestWithContext(ctx, method, dc.decortURL+"/restmachine"+url, reqBody)
+		if err != nil {
+			return nil, err
+		}
+		if err = dc.getToken(ctx); err != nil {
+			return nil, err
+		}
+
+		resp, err := dc.domp(req, ct)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+
+		respBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		if resp.StatusCode != 200 {
+			return nil, errors.New(string(respBytes))
+		}
+
+		return respBytes, nil
+	} else if okCb {
+		reqBody := &bytes.Buffer{}
+		writer := multipart.NewWriter(reqBody)
+		if k8sCbCreateReq.OidcCertificate != "" {
+			part, _ := writer.CreateFormFile("oidcCertificate", "ca.crt")
+			_, _ = io.Copy(part, strings.NewReader(k8sCbCreateReq.OidcCertificate))
+		}
+
+		_ = writer.WriteField("name", k8sCbCreateReq.Name)
+		_ = writer.WriteField("rgId", strconv.FormatUint(k8sCbCreateReq.RGID, 10))
+		_ = writer.WriteField("k8ciId", strconv.FormatUint(k8sCbCreateReq.K8CIID, 10))
+		_ = writer.WriteField("workerGroupName", k8sCbCreateReq.WorkerGroupName)
+		_ = writer.WriteField("networkPlugin", k8sCbCreateReq.NetworkPlugin)
+
+		if k8sCbCreateReq.MasterSEPID != 0 {
+			_ = writer.WriteField("masterSepId", strconv.FormatUint(k8sCbCreateReq.MasterSEPID, 10))
+		}
+		if k8sCbCreateReq.MasterSEPPool != "" {
+			_ = writer.WriteField("masterSepPool", k8sCbCreateReq.MasterSEPPool)
+		}
+		if k8sCbCreateReq.WorkerSEPID != 0 {
+			_ = writer.WriteField("workerSepId", strconv.FormatUint(k8sCbCreateReq.WorkerSEPID, 10))
+		}
+		if k8sCbCreateReq.WorkerSEPPool != "" {
+			_ = writer.WriteField("workerSepPool", k8sCbCreateReq.WorkerSEPPool)
+		}
+
+		if k8sCbCreateReq.Labels != nil {
+			for _, v := range k8sCbCreateReq.Labels {
+				_ = writer.WriteField("labels", v)
+			}
+		}
+		if k8sCbCreateReq.Taints != nil {
+			for _, v := range k8sCbCreateReq.Taints {
+				_ = writer.WriteField("taints", v)
+			}
+		}
+		if k8sCbCreateReq.Annotations != nil {
+			for _, v := range k8sCbCreateReq.Annotations {
+				_ = writer.WriteField("annotations", v)
+			}
+		}
+
+		if k8sCbCreateReq.MasterCPU != 0 {
+			_ = writer.WriteField("masterCpu", strconv.FormatUint(k8sCbCreateReq.MasterCPU, 10))
+		}
+		if k8sCbCreateReq.MasterNum != 0 {
+			_ = writer.WriteField("masterNum", strconv.FormatUint(k8sCbCreateReq.MasterNum, 10))
+		}
+		if k8sCbCreateReq.MasterRAM != 0 {
+			_ = writer.WriteField("masterRam", strconv.FormatUint(k8sCbCreateReq.MasterRAM, 10))
+		}
+		if k8sCbCreateReq.MasterDisk != 0 {
+			_ = writer.WriteField("masterDisk", strconv.FormatUint(k8sCbCreateReq.MasterDisk, 10))
+		}
+		if k8sCbCreateReq.WorkerCPU != 0 {
+			_ = writer.WriteField("workerCpu", strconv.FormatUint(k8sCbCreateReq.WorkerCPU, 10))
+		}
+		if k8sCbCreateReq.WorkerNum != 0 {
+			_ = writer.WriteField("workerNum", strconv.FormatUint(k8sCbCreateReq.WorkerNum, 10))
+		}
+		if k8sCbCreateReq.WorkerRAM != 0 {
+			_ = writer.WriteField("workerRam", strconv.FormatUint(k8sCbCreateReq.WorkerRAM, 10))
+		}
+		if k8sCbCreateReq.WorkerDisk != 0 {
+			_ = writer.WriteField("workerDisk", strconv.FormatUint(k8sCbCreateReq.WorkerDisk, 10))
+		}
+		if k8sCbCreateReq.ExtNetID != 0 {
+			_ = writer.WriteField("extnetId", strconv.FormatUint(k8sCbCreateReq.ExtNetID, 10))
+		}
+		if k8sCbCreateReq.VinsId != 0 {
+			_ = writer.WriteField("vinsId", strconv.FormatUint(k8sCbCreateReq.VinsId, 10))
+		}
+		if !k8sCbCreateReq.WithLB {
+			_ = writer.WriteField("withLB", strconv.FormatBool(k8sCbCreateReq.WithLB))
+		}
+
+		_ = writer.WriteField("highlyAvailable", strconv.FormatBool(k8sCbCreateReq.HighlyAvailable))
+
+		if k8sCbCreateReq.AdditionalSANs != nil {
+			for _, v := range k8sCbCreateReq.AdditionalSANs {
+				_ = writer.WriteField("additionalSANs", v)
+			}
+		}
+		if k8sCbCreateReq.InitConfiguration != "" {
+			_ = writer.WriteField("initConfiguration", k8sCbCreateReq.InitConfiguration)
+		}
+		if k8sCbCreateReq.ClusterConfiguration != "" {
+			_ = writer.WriteField("clusterConfiguration", k8sCbCreateReq.ClusterConfiguration)
+		}
+		if k8sCbCreateReq.KubeletConfiguration != "" {
+			_ = writer.WriteField("kubeletConfiguration", k8sCbCreateReq.KubeletConfiguration)
+		}
+		if k8sCbCreateReq.KubeProxyConfiguration != "" {
+			_ = writer.WriteField("kubeProxyConfiguration", k8sCbCreateReq.KubeProxyConfiguration)
+		}
+		if k8sCbCreateReq.JoinConfiguration != "" {
+			_ = writer.WriteField("joinConfiguration", k8sCbCreateReq.JoinConfiguration)
+		}
+		if k8sCbCreateReq.Description != "" {
+			_ = writer.WriteField("desc", k8sCbCreateReq.Description)
+		}
+		if k8sCbCreateReq.UserData != "" {
+			_ = writer.WriteField("userData", k8sCbCreateReq.UserData)
+		}
+
+		_ = writer.WriteField("extnetOnly", strconv.FormatBool(k8sCbCreateReq.ExtNetOnly))
 		_ = writer.FormDataContentType()
 
 		ct := writer.FormDataContentType()
@@ -311,7 +450,7 @@ func (dc *DecortClient) domp(req *http.Request, ctype string) (*http.Response, e
 	// var resp *http.Response
 	// var err error
 	buf, _ := io.ReadAll(req.Body)
-	req = req.Clone(req.Context())
+	// req = req.Clone(req.Context())
 
 	// for i := uint64(0); i < dc.cfg.Retries; i++ {
 	req.Body = io.NopCloser(bytes.NewBuffer(buf))

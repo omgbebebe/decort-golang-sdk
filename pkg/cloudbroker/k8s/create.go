@@ -26,7 +26,7 @@ type CreateRequest struct {
 
 	// Name for first worker group created with cluster
 	// Required: true
-	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required, workerGroupName"`
+	WorkerGroupName string `url:"workerGroupName" json:"workerGroupName" validate:"required,workerGroupName"`
 
 	// Network plugin
 	// Must be one of these values: flunnel, weawenet, calico
@@ -113,7 +113,7 @@ type CreateRequest struct {
 
 	// Custom sysctl values for Load Balancer instance. Applied on boot
 	// Required: false
-	LbSysctlParams string `url:"-" json:"lbSysctlParams,omitempty" validate:"omitempty,dive"`
+	LbSysctlParams string `url:"lbSysctlParams,omitempty" json:"lbSysctlParams,omitempty"`
 
 	// Use Highly Available schema for LB deploy
 	// Required: false

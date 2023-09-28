@@ -111,7 +111,7 @@ type CreateRequest struct {
 
 	// Custom sysctl values for Load Balancer instance. Applied on boot
 	// Required: false
-	LbSysctlParams string `url:"-" json:"lbSysctlParams,omitempty" validate:"omitempty,dive"`
+	LbSysctlParams string `url:"lbSysctlParams,omitempty" json:"lbSysctlParams,omitempty"`
 
 	// Use Highly Available schema for LB deploy
 	// Required: false

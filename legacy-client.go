@@ -313,7 +313,7 @@ func (ldc *LegacyDecortClient) domp(req *http.Request, ctype string) (*http.Resp
 	// var resp *http.Response
 	// var err error
 	buf, _ := io.ReadAll(req.Body)
-	req = req.Clone(req.Context())
+	// req = req.Clone(req.Context())
 
 	// for i := uint64(0); i < ldc.cfg.Retries; i++ {
 	req.Body = io.NopCloser(bytes.NewBuffer(buf))

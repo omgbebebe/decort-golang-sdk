@@ -156,6 +156,9 @@ type RecordLB struct {
 	// Access Control List
 	ACL []interface{} `json:"acl"`
 
+	// BackendHAIP
+	BackendHAIP string `json:"backendHAIP"`
+
 	// List of load balancer backends
 	Backends ListBackends `json:"backends"`
 
@@ -170,6 +173,9 @@ type RecordLB struct {
 
 	// External network ID
 	ExtNetID uint64 `json:"extnetId"`
+
+	// FrontendHAIP
+	FrontendHAIP string `json:"frontendHAIP"`
 
 	// List of load balancer frontends
 	Frontends ListFrontends `json:"frontends"`
@@ -225,6 +231,9 @@ type ItemLBList struct {
 	// Access Control List
 	ACL []interface{} `json:"acl"`
 
+	// BackendHAIP
+	BackendHAIP string `json:"backendHAIP"`
+
 	// List of load balancer backends
 	Backends ListBackends `json:"backends"`
 
@@ -251,6 +260,9 @@ type ItemLBList struct {
 
 	// External network ID
 	ExtNetID uint64 `json:"extnetId"`
+
+	// FrontendHAIP
+	FrontendHAIP string `json:"frontendHAIP"`
 
 	// List of load balancer frontends
 	Frontends ListFrontends `json:"frontends"`

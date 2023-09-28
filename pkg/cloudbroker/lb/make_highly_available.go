@@ -16,11 +16,11 @@ type HighlyAvailableRequest struct {
 }
 
 // Make Load Balancer Highly available
-func (l LB) HighlyAvailable(ctx context.Context, req HighlyAvailableRequest) (uint64, error) {
+func (l LB) HighlyAvailable(ctx context.Context, req HighlyAvailableRequest) (bool, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
-			return 0, validators.ValidationError(validationError)
+			return false, validators.ValidationError(validationError)
 		}
 	}
 
@@ -28,12 +28,12 @@ func (l LB) HighlyAvailable(ctx context.Context, req HighlyAvailableRequest) (ui
 
 	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
-	result, err := strconv.ParseUint(string(res), 10, 64)
+	result, err := strconv.ParseBool(string(res))
 	if err != nil {
-		return 0, err
+		return false, err
 	}
 
 	return result, nil
