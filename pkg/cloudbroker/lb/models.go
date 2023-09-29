@@ -154,7 +154,7 @@ type RecordLB struct {
 	Meta []interface{} `json:"_meta"`
 
 	// Access Control List
-	ACL []interface{} `json:"acl"`
+	ACL interface{} `json:"acl"`
 
 	// BackendHAIP
 	BackendHAIP string `json:"backendHAIP"`
@@ -214,7 +214,7 @@ type RecordLB struct {
 	Status string `json:"status"`
 
 	// Sysctl Params
-	SysctlParams []string `json:"sysctlParams"`
+	SysctlParams interface{} `json:"sysctlParams"`
 
 	// Tech status
 	TechStatus string `json:"techStatus"`
@@ -229,7 +229,7 @@ type ItemLBList struct {
 	HAMode bool `json:"HAmode"`
 
 	// Access Control List
-	ACL []interface{} `json:"acl"`
+	ACL interface{} `json:"acl"`
 
 	// BackendHAIP
 	BackendHAIP string `json:"backendHAIP"`
@@ -298,7 +298,7 @@ type ItemLBList struct {
 	Status string `json:"status"`
 
 	// Sysctl Params
-	SysctlParams []string `json:"sysctlParams"`
+	SysctlParams interface{} `json:"sysctlParams"`
 
 	// Tech status
 	TechStatus string `json:"techStatus"`

@@ -1,4 +1,4 @@
-## Version 1.6.1
+## Version 1.6.3
 
 ### Bugfix
-- Fixed tags url and json CreateRequest in cloudapi/k8s/create and cloudbroker/k8s/create
+- Fixed fields SysctlParams and ACL models RecordLB in ca/lb/models and models RecordLB and ItemLBList in cb/lb/models

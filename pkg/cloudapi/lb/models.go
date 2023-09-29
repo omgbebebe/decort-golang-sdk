@@ -6,7 +6,7 @@ type RecordLB struct {
 	HAMode bool `json:"HAmode"`
 
 	// Access Control List
-	ACL []interface{} `json:"acl"`
+	ACL interface{} `json:"acl"`
 
 	// BackendHAIP
 	BackendHAIP string `json:"backendHAIP"`
@@ -78,7 +78,7 @@ type RecordLB struct {
 	Status string `json:"status"`
 
 	// Sysctl Params
-	SysctlParams []interface{} `json:"sysctlParams"`
+	SysctlParams interface{} `json:"sysctlParams"`
 
 	// Tech status
 	TechStatus string `json:"techStatus"`
