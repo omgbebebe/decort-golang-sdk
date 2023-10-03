@@ -13,6 +13,14 @@ type AffinityGroupsListRequest struct {
 	// Resource group ID
 	// Required: true
 	RGID uint64 `url:"rgId" json:"rgId" validate:"required"`
+
+	// Page number
+	// Required: false
+	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
+
+	// Page size
+	// Required: false
+	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
 // AffinityGroupsList gets all currently defined affinity groups in this resource group with compute IDs

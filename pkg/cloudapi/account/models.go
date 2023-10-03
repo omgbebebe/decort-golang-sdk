@@ -88,7 +88,7 @@ type Resource struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Max disk size
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 
 	// Number of External IPs
 	ExtIPs int64 `json:"extips"`
@@ -126,10 +126,10 @@ type RecordResourceConsumption struct {
 // Information about resources
 type ItemResourceConsumption struct {
 	// Current information about resources
-	Current Resource `json:"Current"`
+	Consumed Resource `json:"consumed"`
 
 	// Reserved information about resources
-	Reserved Resource `json:"Reserved"`
+	Reserved Resource `json:"reserved"`
 
 	// Account ID
 	AccountID uint64 `json:"id"`

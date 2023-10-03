@@ -48,10 +48,10 @@ type Resources struct {
 // Detailed information about resource consumption
 type ItemResourceConsumption struct {
 	// Consumed information about resources
-	Consumed Resource `json:"Consumed"`
+	Consumed Resource `json:"consumed"`
 
 	// Reserved information about resources
-	Reserved Resource `json:"Reserved"`
+	Reserved Resource `json:"reserved"`
 
 	// Resource limits
 	ResourceLimits ResourceLimits `json:"resourceLimits"`
@@ -333,7 +333,7 @@ type ListAffinityGroupsComputes []ItemAffinityGroupComputes
 
 type ListAffinityGroups struct {
 	// Data
-	Data map[string][]uint64 `json:"data"`
+	Data []map[string][]uint64 `json:"data"`
 
 	// Entry count
 	EntryCount uint64 `json:"entryCount"`

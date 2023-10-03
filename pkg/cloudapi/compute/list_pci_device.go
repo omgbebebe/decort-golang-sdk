@@ -22,9 +22,9 @@ type ListPCIDeviceRequest struct {
 	// Required: false
 	DevID uint64 `url:"devId,omitempty" json:"devId,omitempty"`
 
-	// Find by type
+	// Find by name
 	// Required: false
-	Type string `url:"type,omitempty" json:"type,omitempty"`
+	Name string `url:"name,omitempty" json:"name,omitempty"`
 
 	// Find by status
 	// Required: false

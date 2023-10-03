@@ -32,10 +32,6 @@ type ListDeletedRequest struct {
 	// Required: false
 	BasicServiceID uint64 `url:"basicServiceId,omitempty" json:"basicServiceId,omitempty"`
 
-	// Find by status
-	// Required: false
-	Status string `url:"status,omitempty" json:"status,omitempty"`
-
 	// Find by techStatus
 	// Required: false
 	TechStatus string `url:"techStatus,omitempty" json:"techStatus,omitempty"`
