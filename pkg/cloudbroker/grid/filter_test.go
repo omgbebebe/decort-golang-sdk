@@ -106,6 +106,14 @@ func TestFilterByID(t *testing.T) {
 	}
 }
 
+func TestFilterByGID(t *testing.T) {
+	actual := grids.FilterByGID(777).FindOne()
+
+	if actual.GID != 777 {
+		t.Fatal("expected ID 777, found: ", actual.GID)
+	}
+}
+
 func TestFilterByName(t *testing.T) {
 	actual := grids.FilterByName("gamma").FindOne()
 

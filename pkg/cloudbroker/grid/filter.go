@@ -9,6 +9,15 @@ func (lg ListGrids) FilterByID(id uint64) ListGrids {
 	return lg.FilterFunc(predicate)
 }
 
+// FilterByGID returns ListGrids with specified GID.
+func (lg ListGrids) FilterByGID(gid uint64) ListGrids {
+	predicate := func(rg ItemGridList) bool {
+		return rg.GID == gid
+	}
+
+	return lg.FilterFunc(predicate)
+}
+
 // FilterByName returns ListGrids with specified Name.
 func (lg ListGrids) FilterByName(name string) ListGrids {
 	predicate := func(rg ItemGridList) bool {

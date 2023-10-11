@@ -43,6 +43,7 @@ type InfoStack struct {
 
 	// ID
 	ID uint64 `json:"id"`
+	
 	// List image IDs
 	Images []uint64 `json:"images"`
 
@@ -73,7 +74,6 @@ type InfoStack struct {
 
 // List of stacks
 type ListStacks struct {
-
 	//List
 	Data []InfoStack `json:"data"`
 
@@ -83,9 +83,11 @@ type ListStacks struct {
 
 // Package
 type Packages struct {
-
 	// LibvirtBin
 	LibvirtBin LibvirtBin `json:"libvirt-bin"`
+
+	// LibvirtDaemon
+	LibvirtDaemon LibvirtDaemon `json:"libvirt-daemon"`
 
 	// Lvm2Lockd
 	Lvm2Lockd Lvm2Lockd `json:"lvm2-lockd"`
@@ -105,7 +107,14 @@ type Packages struct {
 
 // LibvirtBin
 type LibvirtBin struct {
+	// InstalledSize
+	InstalledSize string `json:"installed_size"`
 
+	// Version
+	Ver string `json:"ver"`
+}
+
+type LibvirtDaemon struct {
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 
@@ -115,7 +124,6 @@ type LibvirtBin struct {
 
 // Lvm2Lockd
 type Lvm2Lockd struct {
-
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 
@@ -125,7 +133,6 @@ type Lvm2Lockd struct {
 
 // OpenvswitchCommon
 type OpenvswitchCommon struct {
-
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 
@@ -135,7 +142,6 @@ type OpenvswitchCommon struct {
 
 // OpenvswitchSwitch
 type OpenvswitchSwitch struct {
-
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 
@@ -145,7 +151,6 @@ type OpenvswitchSwitch struct {
 
 // QemuSystemX86
 type QemuSystemX86 struct {
-
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 
@@ -155,7 +160,6 @@ type QemuSystemX86 struct {
 
 // Sanlock
 type Sanlock struct {
-
 	// InstalledSize
 	InstalledSize string `json:"installed_size"`
 

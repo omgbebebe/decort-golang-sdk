@@ -1,9 +1,7 @@
-## Version 1.6.4
+## Version 1.6.5
 
-### Bugfix
-- Fixed type field DiskSizeMax in Resource model in cloudapi/account/models. Rename field ItemResourceConsumption model and rename json's tags in cloudapi/account/models
-- Rename field in ListPCIDeviceRequest model in cloudapi/compute/list_pci_device
-- Delete excess field in ListDeletedRequest model in cloudapi/k8s/list_deleted
-- Add fields Page and Size in AffinityGroupsListRequest model in cloudapi/lb/affinity_groups_list
-- Fixed type field Data in ListAffinityGroups model in cloudapi/lb/models
-- Rename in ItemResourceConsumption model json's tags in cloudapi/rg/models
+## Feature
+- Add field and type LibvirtDaemon in model Packages in cloudbroker/stack/models    
+- Add field and type Packages in model ItemListStacks in cloudbroker/image/models. Add fields and type LibvirtBin, LibvirtDaemon, Lvm2Lockd, OpenvswitchCommon, OpenvswitchSwitch, QemuSystemX86, Sanlock
+- Add filter ByGID in cloudbroker/grid/filters
+- Add field userData in models WorkersGroupAddRequest in cloudapi/k8s and cloudbroker/k8s

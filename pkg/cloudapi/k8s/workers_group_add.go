@@ -56,6 +56,10 @@ type WorkersGroupAddRequest struct {
 	// Worker node boot disk size in GB If 0 is specified, size is defined by the OS image size
 	// Required: false
 	WorkerDisk uint64 `url:"workerDisk,omitempty" json:"workerDisk,omitempty"`
+
+	// Meta data for working group computes, format YAML "user_data": 1111
+	// Required: false
+	UserData string `url:"userData,omitempty" json:"userData,omitempty"`
 }
 
 // WorkersGroupAdd adds workers group to Kubernetes cluster
