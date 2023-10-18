@@ -34,6 +34,11 @@ type ItemK8SGroup struct {
 
 	// List of taints
 	Taints []string `json:"taints"`
+
+	// for autoscaler
+	MinNodes    uint64 `json:"minNodes"`
+	MaxNodes    uint64 `json:"maxNodes"`
+	Autoscaling bool   `json:"autoscale"`
 }
 
 // List kubernetes cluster groups
