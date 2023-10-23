@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list FLIPGroup available to the current user
+// ListRequest struct to get list of FLIPGroup available to the current user
 type ListRequest struct {
 	// Find by name
 	// Required: false
@@ -25,11 +25,11 @@ type ListRequest struct {
 	ExtNetID uint64 `url:"extnetId,omitempty" json:"extnetId,omitempty"`
 
 	// Find by IP
-	// Reuqired: false
+	// Required: false
 	ByIP string `url:"byIp,omitempty" json:"byIp,omitempty"`
 
 	// Find by resource group ID
-	// Reuqired: false
+	// Required: false
 	RGID uint64 `url:"rgId,omitempty" json:"rgId,omitempty"`
 
 	// Find by id
@@ -45,11 +45,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list FLIPGroup managed cluster instances available to the current user
+// List gets list of FLIPGroup managed cluster instances available to the current user as a ListFLIPGroups struct
 func (f FLIPGroup) List(ctx context.Context, req ListRequest) (*ListFLIPGroups, error) {
-	url := "/cloudapi/flipgroup/list"
-
-	res, err := f.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := f.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,4 +60,12 @@ func (f FLIPGroup) List(ctx context.Context, req ListRequest) (*ListFLIPGroups, 
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of FLIPGroup managed cluster instances available to the current user as an array of bytes
+func (f FLIPGroup) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/flipgroup/list"
+
+	res, err := f.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

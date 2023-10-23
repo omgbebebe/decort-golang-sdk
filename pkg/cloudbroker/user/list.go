@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for getting all non deleted user instances.
+// ListRequest struct to get all non deleted user instances.
 type ListRequest struct {
 	// Find by ID.
 	// Required: false
@@ -31,18 +31,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets all non deleted user instances.
+// List gets all non deleted user instances as a ListUsers struct
 func (u User) List(ctx context.Context, req ListRequest) (*ListUsers, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudbroker/user/list"
-
-	res, err := u.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := u.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -55,4 +46,19 @@ func (u User) List(ctx context.Context, req ListRequest) (*ListUsers, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets all non deleted user instances as an array of bytes
+func (u User) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudbroker/user/list"
+
+	res, err := u.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list information K8S
+// ListRequest struct to get list information K8S
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -53,11 +53,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all kubernetes clusters the user has access to
+// List gets list of all kubernetes clusters the user has access to as a ListK8SClusters
 func (k8s K8S) List(ctx context.Context, req ListRequest) (*ListK8SClusters, error) {
-	url := "/cloudapi/k8s/list"
-
-	res, err := k8s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := k8s.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +68,12 @@ func (k8s K8S) List(ctx context.Context, req ListRequest) (*ListK8SClusters, err
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all kubernetes clusters the user has access to as an array of bytes
+func (k8s K8S) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/k8s/list"
+
+	res, err := k8s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

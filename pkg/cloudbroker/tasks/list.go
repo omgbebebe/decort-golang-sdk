@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list audits
+// ListRequest struct to get list of audits
 type ListRequest struct {
 	// Page number
 	// Required: false
@@ -17,11 +17,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list user API task with status PROCESSING
+// List gets list of user API task with status PROCESSING as a ListTasks struct
 func (t Tasks) List(ctx context.Context, req ListRequest) (*ListTasks, error) {
-	url := "/cloudbroker/tasks/list"
-
-	res, err := t.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := t.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -34,4 +32,12 @@ func (t Tasks) List(ctx context.Context, req ListRequest) (*ListTasks, error) {
 	}
 
 	return &item, nil
+}
+
+// ListRaw gets list of user API task with status PROCESSING as an array of bytes
+func (t Tasks) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/tasks/list"
+
+	res, err := t.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

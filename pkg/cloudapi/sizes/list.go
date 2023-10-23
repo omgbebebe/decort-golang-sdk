@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for list the available flavors
+// ListRequest struct for list of the available flavors
 type ListRequest struct {
 	// ID of the cloudspace
 	// Required: false
@@ -25,11 +25,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list the available flavors, filtering can be based on the user which is doing the request
+// List gets list of the available flavors as a ListSizes struct, filtering can be based on the user which is doing the request
 func (s Sizes) List(ctx context.Context, req ListRequest) (*ListSizes, error) {
-	url := "/cloudapi/sizes/list"
-
-	res, err := s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := s.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -42,4 +40,12 @@ func (s Sizes) List(ctx context.Context, req ListRequest) (*ListSizes, error) {
 	}
 
 	return list, nil
+}
+
+// ListRaw gets list of the available flavors as an array of bytes
+func (s Sizes) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/sizes/list"
+
+	res, err := s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

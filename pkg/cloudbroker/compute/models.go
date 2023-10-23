@@ -672,7 +672,7 @@ type InfoCompute struct {
 	StackName string `json:"stackName"`
 
 	// Stateless SEP ID
-	StatelessSEPID uint64 `json:"statelessSepId"`
+	StatelessSEPID int64 `json:"statelessSepId"`
 
 	// Stateless SEP Type
 	StatelessSEPType string `json:"statelessSepType"`

@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list external network
+// ListRequest struct to get list of external network
 type ListRequest struct {
 	// Find by account ID
 	// Required: false
@@ -45,11 +45,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all available external networks
+// List gets list of all available external networks as a ListExtNet struct
 func (e ExtNet) List(ctx context.Context, req ListRequest) (*ListExtNet, error) {
-	url := "/cloudbroker/extnet/list"
-
-	res, err := e.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := e.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,4 +60,12 @@ func (e ExtNet) List(ctx context.Context, req ListRequest) (*ListExtNet, error) 
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all available external networks as an array of bytes
+func (e ExtNet) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/extnet/list"
+
+	res, err := e.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

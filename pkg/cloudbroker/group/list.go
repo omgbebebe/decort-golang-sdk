@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for getting list of group instances.
+// ListRequest struct to get list of group instances.
 type ListRequest struct {
 	// Find by id.
 	// Requires: false
@@ -31,17 +31,9 @@ type ListRequest struct {
 	Active bool `url:"active" json:"active" validate:"required"`
 }
 
+// List gets list of group instances as a ListGroups struct
 func (g Group) List(ctx context.Context, req ListRequest) (*ListGroups, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudbroker/group/list"
-
-	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := g.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -54,4 +46,19 @@ func (g Group) List(ctx context.Context, req ListRequest) (*ListGroups, error) {
 	}
 
 	return &info, nil
+}
+
+// ListRaw gets list of group instances as an array of bytes
+func (g Group) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudbroker/group/list"
+
+	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

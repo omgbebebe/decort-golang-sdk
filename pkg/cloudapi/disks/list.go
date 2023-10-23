@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of disks
+// ListRequest struct to get list of disks
 type ListRequest struct {
 	// Find by id
 	// Required: false
@@ -57,11 +57,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list the created disks belonging to an account
+// List gets list of the created disks belonging to an account as a ListDisks struct
 func (d Disks) List(ctx context.Context, req ListRequest) (*ListDisks, error) {
-	url := "/cloudapi/disks/list"
-
-	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := d.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -74,4 +72,12 @@ func (d Disks) List(ctx context.Context, req ListRequest) (*ListDisks, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of the created disks belonging to an account as an array of bytes
+func (d Disks) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/disks/list"
+
+	res, err := d.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

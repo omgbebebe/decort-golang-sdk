@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list available computes
+// ListRequest struct to get list of available computes
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -64,9 +64,7 @@ type ListRequest struct {
 // List gets list of the available computes.
 // Filtering based on status is possible
 func (c Compute) List(ctx context.Context, req ListRequest) (*ListComputes, error) {
-	url := "/cloudapi/compute/list"
-
-	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := c.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -79,4 +77,12 @@ func (c Compute) List(ctx context.Context, req ListRequest) (*ListComputes, erro
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of the available computes.
+func (c Compute) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/compute/list"
+
+	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

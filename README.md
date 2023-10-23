@@ -527,6 +527,56 @@ func main() {
 }
 ```
 
+Для запросов Get и List реализованы запросы GetRaw и ListRaw, которые возвращают ответ не в виде соответствующей структуры, а в виде массива байт (JSON).
+Выполнение таких запросов происходит аналогично.
+
+#### Пример выполнения GetRaw и ListRaw запросов
+
+```go
+package main
+
+import (
+    "log"
+    "fmt"
+
+    "repository.basistech.ru/BASIS/decort-golang-sdk/config"
+    decort "repository.basistech.ru/BASIS/decort-golang-sdk"
+    "repository.basistech.ru/BASIS/decort-golang-sdk/pkg/cloudapi/account"
+)
+
+func main() {
+    // Настройка конфигурации
+    cfg := config.Config{
+        AppID:     "<APPID>",
+        AppSecret: "<APPSECRET>",
+        SSOURL:    "https://sso.digitalenergy.online",
+        DecortURL: "https://mr4.digitalenergy.online",
+        Retries:   5,
+    }
+
+    // Создание клиента
+    client := decort.New(cfg)
+
+    // 1. Создание структуры запроса GetRequest на создание аккаунта и выполнение GetRaw запроса с помощью конвейера
+    req1 := account.GetRequest{
+        AccountID:    123,
+    }
+    res1, err := client.CloudAPI().Account().GetRaw(context.Background(), req1)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(string(res1))
+
+    // 2. Создание структуры запроса ListRequest на получение аккаунтов и выполнение ListRaw запроса с помощью конвейера
+    req2 := account.ListRequest{}
+    res2, err := client.CloudAPI().Account().ListRaw(context.Background(), req2)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(string(res2))
+}
+```
+
 ### Фильтрация
 
 Для каждого `ListRequest` в SDK есть группа функций для фильтрации ответа платформы. Для того чтобы произвести фильтрацию по заданным полям, достаточно описать анонимную функцию (предикат) в `.FilterFunc()`, например:

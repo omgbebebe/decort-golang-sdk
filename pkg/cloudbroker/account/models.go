@@ -29,10 +29,10 @@ type RecordResourceConsumption struct {
 
 type ItemResourceConsumption struct {
 	// Current information about resources
-	Current Resource `json:"Current"`
+	Consumed Resource `json:"consumed"`
 
 	// Reserved information about resources
-	Reserved Resource `json:"Reserved"`
+	Reserved Resource `json:"reserved"`
 
 	// ID of account
 	AccountID uint64 `json:"id"`
@@ -54,7 +54,7 @@ type Resource struct {
 	DiskSize float64 `json:"disksize"`
 
 	// Disk size max
-	DiskSizeMax uint64 `json:"disksizemax"`
+	DiskSizeMax float64 `json:"disksizemax"`
 
 	// Number of External IPs
 	ExtIPs int64 `json:"extips"`
@@ -414,33 +414,6 @@ type Computes struct {
 	Stopped uint64 `json:"Stopped"`
 }
 
-// Consumed
-type Consumed struct {
-	// Number of CPU
-	CPU uint64 `json:"cpu"`
-
-	// Disk size
-	DiskSize float64 `json:"disksize"`
-
-	// Disk size max
-	DiskSizeMax int64 `json:"disksizemax"`
-
-	// External IPs
-	ExtIPs uint64 `json:"extips"`
-
-	// External traffic
-	ExtTraffic uint64 `json:"exttraffic"`
-
-	// Number of GPU
-	GPU uint64 `json:"gpu"`
-
-	// Number of RAM
-	RAM uint64 `json:"ram"`
-
-	// SEPs
-	SEPs map[string]map[string]DiskUsage `json:"seps"`
-}
-
 // Limits
 type Limits struct {
 	// Number of CPU
@@ -471,7 +444,7 @@ type Limits struct {
 // Resources of resource group
 type RGResuorces struct {
 	//  Consumed
-	Consumed Consumed `json:"Consumed"`
+	Consumed Resource `json:"Consumed"`
 
 	// Limits
 	Limits Limits `json:"Limits"`

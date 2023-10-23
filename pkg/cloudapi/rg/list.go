@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of resource groups
+// ListRequest struct to get list of resource groups
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -53,11 +53,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list of all resource groups the user has access to
+// List gets list of all resource groups the user has access to as a ListResourceGroups struct
 func (r RG) List(ctx context.Context, req ListRequest) (*ListResourceGroups, error) {
-	url := "/cloudapi/rg/list"
-
-	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := r.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +68,12 @@ func (r RG) List(ctx context.Context, req ListRequest) (*ListResourceGroups, err
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all resource groups the user has access to as an array of bytes
+func (r RG) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/rg/list"
+
+	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

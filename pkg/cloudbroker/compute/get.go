@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request for get information about compute
+// GetRequest to get information about compute
 type GetRequest struct {
 	// ID of compute instance
 	// Required: true
@@ -19,18 +19,9 @@ type GetRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-// Get gets information about compute
+// Get gets information about compute as a RecordCompute struct
 func (c Compute) Get(ctx context.Context, req GetRequest) (*RecordCompute, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudbroker/compute/get"
-
-	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := c.GetRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -43,4 +34,19 @@ func (c Compute) Get(ctx context.Context, req GetRequest) (*RecordCompute, error
 	}
 
 	return &info, nil
+}
+
+// GetRaw gets information about compute as an array of bytes
+func (c Compute) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudbroker/compute/get"
+
+	res, err := c.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

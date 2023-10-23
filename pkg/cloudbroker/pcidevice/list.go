@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// ListRequest struct to get list of pci devices
 type ListRequest struct {
 	// Find by id
 	// Required: false
@@ -36,11 +37,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all pci devices
+// List gets list of all pci devices as a ListPCIDevices struct
 func (p PCIDevice) List(ctx context.Context, req ListRequest) (*ListPCIDevices, error) {
-	url := "/cloudbroker/pcidevice/list"
-
-	res, err := p.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := p.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -53,4 +52,12 @@ func (p PCIDevice) List(ctx context.Context, req ListRequest) (*ListPCIDevices, 
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all pci devices as an array of bytes
+func (p PCIDevice) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/pcidevice/list"
+
+	res, err := p.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

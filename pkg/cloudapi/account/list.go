@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of accounts
+// ListRequest struct to get list of accounts
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -33,11 +33,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all accounts the user has access to
+// List gets a list of all accounts the user has access to a ListAccounts struct
 func (a Account) List(ctx context.Context, req ListRequest) (*ListAccounts, error) {
-	url := "/cloudapi/account/list"
-
-	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := a.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +48,12 @@ func (a Account) List(ctx context.Context, req ListRequest) (*ListAccounts, erro
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets a list of all accounts the user has access to as an array of bytes
+func (a Account) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/account/list"
+
+	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

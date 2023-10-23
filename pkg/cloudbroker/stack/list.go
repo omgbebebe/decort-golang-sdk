@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list stack
+// ListRequest struct to get list of stacks
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -33,11 +33,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// ListStacks gets list stack
+// List gets list of stacks as a ListStacks struct
 func (i Stack) List(ctx context.Context, req ListRequest) (*ListStacks, error) {
-	url := "/cloudbroker/stack/list"
-
-	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := i.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +48,12 @@ func (i Stack) List(ctx context.Context, req ListRequest) (*ListStacks, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of stacks as an array of bytes
+func (i Stack) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/stack/list"
+
+	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

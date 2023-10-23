@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for getting list of VGPU
+// ListRequest struct to get list of VGPU
 type ListRequest struct {
 	// Find by id
 	// Required: false
@@ -49,11 +49,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all VGPU
+// List gets list of all VGPU as a ListVGPU struct
 func (v VGPU) List(ctx context.Context, req ListRequest) (*ListVGPU, error) {
-	url := "/cloudbroker/vgpu/list"
-
-	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := v.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -66,4 +64,12 @@ func (v VGPU) List(ctx context.Context, req ListRequest) (*ListVGPU, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all VGPU as an array of bytes
+func (v VGPU) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/vgpu/list"
+
+	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

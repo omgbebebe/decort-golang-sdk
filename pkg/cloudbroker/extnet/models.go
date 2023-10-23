@@ -127,11 +127,23 @@ type ListExtNet struct {
 
 // Detailed information about external network
 type RecordExtNet struct {
-	// Main information about external network
-	ItemExtNet
+	// CKey
+	CKey string `json:"_ckey"`
 
-	// CheckIps
+	// Meta
+	Meta []interface{} `json:"_meta"`
+
+	// CheckIPs
 	CheckIPs []string `json:"checkIps"`
+
+	// Default
+	Default bool `json:"default"`
+
+	// Default QOS
+	DefaultQOS QOS `json:"defaultQos"`
+
+	// Description
+	Description string `json:"desc"`
 
 	// List DNS
 	DNS []string `json:"dns"`
@@ -139,17 +151,62 @@ type RecordExtNet struct {
 	// List excludes
 	Excluded ListReservations `json:"excluded"`
 
+	// Free IPs number
+	FreeIPs uint64 `json:"free_ips"`
+
 	// Gateway
 	Gateway string `json:"gateway"`
+
+	// Grid ID
+	GID uint64 `json:"gid"`
+
+	// GUID
+	GUID uint64 `json:"guid"`
+
+	// ID
+	ID uint64 `json:"id"`
+
+	// IPCIDR
+	IPCIDR string `json:"ipcidr"`
+
+	// Milestones
+	Milestones uint64 `json:"milestones"`
+
+	// Name
+	Name string `json:"name"`
 
 	// Network
 	Network string `json:"network"`
 
+	// Network ID
+	NetworkID uint64 `json:"networkId"`
+
+	// OVSBridge
+	OVSBridge string `json:"ovsBridge"`
+
+	// PreReservationsNum
+	PreReservationsNum uint64 `json:"preReservationsNum"`
+
 	// Prefix
 	Prefix uint64 `json:"prefix"`
 
+	// PriVNFDevID
+	PriVNFDevID uint64 `json:"priVnfDevId"`
+
 	// List reservations
 	Reservations ListReservations `json:"reservations"`
+
+	// List of shared with
+	SharedWith []interface{} `json:"sharedWith"`
+
+	// Status
+	Status string `json:"status"`
+
+	// VLAN ID
+	VLANID uint64 `json:"vlanId"`
+
+	// VNFs
+	VNFs VNFs `json:"vnfs"`
 }
 
 // List of static routes

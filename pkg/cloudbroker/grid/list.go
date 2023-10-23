@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list locations
+// ListRequest struct to get list of locations
 type ListRequest struct {
 	// Find by id grid
 	// Required: false
@@ -25,11 +25,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all locations
+// List gets list of all locations as a ListGrids struct
 func (g Grid) List(ctx context.Context, req ListRequest) (*ListGrids, error) {
-	url := "/cloudbroker/grid/list"
-
-	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := g.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -42,4 +40,12 @@ func (g Grid) List(ctx context.Context, req ListRequest) (*ListGrids, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all locations as an array of bytes
+func (g Grid) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/grid/list"
+
+	res, err := g.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

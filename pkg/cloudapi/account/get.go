@@ -8,25 +8,16 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get information about account
+// GetRequest struct to get information about account
 type GetRequest struct {
 	// ID an account
 	// Required: true
-    AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
+	AccountID uint64 `url:"accountId" json:"accountId" validate:"required"`
 }
 
-// Get gets account details
+// Get gets account details as a RecordAccount struct
 func (a Account) Get(ctx context.Context, req GetRequest) (*RecordAccount, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudapi/account/get"
-
-	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := a.GetRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -40,4 +31,19 @@ func (a Account) Get(ctx context.Context, req GetRequest) (*RecordAccount, error
 
 	return &info, nil
 
+}
+
+// GetRaw gets account details as an array of bytes
+func (a Account) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudapi/account/get"
+
+	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

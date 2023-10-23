@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of VINSes
+// ListRequest struct to get list of VINSes
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -41,11 +41,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list of VINSes
+// List gets list of VINSes as a ListVINS struct
 func (v VINS) List(ctx context.Context, req ListRequest) (*ListVINS, error) {
-	url := "/cloudbroker/vins/list"
-
-	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := v.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -58,4 +56,12 @@ func (v VINS) List(ctx context.Context, req ListRequest) (*ListVINS, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of VINSes as an array of bytes
+func (v VINS) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/vins/list"
+
+	res, err := v.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

@@ -8,25 +8,16 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for getting user details.
+// GetRequest struct to get user details.
 type GetRequest struct {
 	// ID of the user.
 	// Required: true
 	UserID string `url:"userId" json:"userId" validate:"required"`
 }
 
-// Get gets user details.
+// Get gets user details as an ItemUser struct.
 func (u User) Get(ctx context.Context, req GetRequest) (*ItemUser, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudbroker/user/get"
-
-	res, err := u.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := u.GetRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -39,4 +30,19 @@ func (u User) Get(ctx context.Context, req GetRequest) (*ItemUser, error) {
 	}
 
 	return &item, nil
+}
+
+// GetRaw gets user details as an array of bytes
+func (u User) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudbroker/user/get"
+
+	res, err := u.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

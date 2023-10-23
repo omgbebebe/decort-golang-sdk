@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get detailed information about resource group
+// GetRequest struct to get detailed information about resource group
 type GetRequest struct {
 	// Resource group ID
 	// Required: true
@@ -19,18 +19,9 @@ type GetRequest struct {
 	Reason string `url:"reason,omitempty" json:"reason,omitempty"`
 }
 
-// Get gets current configuration of the resource group
+// Get gets current configuration of the resource group as a RecordRG struct
 func (r RG) Get(ctx context.Context, req GetRequest) (*RecordRG, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudbroker/rg/get"
-
-	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := r.GetRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -43,4 +34,19 @@ func (r RG) Get(ctx context.Context, req GetRequest) (*RecordRG, error) {
 	}
 
 	return &info, nil
+}
+
+// GetRaw gets current configuration of the resource group as an array of bytes
+func (r RG) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudbroker/rg/get"
+
+	res, err := r.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

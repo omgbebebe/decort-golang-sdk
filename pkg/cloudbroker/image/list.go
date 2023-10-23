@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list available images
+// ListRequest struct to get list of available images
 type ListRequest struct {
 	// Filter images by storage endpoint provider ID
 	// Required: false
@@ -65,11 +65,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list of information about images
+// List gets list of information about images as a ListImages struct
 func (i Image) List(ctx context.Context, req ListRequest) (*ListImages, error) {
-	url := "/cloudbroker/image/list"
-
-	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := i.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -82,4 +80,12 @@ func (i Image) List(ctx context.Context, req ListRequest) (*ListImages, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of information about images as an array of bytes
+func (i Image) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/image/list"
+
+	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

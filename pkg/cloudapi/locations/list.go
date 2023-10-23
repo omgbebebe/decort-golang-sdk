@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of locations
+// ListRequest struct to get list of locations
 type ListRequest struct {
 	// Page number
 	// Required: false
@@ -33,11 +33,9 @@ type ListRequest struct {
 	LocationCode string `url:"locationCode,omitempty" json:"locationCode,omitempty"`
 }
 
-// List gets list all locations
+// List gets list of all locations as a ListLocations struct
 func (l Locations) List(ctx context.Context, req ListRequest) (*ListLocations, error) {
-	url := "/cloudapi/locations/list"
-
-	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := l.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +48,12 @@ func (l Locations) List(ctx context.Context, req ListRequest) (*ListLocations, e
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all locations as an array of bytes
+func (l Locations) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/locations/list"
+
+	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

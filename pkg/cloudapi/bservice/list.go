@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list BasicService instances
+// ListRequest struct to get list of BasicService instances
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -49,11 +49,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list BasicService instances associated with the specified Resource Group
+// List gets list of BasicService instances associated with the specified Resource Group as a ListBasicServices struct
 func (b BService) List(ctx context.Context, req ListRequest) (*ListBasicServices, error) {
-	url := "/cloudapi/bservice/list"
-
-	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := b.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -66,4 +64,12 @@ func (b BService) List(ctx context.Context, req ListRequest) (*ListBasicServices
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of BasicService instances associated with the specified Resource Group as an array of bytes
+func (b BService) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/bservice/list"
+
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

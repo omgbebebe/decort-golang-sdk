@@ -8,15 +8,32 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get detailed information about service
+// GetRequest struct to get detailed information about service
 type GetRequest struct {
 	// ID of the service to query information
 	// Required: true
 	ServiceID uint64 `url:"serviceId" json:"serviceId" validate:"required"`
 }
 
-// Get gets detailed specifications for the BasicService.
+// Get gets detailed specifications for the BasicService as a RecordBasicService struct
 func (b BService) Get(ctx context.Context, req GetRequest) (*RecordBasicService, error) {
+	res, err := b.GetRaw(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	info := RecordBasicService{}
+
+	err = json.Unmarshal(res, &info)
+	if err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+// GetRaw gets detailed specifications for the BasicService as an array of bytes
+func (b BService) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -26,17 +43,6 @@ func (b BService) Get(ctx context.Context, req GetRequest) (*RecordBasicService,
 
 	url := "/cloudapi/bservice/get"
 
-	bsRaw, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
-	if err != nil {
-		return nil, err
-	}
-
-	info := RecordBasicService{}
-
-	err = json.Unmarshal(bsRaw, &info)
-	if err != nil {
-		return nil, err
-	}
-
-	return &info, nil
+	res, err := b.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

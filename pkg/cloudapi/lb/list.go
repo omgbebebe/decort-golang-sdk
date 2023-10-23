@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of load balancers
+// ListRequest struct to get list of load balancers
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -53,11 +53,9 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list all load balancers
+// List gets list of all load balancers as a ListLB struct
 func (l LB) List(ctx context.Context, req ListRequest) (*ListLB, error) {
-	url := "/cloudapi/lb/list"
-
-	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := l.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -70,4 +68,12 @@ func (l LB) List(ctx context.Context, req ListRequest) (*ListLB, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of all load balancers as an array of bytes
+func (l LB) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudapi/lb/list"
+
+	res, err := l.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

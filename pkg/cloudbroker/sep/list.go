@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Request struct for get list of SEPs
+// ListRequest struct to get list of SEPs
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -45,11 +45,9 @@ type ListRequest struct {
 	Page uint64 `url:"page,omitempty" json:"page,omitempty"`
 }
 
-// List gets list of SEPs
+// List gets list of SEPs as a ListSEP struct
 func (s SEP) List(ctx context.Context, req ListRequest) (*ListSEP, error) {
-	url := "/cloudbroker/sep/list"
-
-	res, err := s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := s.ListRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,4 +60,12 @@ func (s SEP) List(ctx context.Context, req ListRequest) (*ListSEP, error) {
 	}
 
 	return &list, nil
+}
+
+// ListRaw gets list of SEPs as an array of bytes
+func (s SEP) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
+	url := "/cloudbroker/sep/list"
+
+	res, err := s.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }

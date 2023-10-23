@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for getting list of all non deleted apiaccess instances.
+// ListRequest struct to get list of all non deleted apiaccess instances.
 type ListRequest struct {
 	// Find by ID
 	// Required: false
@@ -43,8 +43,25 @@ type ListRequest struct {
 	Size uint64 `url:"size,omitempty" json:"size,omitempty"`
 }
 
-// List gets list of all non deleted apiaccess instances.
+// List gets list of all non deleted apiaccess instances as a ListAPIAccess struct
 func (a APIAccess) List(ctx context.Context, req ListRequest) (*ListAPIAccess, error) {
+	res, err := a.ListRaw(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	info := ListAPIAccess{}
+
+	err = json.Unmarshal(res, &info)
+	if err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+// ListRaw gets list of all non deleted apiaccess instances as an array of bytes
+func (a APIAccess) ListRaw(ctx context.Context, req ListRequest) ([]byte, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -54,17 +71,6 @@ func (a APIAccess) List(ctx context.Context, req ListRequest) (*ListAPIAccess, e
 
 	url := "/cloudbroker/apiaccess/list"
 
-	info := ListAPIAccess{}
-
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(res, &info)
-	if err != nil {
-		return nil, err
-	}
-
-	return &info, nil
+	return res, err
 }

@@ -8,15 +8,32 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for getting apiaccess group.
+// GetRequest struct to get apiaccess group.
 type GetRequest struct {
 	// APIAccess group ID.
 	// Required: true
 	APIAccessID uint64 `url:"apiaccessId" json:"apiaccessId" validate:"required"`
 }
 
-// Get gets apiaccess group.
+// Get gets apiaccess group as an ItemAPIAccess struct
 func (a APIAccess) Get(ctx context.Context, req GetRequest) (*ItemAPIAccess, error) {
+	res, err := a.GetRaw(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	info := ItemAPIAccess{}
+
+	err = json.Unmarshal(res, &info)
+	if err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+// GetRaw gets apiaccess group as an array of bytes
+func (a APIAccess) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
 	err := validators.ValidateRequest(req)
 	if err != nil {
 		for _, validationError := range validators.GetErrors(err) {
@@ -26,17 +43,6 @@ func (a APIAccess) Get(ctx context.Context, req GetRequest) (*ItemAPIAccess, err
 
 	url := "/cloudbroker/apiaccess/get"
 
-	info := ItemAPIAccess{}
-
 	res, err := a.client.DecortApiCall(ctx, http.MethodPost, url, req)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(res, &info)
-	if err != nil {
-		return nil, err
-	}
-
-	return &info, nil
+	return res, err
 }

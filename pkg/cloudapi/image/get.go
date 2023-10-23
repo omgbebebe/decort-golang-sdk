@@ -8,7 +8,7 @@ import (
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
-// Request struct for get detailed information about image
+// GetRequest struct to get detailed information about image
 type GetRequest struct {
 	// ID of image to get
 	// Required: true
@@ -20,18 +20,9 @@ type GetRequest struct {
 }
 
 // Get gets image by ID.
-// Returns image if user has rights on it
+// Returns image as a RecordImage struct if user has rights on it
 func (i Image) Get(ctx context.Context, req GetRequest) (*RecordImage, error) {
-	err := validators.ValidateRequest(req)
-	if err != nil {
-		for _, validationError := range validators.GetErrors(err) {
-			return nil, validators.ValidationError(validationError)
-		}
-	}
-
-	url := "/cloudapi/image/get"
-
-	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	res, err := i.GetRaw(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -44,4 +35,20 @@ func (i Image) Get(ctx context.Context, req GetRequest) (*RecordImage, error) {
 	}
 
 	return &info, nil
+}
+
+// GetRaw gets image by ID.
+// Returns image as an array of bytes if user has rights on it
+func (i Image) GetRaw(ctx context.Context, req GetRequest) ([]byte, error) {
+	err := validators.ValidateRequest(req)
+	if err != nil {
+		for _, validationError := range validators.GetErrors(err) {
+			return nil, validators.ValidationError(validationError)
+		}
+	}
+
+	url := "/cloudapi/image/get"
+
+	res, err := i.client.DecortApiCall(ctx, http.MethodPost, url, req)
+	return res, err
 }
