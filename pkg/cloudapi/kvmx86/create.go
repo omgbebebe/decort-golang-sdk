@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	log "github.com/sirupsen/logrus"
+
 	"repository.basistech.ru/BASIS/decort-golang-sdk/internal/validators"
 )
 
@@ -136,6 +138,7 @@ func (k KVMX86) Create(ctx context.Context, req CreateRequest) (uint64, error) {
 
 	url := "/cloudapi/kvmx86/create"
 
+	log.Tracef("restComputeCreate: %q", reqWrapped.req)
 	res, err := k.client.DecortApiCall(ctx, http.MethodPost, url, reqWrapped)
 	if err != nil {
 		return 0, err
